@@ -501,7 +501,7 @@ namespace CVNBot
                                      + ago.TotalSeconds.ToString() + " seconds ago", Priority.High);
                         break;
                     case "help":
-                        SendMessageF(SendType.Message, e.Data.Channel, (String)msgs["20005"], Priority.High);
+                        SendMessageF(SendType.Message, e.Data.Channel, (String)msgs["20004"], Priority.High);
                         break;
                     case "version":
                     case "settings":

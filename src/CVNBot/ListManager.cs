@@ -131,7 +131,7 @@ namespace CVNBot
         private static string ParseExpiryDate(long expiry)
         {
             if (expiry == 0)
-                return (string)Program.msgs["20006"];
+                return (string)Program.msgs["20005"];
             DateTime dt = new DateTime(expiry);
             return dt.ToUniversalTime().ToString("HH:mm, d MMMM yyyy");
         }
