@@ -5,10 +5,11 @@ namespace CVNBot
         /**
          * User
          */
-        public string botNick = "CVNBot";
+        public string botNick = "MirahezeCVNBot";
+        public string readerBotNick = "MirahezeCVNReader";
         public string botPass = "";
         public string botRealName = "CVNBot"; // gets concatenated with a space and Program.version
-        public string partMsg = "https://github.com/countervandalism/CVNBot";
+        public string partMsg = "https://github.com/Universal-Omega/MirahezeCVNBot";
 
         /**
          * Server
@@ -16,12 +17,24 @@ namespace CVNBot
 
         // Host name
         public string ircServerName = "irc.libera.chat";
+        public string ircReaderServerName = "irc.libera.chat";
         // Channel name or "None"
-        public string feedChannel = "#cvn-sandbox";
+        public string feedChannel = "#miraheze-cvt";
         // Channel name or "None"
         public string controlChannel = "None";
         // Channel name or "None"
-        public string broadcastChannel = "None";
+        public string broadcastChannel = "#miraheze-cvt-feed";
+        // Channel name
+        public string readerFeedChannel = "#miraheze-feed";
+
+        /**
+         * Project
+         */
+        public string defaultProject = "loginwiki";
+        public string projectSuffix = "wiki";
+        public string projectDomain = "miraheze.org";
+        public string projectRootUrl = "https://login.miraheze.org/";
+        public string interwikiPrefix = "mh:";
 
         /**
          * Files
@@ -54,7 +67,7 @@ namespace CVNBot
         // Whether to entirely disable the database. This means requesting a usertype
         // will always return 3 (anon) or 4 (user) based on a static regex.
         // This speeds up the the flow incredibly (especially when using SQLite) and makes it possible
-        // to load a many (or even, all) of the Wikimedia wikis without producing an ever-growing backlog
+        // to load a many (or even, all) of the wikis without producing an ever-growing backlog
         // of change events faster than we can process them.
         // Disabling the database means the actual output in the feedchannel will not be useful (all edits go through,
         // no bot, user, or whitelist detection).

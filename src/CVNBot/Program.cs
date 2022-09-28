@@ -15,7 +15,7 @@ namespace CVNBot
 {
     class Program
     {
-        const string version = "4.0.2";
+        const string version = "4.0.3";
 
         public static IrcClient irc = new IrcClient();
         public static RCReader rcirc = new RCReader();
@@ -48,7 +48,7 @@ namespace CVNBot
                 String line;
                 while ((line = sr.ReadLine()) != null)
                 {
-					// Ignore comments
+                    // Ignore comments
                     if (!line.StartsWith("#") && (line != ""))
                     {
                         string[] parts = line.Split(new char[] { '=' }, 2);
@@ -61,6 +61,8 @@ namespace CVNBot
             // User
             if (rawConfig.ContainsKey("botnick"))
                 config.botNick = rawConfig["botnick"];
+            if (rawConfig.ContainsKey("readerbotnick"))
+                config.readerBotNick = rawConfig["readerbotnick"];
             if (rawConfig.ContainsKey("botpass"))
                 config.botPass = rawConfig["botpass"];
             if (rawConfig.ContainsKey("botrealname"))
@@ -70,12 +72,27 @@ namespace CVNBot
             // Server
             if (rawConfig.ContainsKey("ircserver"))
                 config.ircServerName = rawConfig["ircserver"];
+            if (rawConfig.ContainsKey("ircreaderserver"))
+                config.ircReaderServerName = rawConfig["ircreaderserver"];
             if (rawConfig.ContainsKey("feedchannel"))
                 config.feedChannel = rawConfig["feedchannel"];
             if (rawConfig.ContainsKey("controlchannel"))
                 config.controlChannel = rawConfig["controlchannel"];
             if (rawConfig.ContainsKey("broadcastchannel"))
                 config.broadcastChannel = rawConfig["broadcastchannel"];
+            if (rawConfig.ContainsKey("readerfeedchannel"))
+                config.readerFeedChannel = rawConfig["readerfeedchannel"];
+            // Project
+            if (rawConfig.ContainsKey("defaultproject"))
+                config.defaultProject = rawConfig["defaultproject"];
+            if (rawConfig.ContainsKey("projectsuffix"))
+                config.projectSuffix = rawConfig["projectsuffix"];
+            if (rawConfig.ContainsKey("projectdomain"))
+                config.projectDomain = rawConfig["projectdomain"];
+            if (rawConfig.ContainsKey("projectrooturl"))
+                config.projectRootUrl = rawConfig["projectrooturl"];
+            if (rawConfig.ContainsKey("interwikiprefix"))
+                config.interwikiPrefix = rawConfig["interwikiprefix"];
             // Files
             if (rawConfig.ContainsKey("messages"))
                 config.messagesFile = rawConfig["messages"];
@@ -346,7 +363,7 @@ namespace CVNBot
                         case "FIND":
                             if (list == "BLEEP")
                                 if (prjlist.ContainsKey(item))
-                                SendMessageF(SendType.Action, reason, "has " + item + ", " + adder + " :D", Priority.High);
+                                    SendMessageF(SendType.Action, reason, "has " + item + ", " + adder + " :D", Priority.High);
                             break;
                         case "COUNT":
                             if (list == "BLEEP")
@@ -521,29 +538,8 @@ namespace CVNBot
                         }
                         catch (Exception ex)
                         {
-							SendMessageF(SendType.Message, e.Data.Channel, "Unable to reload: " + ex.Message, Priority.High);
+                            SendMessageF(SendType.Message, e.Data.Channel, "Unable to reload: " + ex.Message, Priority.High);
                             logger.Error("Reload project failed", ex);
-                        }
-                        break;
-                    case "load":
-                        if (!HasPrivileges('@', ref e))
-                            return;
-                        try
-                        {
-                            if (cmdParams.Length == 2)
-                                prjlist.AddNewProject(cmdParams[0], cmdParams[1]);
-                            else
-                                prjlist.AddNewProject(cmdParams[0], "");
-
-                            SendMessageF(SendType.Message, e.Data.Channel, "Loaded new project " + cmdParams[0], Priority.High);
-                            // Automatically get admins and bots
-                            SendMessageF(SendType.Message, e.Data.Channel, listman.ConfigGetAdmins(cmdParams[0]), Priority.High);
-                            SendMessageF(SendType.Message, e.Data.Channel, listman.ConfigGetBots(cmdParams[0]), Priority.High);
-                        }
-                        catch (Exception ex)
-                        {
-                            SendMessageF(SendType.Message, e.Data.Channel, "Unable to add project: " + ex.Message, Priority.High);
-                            logger.Error("Add project failed", ex);
                         }
                         break;
                     case "bleep":
@@ -1094,7 +1090,7 @@ namespace CVNBot
                     attribs.Add("cblockname", r.title.Split(new char[] { ':' }, 2)[1]);
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.title.Split(new char[] { ':' }, 2)[1]));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.title.Split(new char[] { ':' }, 2)[1]));
                     attribs.Add("length", r.blockLength);
                     attribs.Add("reason", r.comment);
                     message = GetMessage(5400, ref attribs);
@@ -1117,7 +1113,7 @@ namespace CVNBot
                     attribs.Add("cblockname", r.title.Split(new char[] { ':' }, 2)[1]);
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
                     attribs.Add("reason", r.comment);
                     message = GetMessage(5700, ref attribs);
                     break;
@@ -1126,16 +1122,16 @@ namespace CVNBot
                     attribs.Add("ceditor", r.user);
                     attribs.Add("article", r.interwikiLink + r.title);
                     attribs.Add("carticle", r.title);
-                    attribs.Add("url", "https://" + r.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
                     attribs.Add("reason", r.comment);
                     message = GetMessage(05300, ref attribs);
                     break;
                 case RCEvent.EventType.newuser:
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("blockurl", "https://" + r.subdomain + ".miraheze.org/wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("caurl", "https://meta.wikimedia.org/wiki/Special:CentralAuth/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("caurl", config.projectRootUrl + "wiki/Special:CentralAuth/" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch = listman.MatchesList(r.user, 11);
                     if (bnuMatch.Success && feedFilterThisEvent == 1)
                     {
@@ -1156,8 +1152,8 @@ namespace CVNBot
                     attribs.Add("ccreator", r.user);
                     attribs.Add("editor", r.interwikiLink + "User:" + r.title);
                     attribs.Add("ceditor", r.title);
-                    attribs.Add("blockurl", "https://" + r.subdomain + ".miraheze.org/wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch2 = listman.MatchesList(r.user, 11);
                     if (bnuMatch2.Success)
                     {
@@ -1221,7 +1217,7 @@ namespace CVNBot
                     attribs.Add("uploaditem", r.interwikiLink + r.title);
                     attribs.Add("cuploaditem", r.title);
                     attribs.Add("reason", r.comment);
-                    attribs.Add("url", "https://" + r.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
                     message = GetMessage(uMsg + (int)userOffset, ref attribs);
                     break;
                 case RCEvent.EventType.protect:
@@ -1241,7 +1237,7 @@ namespace CVNBot
                     attribs.Add("carticle", r.title);
                     attribs.Add("comment", r.comment);
                     // 'url' in unprotect is fine, it's just the pagetitle
-                    attribs.Add("url", "https://" + r.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
                     message = GetMessage(5901, ref attribs);
                     break;
                 case RCEvent.EventType.modifyprotect:
@@ -1289,7 +1285,8 @@ namespace CVNBot
                     name.EndsWith("Channel") ||
                     name.EndsWith("File") ||
                     name.StartsWith("restart")
-                   ) {
+                   )
+                {
                     // SECURITY: Keep 'botpass' private.
                     continue;
                 }

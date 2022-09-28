@@ -1,29 +1,13 @@
-[![Build Status](https://github.com/countervandalism/CVNBot/actions/workflows/CI.yml/badge.svg)](https://github.com/countervandalism/CVNBot/actions/workflows/CI.yml)
+[![Build Status](https://github.com/Universal-Omega/MirahezeCVNBot/actions/workflows/CI.yml/badge.svg)](https://github.com/Universal-Omega/MirahezeCVNBot/actions/workflows/CI.yml)
 
-CVNBot
+MirahezeCVNBot
 ==================================================
 
 
 Quick start
 ----------
 
-Clone the repo, `git clone git://github.com/countervandalism/CVNBot.git`, or
-[download the latest
-release](https://github.com/countervandalism/CVNBot/zipball/master).
-
-
-Versioning
-----------
-
-We use the Semantic Versioning guidelines as much as possible.
-
-Releases will be numbered in the following format:
-
-`<major>.<minor>.<patch>`
-
-The `-alpha` suffix is used to indicate unreleased versions in development.
-
-For more information on SemVer, please visit https://semver.org/.
+Clone the repo, `git clone git://github.com/Universal-Omega/MirahezeCVNBot.git`
 
 
 Build
@@ -44,12 +28,12 @@ Currently supported versions of Mono: **6.8**
 Once mono is installed, build the project. The below uses Debug, for local development. (See [Installation](./docs/install.md) for how to install it in production):
 
 ```bash
-countervandalism/CVNBot:$ msbuild src/CVNBot.sln /p:Configuration=Debug
+Universal-Omega/MirahezeCVNBot:$ msbuild src/CVNBot.sln /p:Configuration=Debug
 ```
 
 Once built, you can run it:
 ```bash
-countervandalism/CVNBot/src/CVNBot/bin/Debug:$ mono CVNBot.exe
+Universal-Omega/MirahezeCVNBot/src/CVNBot/bin/Debug:$ mono CVNBot.exe
 ```
 
 
@@ -57,17 +41,15 @@ Bug tracker
 -----------
 
 Found a bug? Please report it using our [issue
-tracker](https://github.com/countervandalism/CVNBot/issues)!
+tracker](https://github.com/Universal-Omega/MirahezeCVNBot/issues)!
 
 
 Documentation, support and contact
 -----------
-* [Documentation (wiki)](https://github.com/countervandalism/CVNBot/wiki/Documentation)
-* [`#countervandalism`](irc://irc.libera.chat/#countervandalism) on [Libera.Chat](https://libera.chat)
-* [cvn@lists.wikimedia.org](https://lists.wikimedia.org/mailman/listinfo/cvn) (Requires subscription before posting. [Subscribe here](https://lists.wikimedia.org/mailman/listinfo/cvn))
+* [Documentation (wiki)](https://github.com/Universal-Omega/MirahezeCVNBot/wiki/Documentation)
 
 
 Copyright and license
 ---------------------
 
-See [LICENSE](https://raw.github.com/countervandalism/CVNBot/master/LICENSE.txt).
+See [LICENSE](https://raw.github.com/Universal-Omega/MirahezeCVNBot/main/LICENSE.txt).

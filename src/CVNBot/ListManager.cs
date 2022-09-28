@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
@@ -498,12 +499,12 @@ namespace CVNBot
                 lock (dbtoken)
                 {
                     using (IDataReader idr = cmd.ExecuteReader())
-                    if (idr.Read())
-                    {
-                        string result = Program.GetFormatMessage(16004, item, FriendlyProject(project), FriendlyList(10),
-                            idr.GetString(0), ParseExpiryDate(idr.GetInt64(2)), idr.GetString(1));
-                        return result;
-                    }
+                        if (idr.Read())
+                        {
+                            string result = Program.GetFormatMessage(16004, item, FriendlyProject(project), FriendlyList(10),
+                                idr.GetString(0), ParseExpiryDate(idr.GetInt64(2)), idr.GetString(1));
+                            return result;
+                        }
 
                     return Program.GetFormatMessage(16009, item, FriendlyProject(project), FriendlyList(10));
                 }
@@ -559,7 +560,7 @@ namespace CVNBot
                 try
                 {
                     GroupCollection groups = lc.Groups;
-                    string cmd =  groups["cmd"].Captures[0].Value.ToLower();
+                    string cmd = groups["cmd"].Captures[0].Value.ToLower();
                     string item = groups["item"].Captures[0].Value.Trim();
                     int len;
                     // Set length defaults: except for blacklist (listtype=1), the default is 0 (indefinite)
@@ -569,7 +570,7 @@ namespace CVNBot
                     else
                         len = 0;
                     if (groups["len"].Success)
-						// Convert input, in hours, to seconds
+                        // Convert input, in hours, to seconds
                         len = Convert.ToInt32(groups["len"].Captures[0].Value) * 3600;
                     string reason = "No reason given";
                     if (groups["reason"].Success)
@@ -1023,7 +1024,11 @@ namespace CVNBot
                                  "Request to get admins and bots for all " + Program.prjlist.Count.ToString() + " wikis accepted.",
                                  Meebey.SmartIrc4net.Priority.High);
 
-            foreach (DictionaryEntry de in Program.prjlist)
+            ProjectList prjlist = new ProjectList();
+            prjlist.fnProjectsXML = Program.config.projectsFile;
+            prjlist.LoadFromFile();
+
+            foreach (DictionaryEntry de in prjlist)
             {
                 Thread myThread;
 

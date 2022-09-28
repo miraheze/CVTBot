@@ -55,79 +55,23 @@ namespace CVNBot
         /// <summary>
         /// Adds a new Project to the ProjectList. Remember to dump the configuration afterwards by calling dumpToFile()
         /// </summary>
-        /// <param name="projectName">Name of the project (e.g., en.wikipedia) to add</param>
-        /// <param name="interwiki">Interwiki link (e.g., it:s: -- can be empty string)</param>
-        public void AddNewProject(string projectName, string interwiki)
+        /// <param name="projectName">Name of the project (e.g., loginwiki) to add</param>
+        public void AddNewProject(string projectName)
         {
-            if (interwiki == "")
-            {
-                // Try to guess interwiki
-
-                if (!projectName.Contains("."))
-                {
-                    // Cannot guess; probably something like "mediawiki"
-                    throw new Exception((String)Program.msgs["20004"]);
-                }
-
-                string langPortion = projectName.Split(new char[] { '.' }, 2)[0];
-                string projPortion = projectName.Split(new char[] { '.' }, 2)[1];
-                switch (projPortion)
-                {
-                    case "wikipedia":
-                        interwiki = langPortion + ":";
-                        break;
-                    case "wiktionary":
-                        interwiki = "wikt:" + langPortion + ":";
-                        break;
-                    case "wikibooks":
-                        interwiki = "b:" + langPortion + ":";
-                        break;
-                    case "wikinews":
-                        interwiki = "n:" + langPortion + ":";
-                        break;
-                    case "wikisource":
-                        interwiki = "s:" + langPortion + ":";
-                        break;
-                    case "wikiquote":
-                        interwiki = "q:" + langPortion + ":";
-                        break;
-                    case "wikiversity":
-                        interwiki = "v:" + langPortion + ":";
-                        break;
-                    default:
-                        throw new Exception((String)Program.msgs["20004"]);
-                }
-            }
-
             if (this.ContainsKey(projectName))
                 throw new Exception(Program.GetFormatMessage(16400, projectName));
 
-            logger.InfoFormat("Registering new project {0} with interwiki {1}", projectName, interwiki);
+            logger.InfoFormat("Registering new project {0}", projectName);
             Project prj = new Project();
             prj.projectName = projectName;
-            prj.interwikiLink = interwiki;
-            switch(projectName){
-                case "mediawiki.wikipedia":
-                    prj.rooturl = "https://www.mediawiki.org/";
-                    break;
-                case "outreach.wikipedia":
-                    prj.rooturl = "https://outreach.wikimedia.org/";
-                    break;
-                case "testwikidata.wikipedia":
-                    prj.rooturl = "https://test.wikidata.org/";
-                    break;
-                case "wikidata.wikipedia":
-                    prj.rooturl = "https://www.wikidata.org/";
-                    break;
-                default:
-                    prj.rooturl = "https://" + projectName + ".org/";
-                    break;
-            }
+
+            string subdomain = projectName.Substring(0, projectName.Length - Program.config.projectSuffix.Length);
+            string domain = Program.config.projectDomain;
+
+            prj.rooturl = "https://" + subdomain + "." + domain + "/";
+
             prj.RetrieveWikiDetails();
             this.Add(projectName, prj);
-            // Join the new channel
-            logger.InfoFormat("Joining RCReader channel: #{0}", projectName);
-            Program.rcirc.rcirc.RfcJoin("#" + projectName);
 
             // Dump new settings
             DumpToFile();
@@ -168,7 +112,11 @@ namespace CVNBot
                                  "Request to reload all " + this.Count.ToString() + " wikis accepted.",
                                  Meebey.SmartIrc4net.Priority.High);
 
-            foreach (DictionaryEntry dicent in this)
+            ProjectList original = new ProjectList();
+            original.fnProjectsXML = Program.config.projectsFile;
+            original.LoadFromFile();
+
+            foreach (DictionaryEntry dicent in original)
             {
                 Project prj = (Project)dicent.Value;
                 prj.RetrieveWikiDetails();
@@ -179,7 +127,7 @@ namespace CVNBot
             DumpToFile();
 
             Program.SendMessageF(Meebey.SmartIrc4net.SendType.Message, currentBatchReloadChannel,
-                                 "Reloaded all wikis. Phew, give the Wikimedia servers a break :(",
+                                 "Reloaded all wikis. Phew, give the servers a break :(",
                                  Meebey.SmartIrc4net.Priority.High);
         }
     }

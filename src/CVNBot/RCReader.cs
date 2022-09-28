@@ -16,7 +16,6 @@ namespace CVNBot
             modifyprotect
         }
 
-        public string subdomain;
         public string interwikiLink;
         public string project;
         public string title;
@@ -50,8 +49,6 @@ namespace CVNBot
 
         static readonly ILog logger = LogManager.GetLogger("CVNBot.RCReader");
 
-        static readonly string serverName = "irc.libera.chat";
-
         public void InitiateConnection()
         {
             Thread.CurrentThread.Name = "RCReader";
@@ -68,7 +65,7 @@ namespace CVNBot
 
             try
             {
-                rcirc.Connect(serverName, 6667);
+                rcirc.Connect(Program.config.ircReaderServerName, 6667);
             }
             catch (ConnectionException e)
             {
@@ -78,13 +75,10 @@ namespace CVNBot
 
             try
             {
-                rcirc.Login(Program.config.botNick, "CVNBot", 4, "CVNBot");
+                rcirc.Login(Program.config.readerBotNick, "CVNBotReader", 4, "CVNBotReader");
 
-                logger.InfoFormat("Joining {0} channels", Program.prjlist.Count);
-                foreach (string prj in Program.prjlist.Keys)
-                {
-                    rcirc.RfcJoin("#miraheze-feed");
-                }
+                logger.InfoFormat("Joining {0}", Program.config.readerFeedChannel);
+                rcirc.RfcJoin(Program.config.readerFeedChannel);
 
                 // Enter loop
                 rcirc.Listen();
@@ -100,7 +94,7 @@ namespace CVNBot
 
         void Rcirc_OnConnected(object sender, EventArgs e)
         {
-            logger.InfoFormat("Connected to {0}", serverName);
+            logger.InfoFormat("Connected to {0}", Program.config.ircReaderServerName);
         }
 
         void Rcirc_OnChannelMessage(object sender, IrcEventArgs e)
@@ -108,22 +102,6 @@ namespace CVNBot
             lastMessage = DateTime.Now;
 
             // Based on RCParser.py->parseRCmsg()
-            // Example message from 2017-10-13 from #en.wikipedia
-            // 01> #00314 [[
-            // 02> #00307 Special:Log/newusers
-            // 03> #00314 ]]
-            // 04> #0034   create2
-            // 05> #00310
-            // 06> #00302
-            // 07> #003
-            // 08> #0035  *
-            // 09> #003
-            // 10> #00303 Ujju.19788
-            // 11> #003
-            // 12> #0035  *
-            // 13> #003
-            // 14> #00310 created new account User:Upendhare
-            // 15> #003
             string strippedmsg = stripBold.Replace(stripColours.Replace(CVNBotUtils.ReplaceStrMax(e.Data.Message, '\x03', '\x04', 16), "\x03"), "");
             string[] fields = strippedmsg.Split(new char[] { '\x03' }, 17);
             if (fields.Length == 17)
@@ -143,11 +121,20 @@ namespace CVNBot
                 rce.eventtype = RCEvent.EventType.unknown;
                 rce.blockLength = "";
                 rce.movedTo = "";
-                rce.project = "login.miraheze";
+                rce.project = fields[0].Trim() ?? Program.config.defaultProject;
+
+                if (!Program.prjlist.ContainsKey(rce.project))
+                {
+                    Program.prjlist.AddNewProject(rce.project);
+                    Program.listman.ConfigGetAdmins(rce.project);
+                    Program.listman.ConfigGetBots(rce.project);
+                }
+
+                string subdomain = rce.project.Substring(0, rce.project.Length - Program.config.projectSuffix.Length);
+
+                rce.interwikiLink = Program.config.interwikiPrefix + subdomain + ":";
                 rce.title = Project.TranslateNamespace(rce.project, fields[4]);
                 rce.url = fields[8];
-                rce.subdomain = fields[0].Substring(0, fields[0].Length - 5);
-                rce.interwikiLink = "mh:" + rce.subdomain + ":";
                 rce.user = fields[12];
                 Project project = ((Project)Program.prjlist[rce.project]);
                 // At the moment, fields[14] contains IRC colour codes. For plain edits, remove just the \x03's. For logs, remove using the regex.
@@ -172,13 +159,6 @@ namespace CVNBot
                         case "newusers":
                             // Could be a user creating their own account, or a user creating a sockpuppet
 
-                            // Example message as of 2016-11-02 on #nl.wikipedia (with log comment after colon)
-                            // > [[Speciaal:Log/newusers]] create2  * BRPots *  created new account Gebruiker:BRPwiki: eerder fout gemaakt
-                            // Example message as of 2016-11-02 on #nl.wikipedia (without log comment)
-                            // > [[Speciaal:Log/newusers]] create2  * Sherani koster *  created new account Gebruiker:Rani farah koster
-
-                            // Example message as of 2017-10-13 on #en.wikipedia:
-                            // > [[Special:Log/newusers]] create2  * Ujju.19788 *  created new account User:Upendhare
                             if (fields[4].Contains("create2"))
                             {
                                 Match mc2 = project.rCreate2Regex.Match(rce.comment);
@@ -205,11 +185,6 @@ namespace CVNBot
                             }
                             break;
                         case "block":
-                            // Example message from October 2017 on #en.wikipedia:
-                            // > [[Special:Log/block]] reblock  * Yamla *  changed block settings for [[User:Jeb BushDid911]] (account creation blocked, email disabled, cannot edit own talk page) with an expiry time of indefinite: {{uw-ublock}}
-                            //
-                            // Example message from October 2017 on #en.wikipedia
-                            // > [[Special:Log/block]] reblock  * DeltaQuad *  changed block settings for [[User:208.111.64.0/19]] (anon. only, account creation blocked) with an expiry time of 06:21, February 2, 2019: {{colocationwebhost}}
                             if (fields[4].Contains("unblock"))
                             {
                                 Match ubm = project.runblockRegex.Match(rce.comment);
@@ -383,7 +358,7 @@ namespace CVNBot
                                 rce.title = Project.TranslateNamespace(rce.project, mrm.Groups["item1"].Captures[0].Value);
                                 rce.movedTo = Project.TranslateNamespace(rce.project, mrm.Groups["item2"].Captures[0].Value);
                                 //We use the unused blockLength field to store our "moved from" URL
-                                rce.blockLength = "https://" + rce.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(mrm.Groups["item1"].Captures[0].Value);
+                                rce.blockLength = project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(mrm.Groups["item1"].Captures[0].Value);
                                 try
                                 {
                                     rce.comment = mrm.Groups["comment"].Captures[0].Value;
@@ -398,7 +373,7 @@ namespace CVNBot
                                     rce.title = Project.TranslateNamespace(rce.project, mm.Groups["item1"].Captures[0].Value);
                                     rce.movedTo = Project.TranslateNamespace(rce.project, mm.Groups["item2"].Captures[0].Value);
                                     //We use the unused blockLength field to store our "moved from" URL
-                                    rce.blockLength = "https://" + rce.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(mm.Groups["item1"].Captures[0].Value);
+                                    rce.blockLength = project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(mm.Groups["item1"].Captures[0].Value);
                                     try
                                     {
                                         rce.comment = mm.Groups["comment"].Captures[0].Value;

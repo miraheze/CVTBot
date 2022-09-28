@@ -1,4 +1,4 @@
-# Install CVNBot
+# Install MirahezeCVNBot
 
 ## Installation
 

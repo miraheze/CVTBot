@@ -13,8 +13,7 @@ namespace CVNBot
         static ILog logger = LogManager.GetLogger("CVNBot.Project");
 
         public string projectName;
-        public string interwikiLink;
-        public string rooturl; // Format: https://en.wikipedia.org/
+        public string rooturl; // Format: https://login.miraheze.org/
 
         public Regex rrestoreRegex;
         public Regex rdeleteRegex;
@@ -84,7 +83,6 @@ namespace CVNBot
                 dump.WriteStartElement("project");
 
                 dump.WriteElementString("projectName", projectName);
-                dump.WriteElementString("interwikiLink", interwikiLink);
                 dump.WriteElementString("rooturl", rooturl);
                 dump.WriteElementString("speciallog", regexDict["specialLogRegex"]);
                 dump.WriteElementString("namespaces", snamespaces.Replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>", ""));
@@ -122,7 +120,6 @@ namespace CVNBot
                 switch (key)
                 {
                     case "projectName": projectName = value; break;
-                    case "interwikiLink": interwikiLink = value; break;
                     case "rooturl": rooturl = value; break;
                     case "speciallog": regexDict["specialLogRegex"] = value; break;
                     case "namespaces": snamespaces = value; break;
@@ -190,7 +187,7 @@ namespace CVNBot
 
             regexDict["specialLogRegex"] = namespaces["-1"] + @":.+?/(.+)";
 
-            logger.InfoFormat("Fetching interface messages from {0}", rooturl);
+            logger.InfoFormat("Fetching interface messages from {0}", Program.config.projectRootUrl);
 
             Dictionary<string, MessagesOption> Messages = new Dictionary<string, MessagesOption>();
 
@@ -208,7 +205,7 @@ namespace CVNBot
 
             // blockRegex is nonStrict because some wikis override the message without including $2 (block length).
             // RCReader will fall back to "24 hours" if this is the case.
-            // Some newer messages (e.g. https://lmo.wikipedia.org/wiki/MediaWiki:Blocklogentry) have a third item,
+            // Some newer messages have a third item,
             // $3 ("anononly,nocreate,autoblock"). This may conflict with $2 detection.
             // Trying (changed 2 -> 3) to see if length of time will be correctly detected using just this method:
             Messages.Add("Blocklogentry", new MessagesOption(3, "blockRegex", true));
@@ -231,12 +228,12 @@ namespace CVNBot
             string CombinedMessages = string.Join("|", Messages.Keys);
 
             string sMwMessages = CVNBotUtils.GetRawDocument(
-                rooturl +
+                Program.config.projectRootUrl +
                 "w/api.php?action=query&meta=allmessages&format=xml" +
                 "&ammessages=" + CombinedMessages
             );
             if (sMwMessages == "")
-                throw new Exception("Can't load list of InterfaceMessages from " + rooturl);
+                throw new Exception("Can't load list of InterfaceMessages from " + Program.config.projectRootUrl);
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(sMwMessages);
@@ -362,10 +359,10 @@ namespace CVNBot
                         nsEnglish = "Project talk";
                         break;
                     case 6:
-                        nsEnglish = "Image";
+                        nsEnglish = "File";
                         break;
                     case 7:
-                        nsEnglish = "Image talk";
+                        nsEnglish = "File talk";
                         break;
                     case 8:
                         nsEnglish = "MediaWiki";
@@ -399,7 +396,7 @@ namespace CVNBot
                 return nsEnglish + originalTitle.Substring(originalTitle.IndexOf(':'));
             }
 
-			// Mainspace articles do not need translation
+	    // Mainspace articles do not need translation
             return originalTitle;
         }
     }
