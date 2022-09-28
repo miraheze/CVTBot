@@ -383,7 +383,7 @@ namespace CVNBot
                                 rce.title = Project.TranslateNamespace(rce.project, mrm.Groups["item1"].Captures[0].Value);
                                 rce.movedTo = Project.TranslateNamespace(rce.project, mrm.Groups["item2"].Captures[0].Value);
                                 //We use the unused blockLength field to store our "moved from" URL
-                                rce.blockLength = project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(mrm.Groups["item1"].Captures[0].Value);
+                                rce.blockLength = "https://" + rce.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(mrm.Groups["item1"].Captures[0].Value);
                                 try
                                 {
                                     rce.comment = mrm.Groups["comment"].Captures[0].Value;
@@ -398,7 +398,7 @@ namespace CVNBot
                                     rce.title = Project.TranslateNamespace(rce.project, mm.Groups["item1"].Captures[0].Value);
                                     rce.movedTo = Project.TranslateNamespace(rce.project, mm.Groups["item2"].Captures[0].Value);
                                     //We use the unused blockLength field to store our "moved from" URL
-                                    rce.blockLength = project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(mm.Groups["item1"].Captures[0].Value);
+                                    rce.blockLength = "https://" + rce.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(mm.Groups["item1"].Captures[0].Value);
                                     try
                                     {
                                         rce.comment = mm.Groups["comment"].Captures[0].Value;
