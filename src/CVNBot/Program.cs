@@ -872,9 +872,9 @@ namespace CVNBot
                     else
                         diffsize = r.szdiff.ToString();
 
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("article", project.interwikiLink + r.title);
+                    attribs.Add("article", r.interwikiLink + r.title);
                     attribs.Add("carticle", r.title);
                     attribs.Add("size", diffsize);
                     attribs.Add("url", r.url);
@@ -1078,11 +1078,11 @@ namespace CVNBot
                     {
                         return;
                     }
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("fromname", project.interwikiLink + r.title);
+                    attribs.Add("fromname", r.interwikiLink + r.title);
                     attribs.Add("cfromname", r.title);
-                    attribs.Add("toname", project.interwikiLink + r.movedTo);
+                    attribs.Add("toname", r.interwikiLink + r.movedTo);
                     attribs.Add("ctoname", r.movedTo);
                     // The blockLength field stores the moveFrom URL
                     attribs.Add("url", r.blockLength);
@@ -1090,11 +1090,11 @@ namespace CVNBot
                     message = GetMessage(5500 + (int)userOffset, ref attribs);
                     break;
                 case RCEvent.EventType.block:
-                    attribs.Add("blockname", project.interwikiLink + r.title);
+                    attribs.Add("blockname", r.interwikiLink + r.title);
                     attribs.Add("cblockname", r.title.Split(new char[] { ':' }, 2)[1]);
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.title.Split(new char[] { ':' }, 2)[1]));
+                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.title.Split(new char[] { ':' }, 2)[1]));
                     attribs.Add("length", r.blockLength);
                     attribs.Add("reason", r.comment);
                     message = GetMessage(5400, ref attribs);
@@ -1113,29 +1113,29 @@ namespace CVNBot
                     }
                     break;
                 case RCEvent.EventType.unblock:
-                    attribs.Add("blockname", project.interwikiLink + r.title);
+                    attribs.Add("blockname", r.interwikiLink + r.title);
                     attribs.Add("cblockname", r.title.Split(new char[] { ':' }, 2)[1]);
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
                     attribs.Add("reason", r.comment);
                     message = GetMessage(5700, ref attribs);
                     break;
                 case RCEvent.EventType.delete:
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("article", project.interwikiLink + r.title);
+                    attribs.Add("article", r.interwikiLink + r.title);
                     attribs.Add("carticle", r.title);
-                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", "https://" + r.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(r.title));
                     attribs.Add("reason", r.comment);
                     message = GetMessage(05300, ref attribs);
                     break;
                 case RCEvent.EventType.newuser:
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("blockurl", "https://" + r.subdomain + ".miraheze.org/wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
                     attribs.Add("caurl", "https://meta.wikimedia.org/wiki/Special:CentralAuth/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch = listman.MatchesList(r.user, 11);
                     if (bnuMatch.Success && feedFilterThisEvent == 1)
                     {
@@ -1152,12 +1152,12 @@ namespace CVNBot
                     }
                     break;
                 case RCEvent.EventType.newuser2:
-                    attribs.Add("creator", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("creator", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ccreator", r.user);
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.title);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.title);
                     attribs.Add("ceditor", r.title);
-                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("blockurl", "https://" + r.subdomain + ".miraheze.org/wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", "https://" + r.subdomain + ".miraheze.org/wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch2 = listman.MatchesList(r.user, 11);
                     if (bnuMatch2.Success)
                     {
@@ -1216,18 +1216,18 @@ namespace CVNBot
                             r.comment = r.comment.Substring(0, 23) + "...";
                     }
 
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("uploaditem", project.interwikiLink + r.title);
+                    attribs.Add("uploaditem", r.interwikiLink + r.title);
                     attribs.Add("cuploaditem", r.title);
                     attribs.Add("reason", r.comment);
-                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", "https://" + r.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(r.title));
                     message = GetMessage(uMsg + (int)userOffset, ref attribs);
                     break;
                 case RCEvent.EventType.protect:
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("article", project.interwikiLink + r.title);
+                    attribs.Add("article", r.interwikiLink + r.title);
                     attribs.Add("carticle", r.title);
                     attribs.Add("comment", r.comment);
                     // 'url' in protect is broken, it also contains " [move=sysop] (indefinite)" etc.
@@ -1235,19 +1235,19 @@ namespace CVNBot
                     message = GetMessage(5900, ref attribs);
                     break;
                 case RCEvent.EventType.unprotect:
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("article", project.interwikiLink + r.title);
+                    attribs.Add("article", r.interwikiLink + r.title);
                     attribs.Add("carticle", r.title);
                     attribs.Add("comment", r.comment);
                     // 'url' in unprotect is fine, it's just the pagetitle
-                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", "https://" + r.subdomain + ".miraheze.org/wiki/" + CVNBotUtils.WikiEncode(r.title));
                     message = GetMessage(5901, ref attribs);
                     break;
                 case RCEvent.EventType.modifyprotect:
-                    attribs.Add("editor", project.interwikiLink + "User:" + r.user);
+                    attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("article", project.interwikiLink + r.title);
+                    attribs.Add("article", r.interwikiLink + r.title);
                     attribs.Add("carticle", r.title);
                     attribs.Add("comment", r.comment);
                     // 'url' in modifyprotect is broken, it also contains " [move=sysop] (indefinite)" etc.

@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using System.Text.RegularExpressions;
 using System.Threading;
 using log4net;
@@ -15,6 +16,8 @@ namespace CVNBot
             modifyprotect
         }
 
+        public string subdomain;
+        public string interwikiLink;
         public string project;
         public string title;
         public string url;
@@ -47,7 +50,7 @@ namespace CVNBot
 
         static readonly ILog logger = LogManager.GetLogger("CVNBot.RCReader");
 
-        static readonly string serverName = "irc.wikimedia.org";
+        static readonly string serverName = "irc.libera.chat";
 
         public void InitiateConnection()
         {
@@ -80,7 +83,7 @@ namespace CVNBot
                 logger.InfoFormat("Joining {0} channels", Program.prjlist.Count);
                 foreach (string prj in Program.prjlist.Keys)
                 {
-                    rcirc.RfcJoin("#" + prj);
+                    rcirc.RfcJoin("#miraheze-feed");
                 }
 
                 // Enter loop
@@ -121,12 +124,12 @@ namespace CVNBot
             // 13> #003
             // 14> #00310 created new account User:Upendhare
             // 15> #003
-            string strippedmsg = stripBold.Replace(stripColours.Replace(CVNBotUtils.ReplaceStrMax(e.Data.Message, '\x03', '\x04', 14), "\x03"), "");
-            string[] fields = strippedmsg.Split(new char[] { '\x03' }, 15);
-            if (fields.Length == 15)
+            string strippedmsg = stripBold.Replace(stripColours.Replace(CVNBotUtils.ReplaceStrMax(e.Data.Message, '\x03', '\x04', 16), "\x03"), "");
+            string[] fields = strippedmsg.Split(new char[] { '\x03' }, 17);
+            if (fields.Length == 17)
             {
-                if (fields[14].EndsWith("\x03"))
-                    fields[14] = fields[14].Substring(0, fields[14].Length - 1);
+                if (fields[16].EndsWith("\x03"))
+                    fields[16] = fields[16].Substring(0, fields[16].Length - 1);
             }
             else
             {
@@ -140,28 +143,30 @@ namespace CVNBot
                 rce.eventtype = RCEvent.EventType.unknown;
                 rce.blockLength = "";
                 rce.movedTo = "";
-                rce.project = e.Data.Channel.Substring(1);
-                rce.title = Project.TranslateNamespace(rce.project, fields[2]);
-                rce.url = fields[6];
-                rce.user = fields[10];
+                rce.project = "login.miraheze";
+                rce.title = Project.TranslateNamespace(rce.project, fields[4]);
+                rce.url = fields[8];
+                rce.subdomain = fields[0].Substring(0, fields[0].Length - 5);
+                rce.interwikiLink = "mh:" + rce.subdomain + ":";
+                rce.user = fields[12];
                 Project project = ((Project)Program.prjlist[rce.project]);
                 // At the moment, fields[14] contains IRC colour codes. For plain edits, remove just the \x03's. For logs, remove using the regex.
-                Match titlemo = project.rSpecialLogRegex.Match(fields[2]);
+                Match titlemo = project.rSpecialLogRegex.Match(fields[4]);
                 if (!titlemo.Success)
                 {
                     // This is a regular edit
-                    rce.minor = fields[4].Contains("M");
-                    rce.newpage = fields[4].Contains("N");
-                    rce.botflag = fields[4].Contains("B");
+                    rce.minor = fields[6].Contains("M");
+                    rce.newpage = fields[6].Contains("N");
+                    rce.botflag = fields[6].Contains("B");
                     rce.eventtype = RCEvent.EventType.edit;
-                    rce.comment = fields[14].Replace("\x03", "");
+                    rce.comment = fields[16].Replace("\x03", "");
                 }
                 else
                 {
                     // This is a log edit; check for type
                     string logType = titlemo.Groups[1].Captures[0].Value;
                     // Fix comments
-                    rce.comment = stripColours2.Replace(fields[14], "");
+                    rce.comment = stripColours2.Replace(fields[16], "");
                     switch (logType)
                     {
                         case "newusers":
@@ -423,7 +428,7 @@ namespace CVNBot
                 }
 
                 // Deal with the diff size
-                Match n = rszDiff.Match(fields[13]);
+                Match n = rszDiff.Match(fields[15]);
                 if (n.Success)
                 {
                     if (n.Groups[1].Captures[0].Value == "+")
