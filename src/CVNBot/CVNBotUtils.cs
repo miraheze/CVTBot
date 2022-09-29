@@ -127,7 +127,7 @@ namespace CVNBot
             try
             {
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.UserAgent = "Mozilla/5.0 (en-US) MirahezeCVNBot/1.0 More info: https://github.com/Universal-Omega/MirahezeCVNBot";
+                req.UserAgent = "Mozilla/5.0 (en-GB) MirahezeCVNBot/1.0 More info: https://github.com/Universal-Omega/MirahezeCVNBot";
 
                 using (HttpWebResponse res = (HttpWebResponse)req.GetResponse())
                 {
