@@ -90,10 +90,6 @@ namespace CVNBot
 
             logger.Info("Deleting existing project " + projectName);
 
-            // Leave monitoring channel:
-            logger.Info("Leaving #" + projectName);
-            Program.rcirc.rcirc.RfcPart("#" + projectName, "No longer monitored");
-
             // Wait for existing RCEvents in separate thread to go through:
             Thread.Sleep(4000);
 
