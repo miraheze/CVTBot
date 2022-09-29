@@ -159,7 +159,7 @@ namespace CVNBot
                         case "newusers":
                             // Could be a user creating their own account, or a user creating a sockpuppet
 
-                            if (fields[4].Contains("create2"))
+                            if (fields[6].Contains("create2"))
                             {
                                 Match mc2 = project.rCreate2Regex.Match(rce.comment);
                                 if (mc2.Success)
@@ -174,7 +174,7 @@ namespace CVNBot
                             }
                             else
                             {
-                                if (fields[4].Contains("autocreate"))
+                                if (fields[6].Contains("autocreate"))
                                 {
                                     rce.eventtype = RCEvent.EventType.autocreate;
                                 }
@@ -185,7 +185,7 @@ namespace CVNBot
                             }
                             break;
                         case "block":
-                            if (fields[4].Contains("unblock"))
+                            if (fields[6].Contains("unblock"))
                             {
                                 Match ubm = project.runblockRegex.Match(rce.comment);
                                 if (ubm.Success)
@@ -204,7 +204,7 @@ namespace CVNBot
                                     return;
                                 }
                             }
-                            else if (fields[4].Contains("reblock"))
+                            else if (fields[6].Contains("reblock"))
                             {
                                 Match rbm = project.rreblockRegex.Match(rce.comment);
                                 if (rbm.Success)
