@@ -137,7 +137,7 @@ namespace CVNBot
                 rce.url = fields[8];
                 rce.user = fields[12];
                 Project project = ((Project)Program.prjlist[rce.project]);
-                // At the moment, fields[14] contains IRC colour codes. For plain edits, remove just the \x03's. For logs, remove using the regex.
+                // At the moment, fields[16] contains IRC colour codes. For plain edits, remove just the \x03's. For logs, remove using the regex.
                 Match titlemo = project.rSpecialLogRegex.Match(fields[4]);
                 if (!titlemo.Success)
                 {
