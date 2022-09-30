@@ -1,4 +1,4 @@
-# Install MirahezeCVTBot
+# Install CVTBot
 
 ## Installation
 
