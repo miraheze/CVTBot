@@ -1,11 +1,11 @@
 # Messages used by the bot, note all messages should be 5 digit number with leading zeroes
-# Note: this file is for CVNBot.
+# Note: this file is for CVTBot.
 #
 # ${var} = variables to be substituted
 # %cnn[,nn] = mIRC colour nn,nn
 # %b = Toggle bolding
 #
-# 0 = Reporting (largely compatible with CVUBot) / 9 = CVNBot-only reporting / 1 = Formatted / 2 = Interface
+# 0 = Reporting (largely compatible with CVUBot) / 9 = CVTBot-only reporting / 1 = Formatted / 2 = Interface
 00000=2.03
 
 00020=Anonymous user
@@ -235,5 +235,5 @@
 20001=There are no global admins/bots. Specify a project with the p= parameter.
 20002=Only the bad new username, bad new article title and bad edit summary lists can be tested
 20003=You need to specify a username
-20004=Documentation: https://github.com/Universal-Omega/MirahezeCVTBot/wiki/Documentation#wiki-commands
+20004=Documentation: https://github.com/Universal-Omega/CVTBot/wiki/Documentation#wiki-commands
 20005=the end of time
