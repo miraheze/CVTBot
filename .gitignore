@@ -1,6 +1,6 @@
 # MSBuild
-/src/CVNBot/bin
-/src/CVNBot/obj
+/src/CVTBot/bin
+/src/CVTBot/obj
 # Visual Studio
 /src/.vs
 *.userprefs
