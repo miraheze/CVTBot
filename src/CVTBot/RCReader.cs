@@ -5,7 +5,7 @@ using System.Threading;
 using log4net;
 using Meebey.SmartIrc4net;
 
-namespace CVNBot
+namespace CVTBot
 {
     struct RCEvent
     {
@@ -47,7 +47,7 @@ namespace CVNBot
         static readonly Regex stripBold = new Regex(@"\x02");
         static readonly Regex rszDiff = new Regex(@"\(([\+\-])([0-9]+)\)");
 
-        static readonly ILog logger = LogManager.GetLogger("CVNBot.RCReader");
+        static readonly ILog logger = LogManager.GetLogger("CVTBot.RCReader");
 
         public void InitiateConnection()
         {
@@ -75,7 +75,7 @@ namespace CVNBot
 
             try
             {
-                rcirc.Login(Program.config.readerBotNick, "CVNBotReader", 4, "CVNBotReader");
+                rcirc.Login(Program.config.readerBotNick, "CVTBotReader", 4, "CVTBotReader");
 
                 logger.InfoFormat("Joining {0}", Program.config.readerFeedChannel);
                 rcirc.RfcJoin(Program.config.readerFeedChannel);
@@ -102,7 +102,7 @@ namespace CVNBot
             lastMessage = DateTime.Now;
 
             // Based on RCParser.py->parseRCmsg()
-            string strippedmsg = stripBold.Replace(stripColours.Replace(CVNBotUtils.ReplaceStrMax(e.Data.Message, '\x03', '\x04', 16), "\x03"), "");
+            string strippedmsg = stripBold.Replace(stripColours.Replace(CVTBotUtils.ReplaceStrMax(e.Data.Message, '\x03', '\x04', 16), "\x03"), "");
             string[] fields = strippedmsg.Split(new char[] { '\x03' }, 17);
             if (fields.Length == 17)
             {
@@ -358,7 +358,7 @@ namespace CVNBot
                                 rce.title = Project.TranslateNamespace(rce.project, mrm.Groups["item1"].Captures[0].Value);
                                 rce.movedTo = Project.TranslateNamespace(rce.project, mrm.Groups["item2"].Captures[0].Value);
                                 //We use the unused blockLength field to store our "moved from" URL
-                                rce.blockLength = project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(mrm.Groups["item1"].Captures[0].Value);
+                                rce.blockLength = project.rooturl + "wiki/" + CVTBotUtils.WikiEncode(mrm.Groups["item1"].Captures[0].Value);
                                 try
                                 {
                                     rce.comment = mrm.Groups["comment"].Captures[0].Value;
@@ -373,7 +373,7 @@ namespace CVNBot
                                     rce.title = Project.TranslateNamespace(rce.project, mm.Groups["item1"].Captures[0].Value);
                                     rce.movedTo = Project.TranslateNamespace(rce.project, mm.Groups["item2"].Captures[0].Value);
                                     //We use the unused blockLength field to store our "moved from" URL
-                                    rce.blockLength = project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(mm.Groups["item1"].Captures[0].Value);
+                                    rce.blockLength = project.rooturl + "wiki/" + CVTBotUtils.WikiEncode(mm.Groups["item1"].Captures[0].Value);
                                     try
                                     {
                                         rce.comment = mm.Groups["comment"].Captures[0].Value;
