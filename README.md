@@ -1,13 +1,13 @@
-[![Build Status](https://github.com/Universal-Omega/MirahezeCVTBot/actions/workflows/CI.yml/badge.svg)](https://github.com/Universal-Omega/MirahezeCVTBot/actions/workflows/CI.yml)
+[![Build Status](https://github.com/Universal-Omega/CVTBot/actions/workflows/CI.yml/badge.svg)](https://github.com/Universal-Omega/CVTBot/actions/workflows/CI.yml)
 
-MirahezeCVTBot
+CVTBot
 ==================================================
 
 
 Quick start
 ----------
 
-Clone the repo, `git clone git://github.com/Universal-Omega/MirahezeCVTBot.git`
+Clone the repo, `git clone git://github.com/Universal-Omega/CVTBot.git`
 
 
 Build
@@ -28,12 +28,12 @@ Currently supported versions of Mono: **6.8**
 Once mono is installed, build the project. The below uses Debug, for local development. (See [Installation](./docs/install.md) for how to install it in production):
 
 ```bash
-Universal-Omega/MirahezeCVTBot:$ msbuild src/CVNBot.sln /p:Configuration=Debug
+Universal-Omega/CVTBot:$ msbuild src/CVNBot.sln /p:Configuration=Debug
 ```
 
 Once built, you can run it:
 ```bash
-Universal-Omega/MirahezeCVTBot/src/CVNBot/bin/Debug:$ mono CVNBot.exe
+Universal-Omega/CVTBot/src/CVNBot/bin/Debug:$ mono CVNBot.exe
 ```
 
 
@@ -41,15 +41,15 @@ Bug tracker
 -----------
 
 Found a bug? Please report it using our [issue
-tracker](https://github.com/Universal-Omega/MirahezeCVTBot/issues)!
+tracker](https://github.com/Universal-Omega/CVTBot/issues)!
 
 
 Documentation, support and contact
 -----------
-* [Documentation (wiki)](https://github.com/Universal-Omega/MirahezeCVTBot/wiki/Documentation)
+* [Documentation (wiki)](https://github.com/Universal-Omega/CVTBot/wiki/Documentation)
 
 
 Copyright and license
 ---------------------
 
-See [LICENSE](https://raw.github.com/Universal-Omega/MirahezeCVTBot/main/LICENSE.txt).
+See [LICENSE](https://raw.github.com/Universal-Omega/CVTBot/main/LICENSE.txt).
