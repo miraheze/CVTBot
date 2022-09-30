@@ -5,11 +5,11 @@ namespace CVNBot
         /**
          * User
          */
-        public string botNick = "MirahezeCVTBot";
-        public string readerBotNick = "MirahezeCVTReader";
+        public string botNick = "CVTBot";
+        public string readerBotNick = "CVTBotReader";
         public string botPass = "";
         public string botRealName = "CVTBot"; // gets concatenated with a space and Program.version
-        public string partMsg = "https://github.com/Universal-Omega/MirahezeCVTBot";
+        public string partMsg = "https://github.com/Universal-Omega/CVTBot";
 
         /**
          * Server
@@ -18,23 +18,23 @@ namespace CVNBot
         // Host name
         public string ircServerName = "irc.libera.chat";
         public string ircReaderServerName = "irc.libera.chat";
-        // Channel name or "None"
-        public string feedChannel = "#miraheze-cvt";
+        // Channel name or "None" — the feed that logs events to
+        public string feedChannel = "None";
         // Channel name or "None"
         public string controlChannel = "None";
-        // Channel name or "None"
-        public string broadcastChannel = "#miraheze-cvt-feed";
-        // Channel name
-        public string readerFeedChannel = "#miraheze-feed";
+        // Channel name or "None" — the feed that broadcasts events picked up by reader
+        public string broadcastChannel = "None";
+        // Channel name — the reader feed channel
+        public string readerFeedChannel = "#cvt-feed";
 
         /**
          * Project
          */
-        public string defaultProject = "loginwiki";
-        public string projectSuffix = "wiki";
-        public string projectDomain = "miraheze.org";
-        public string projectRootUrl = "https://login.miraheze.org/";
-        public string interwikiPrefix = "mh:";
+        public string defaultProject = "";
+        public string projectSuffix = "";
+        public string projectDomain = "";
+        public string projectRootUrl = "";
+        public string interwikiPrefix = "";
 
         /**
          * Files
