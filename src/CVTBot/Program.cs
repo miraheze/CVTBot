@@ -15,7 +15,7 @@ namespace CVTBot
 {
     class Program
     {
-        const string version = "5.0.0";
+        const string version = "1.0.0";
 
         public static IrcClient irc = new IrcClient();
         public static RCReader rcirc = new RCReader();
