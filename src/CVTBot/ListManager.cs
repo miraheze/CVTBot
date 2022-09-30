@@ -10,7 +10,7 @@ using System.Xml;
 using log4net;
 using Mono.Data.Sqlite;
 
-namespace CVNBot
+namespace CVTBot
 {
     struct ListMatch
     {
@@ -44,7 +44,7 @@ namespace CVNBot
 
         Timer garbageCollector;
 
-        static readonly ILog logger = LogManager.GetLogger("CVNBot.ListManager");
+        static readonly ILog logger = LogManager.GetLogger("CVTBot.ListManager");
 
         public void InitDBConnection(string filename)
         {
@@ -552,7 +552,7 @@ namespace CVNBot
             // cmdParams are given like so:
             // - add Tangotango[ x=96][ r=Terrible vandal]
             // - add Tangotango test account x=89
-            // - del Tangotango r=No longer needed (r is not handled by CVNBot, but accept anyway)
+            // - del Tangotango r=No longer needed (r is not handled by CVTBot, but accept anyway)
 
             Match lc = rlistCmd.Match(cmdParams);
             if (lc.Success)
@@ -956,7 +956,7 @@ namespace CVNBot
             try
             {
 
-                resp = CVNBotUtils.GetRawDocument(project.rooturl
+                resp = CVTBotUtils.GetRawDocument(project.rooturl
                                                          + "w/api.php?format=xml&action=query&list=allusers&augroup="
                                                          + getGroup + "&aulimit=max");
                 XmlDocument doc = new XmlDocument();
@@ -967,7 +967,7 @@ namespace CVNBot
                 for (int i = 0; i < total; i++)
                 {
                     string name = nodes[i].Attributes["name"].Value;
-                    AddUserToList(name, projectName, getGroupUT, "CVNBot", "Auto-download from wiki", 0);
+                    AddUserToList(name, projectName, getGroupUT, "CVTBot", "Auto-download from wiki", 0);
                 }
 
                 logger.InfoFormat("Added {0} {1} users from {2}", total, getGroup, projectName);
