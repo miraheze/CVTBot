@@ -5,11 +5,11 @@ using System.Threading;
 using System.Xml;
 using log4net;
 
-namespace CVNBot
+namespace CVTBot
 {
     class ProjectList : SortedList
     {
-        ILog logger = LogManager.GetLogger("CVNBot.ProjectList");
+        ILog logger = LogManager.GetLogger("CVTBot.ProjectList");
 
         public string fnProjectsXML;
         public string currentBatchReloadChannel = "";
