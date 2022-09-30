@@ -8,11 +8,11 @@ using System.Web;
 
 namespace CVTBot
 {
-    static class CVTBotUtils
+    internal static class CVTBotUtils
     {
-        static Regex rStripper = new Regex(@"(,|and)");
-        static Regex rSpaces = new Regex(@"\s{2,}");
-        static Regex rfindValues = new Regex(@"(\d+) (year|month|fortnight|week|day|hour|minute|min|second|sec)s?");
+        private static readonly Regex rStripper = new Regex(@"(,|and)");
+        private static readonly Regex rSpaces = new Regex(@"\s{2,}");
+        private static readonly Regex rfindValues = new Regex(@"(\d+) (year|month|fortnight|week|day|hour|minute|min|second|sec)s?");
         // TODO: Something is still wrong here, some exprs show up as 3 instead of 3 day(s)
 
         /// <summary>
@@ -28,18 +28,14 @@ namespace CVTBot
             // If input is already shorter than chunkLen, then...
             if (input.Length <= chunkLen)
             {
-                output.Add(input);
+                _ = output.Add(input);
             }
             else
             {
-                for (int i = 0; i < input.Length; i = i + chunkLen)
+                for (int i = 0; i < input.Length; i += chunkLen)
                 {
-                    int getLen;
-                    if (i + chunkLen > input.Length)
-                        getLen = input.Length - i;
-                    else
-                        getLen = chunkLen;
-                    output.Add(input.Substring(i, getLen));
+                    int getLen = i + chunkLen > input.Length ? input.Length - i : chunkLen;
+                    _ = output.Add(input.Substring(i, getLen));
                 }
             }
 
@@ -68,7 +64,7 @@ namespace CVTBot
             }
 
             // Now for some real parsing
-            Double sumSeconds = 0;
+            double sumSeconds = 0;
             MatchCollection mc = rfindValues.Matches(parseStr);
 
             foreach (Match m in mc)
@@ -107,12 +103,9 @@ namespace CVTBot
             }
 
             // Round the double
-            Int32 seconds = Convert.ToInt32(sumSeconds);
+            int seconds = Convert.ToInt32(sumSeconds);
 
-            if (seconds == 0)
-                return defaultLen;
-
-            return seconds;
+            return seconds == 0 ? defaultLen : seconds;
         }
 
         /// <summary>
@@ -164,8 +157,10 @@ namespace CVTBot
                 // Find first oldChar
                 int place = input.IndexOf(oldChar);
                 if (place == -1)
+                {
                     // If not found then finish
                     break;
+                }
                 // Replace first oldChar with newChar
                 input = input.Substring(0, place) + newChar.ToString() + input.Substring(place + 1);
             }

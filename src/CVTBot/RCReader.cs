@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace CVTBot
 {
-    struct RCEvent
+    internal struct RCEvent
     {
         public enum EventType
         {
@@ -35,18 +35,17 @@ namespace CVTBot
         }
     }
 
-    class RCReader
+    internal class RCReader
     {
         public IrcClient rcirc = new IrcClient();
         public DateTime lastMessage = DateTime.Now;
 
         // RC parsing regexen
-        static readonly Regex stripColours = new Regex(@"\x04\d{0,2}\*?");
-        static readonly Regex stripColours2 = new Regex(@"\x03\d{0,2}");
-        static readonly Regex stripBold = new Regex(@"\x02");
-        static readonly Regex rszDiff = new Regex(@"\(([\+\-])([0-9]+)\)");
-
-        static readonly ILog logger = LogManager.GetLogger("CVTBot.RCReader");
+        private static readonly Regex stripColours = new Regex(@"\x04\d{0,2}\*?");
+        private static readonly Regex stripColours2 = new Regex(@"\x03\d{0,2}");
+        private static readonly Regex stripBold = new Regex(@"\x02");
+        private static readonly Regex rszDiff = new Regex(@"\(([\+\-])([0-9]+)\)");
+        private static readonly ILog logger = LogManager.GetLogger("CVTBot.RCReader");
 
         public void InitiateConnection()
         {
@@ -91,12 +90,12 @@ namespace CVTBot
             }
         }
 
-        void Rcirc_OnConnected(object sender, EventArgs e)
+        private void Rcirc_OnConnected(object sender, EventArgs e)
         {
             logger.InfoFormat("Connected to {0}", Program.config.ircReaderServerName);
         }
 
-        void Rcirc_OnChannelMessage(object sender, IrcEventArgs e)
+        private void Rcirc_OnChannelMessage(object sender, IrcEventArgs e)
         {
             lastMessage = DateTime.Now;
 
@@ -106,7 +105,9 @@ namespace CVTBot
             if (fields.Length == 17)
             {
                 if (fields[16].EndsWith("\x03"))
+                {
                     fields[16] = fields[16].Substring(0, fields[16].Length - 1);
+                }
             }
             else
             {
@@ -125,8 +126,8 @@ namespace CVTBot
                 if (!Program.prjlist.ContainsKey(rce.project))
                 {
                     Program.prjlist.AddNewProject(rce.project);
-                    Program.listman.ConfigGetAdmins(rce.project);
-                    Program.listman.ConfigGetBots(rce.project);
+                    _ = Program.listman.ConfigGetAdmins(rce.project);
+                    _ = Program.listman.ConfigGetBots(rce.project);
                 }
 
                 string subdomain = rce.project.Substring(0, rce.project.Length - Program.config.projectSuffix.Length);
@@ -135,7 +136,7 @@ namespace CVTBot
                 rce.title = Project.TranslateNamespace(rce.project, fields[4]);
                 rce.url = fields[8];
                 rce.user = fields[12];
-                Project project = ((Project)Program.prjlist[rce.project]);
+                Project project = (Project)Program.prjlist[rce.project];
                 // At the moment, fields[16] contains IRC colour codes. For plain edits, remove just the \x03's. For logs, remove using the regex.
                 Match titlemo = project.rSpecialLogRegex.Match(fields[4]);
                 if (!titlemo.Success)
@@ -173,14 +174,7 @@ namespace CVTBot
                             }
                             else
                             {
-                                if (fields[6].Contains("autocreate"))
-                                {
-                                    rce.eventtype = RCEvent.EventType.autocreate;
-                                }
-                                else
-                                {
-                                    rce.eventtype = RCEvent.EventType.newuser;
-                                }
+                                rce.eventtype = fields[6].Contains("autocreate") ? RCEvent.EventType.autocreate : RCEvent.EventType.newuser;
                             }
                             break;
                         case "block":
@@ -403,15 +397,11 @@ namespace CVTBot
 
                 // Deal with the diff size
                 Match n = rszDiff.Match(fields[15]);
-                if (n.Success)
-                {
-                    if (n.Groups[1].Captures[0].Value == "+")
-                        rce.szdiff = Convert.ToInt32(n.Groups[2].Captures[0].Value);
-                    else
-                        rce.szdiff = 0 - Convert.ToInt32(n.Groups[2].Captures[0].Value);
-                }
-                else
-                    rce.szdiff = 0;
+                rce.szdiff = n.Success
+                    ? n.Groups[1].Captures[0].Value == "+"
+                        ? Convert.ToInt32(n.Groups[2].Captures[0].Value)
+                        : 0 - Convert.ToInt32(n.Groups[2].Captures[0].Value)
+                    : 0;
 
                 try
                 {

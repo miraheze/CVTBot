@@ -13,9 +13,9 @@ using System.Threading;
 
 namespace CVTBot
 {
-    class Program
+    internal class Program
     {
-        const string version = "1.0.0";
+        private const string version = "1.0.0";
 
         public static IrcClient irc = new IrcClient();
         public static RCReader rcirc = new RCReader();
@@ -24,17 +24,15 @@ namespace CVTBot
         public static SortedList msgs = new SortedList();
         public static StringDictionary rawConfig = new StringDictionary();
         public static Config config = new Config();
-
-        static ILog logger = LogManager.GetLogger("CVTBot.Program");
-
-        static Regex broadcastMsg = new Regex(@"\*\x02B/1.1\x02\*(?<list>.+?)\*(?<action>.+?)\*\x03"
+        private static readonly ILog logger = LogManager.GetLogger("CVTBot.Program");
+        private static readonly Regex broadcastMsg = new Regex(@"\*\x02B/1.1\x02\*(?<list>.+?)\*(?<action>.+?)\*\x03"
             + @"07\x02(?<item>.+?)\x02\x03\*\x03"
             + @"13(?<len>\d+?)\x03\*\x03"
             + @"09\x02(?<reason>.*?)\x02\x03\*\x03"
             + @"11\x02(?<adder>.*?)\x03\x02\*");
-        static Regex botCmd;
+        private static Regex botCmd;
 
-        static void Main()
+        private static void Main()
         {
             Thread.CurrentThread.Name = "Main";
             Thread.GetDomain().UnhandledException += Application_UnhandledException;
@@ -45,7 +43,7 @@ namespace CVTBot
             // Read config file
             using (StreamReader sr = new StreamReader(rawConfigFN))
             {
-                String line;
+                string line;
                 while ((line = sr.ReadLine()) != null)
                 {
                     // Ignore comments
@@ -60,88 +58,196 @@ namespace CVTBot
             // Apply config
             // User
             if (rawConfig.ContainsKey("botnick"))
+            {
                 config.botNick = rawConfig["botnick"];
+            }
+
             if (rawConfig.ContainsKey("readerbotnick"))
+            {
                 config.readerBotNick = rawConfig["readerbotnick"];
+            }
+
             if (rawConfig.ContainsKey("botuser"))
+            {
                 config.botUser = rawConfig["botuser"];
+            }
+
             if (rawConfig.ContainsKey("botpass"))
+            {
                 config.botPass = rawConfig["botpass"];
+            }
+
             if (rawConfig.ContainsKey("botrealname"))
+            {
                 config.botRealName = rawConfig["botrealname"];
+            }
+
             if (rawConfig.ContainsKey("partmsg"))
+            {
                 config.partMsg = rawConfig["partmsg"];
+            }
             // Server
             if (rawConfig.ContainsKey("ircserver"))
+            {
                 config.ircServerName = rawConfig["ircserver"];
+            }
+
             if (rawConfig.ContainsKey("ircreaderserver"))
+            {
                 config.ircReaderServerName = rawConfig["ircreaderserver"];
+            }
+
             if (rawConfig.ContainsKey("feedchannel"))
+            {
                 config.feedChannel = rawConfig["feedchannel"];
+            }
+
             if (rawConfig.ContainsKey("controlchannel"))
+            {
                 config.controlChannel = rawConfig["controlchannel"];
+            }
+
             if (rawConfig.ContainsKey("broadcastchannel"))
+            {
                 config.broadcastChannel = rawConfig["broadcastchannel"];
+            }
+
             if (rawConfig.ContainsKey("readerfeedchannel"))
+            {
                 config.readerFeedChannel = rawConfig["readerfeedchannel"];
+            }
             // Project
             if (rawConfig.ContainsKey("defaultproject"))
+            {
                 config.defaultProject = rawConfig["defaultproject"];
+            }
+
             if (rawConfig.ContainsKey("projectsuffix"))
+            {
                 config.projectSuffix = rawConfig["projectsuffix"];
+            }
+
             if (rawConfig.ContainsKey("projectdomain"))
+            {
                 config.projectDomain = rawConfig["projectdomain"];
+            }
+
             if (rawConfig.ContainsKey("projectrooturl"))
+            {
                 config.projectRootUrl = rawConfig["projectrooturl"];
+            }
+
             if (rawConfig.ContainsKey("interwikiprefix"))
+            {
                 config.interwikiPrefix = rawConfig["interwikiprefix"];
+            }
             // Files
             if (rawConfig.ContainsKey("messages"))
+            {
                 config.messagesFile = rawConfig["messages"];
+            }
+
             if (rawConfig.ContainsKey("lists"))
+            {
                 config.listsFile = rawConfig["lists"];
+            }
+
             if (rawConfig.ContainsKey("projects"))
+            {
                 config.projectsFile = rawConfig["projects"];
+            }
             // Process
             if (rawConfig.ContainsKey("restartcmd"))
+            {
                 config.restartCmd = rawConfig["restartcmd"];
+            }
+
             if (rawConfig.ContainsKey("restartarg"))
+            {
                 config.restartArgs = rawConfig["restartarg"];
+            }
             // Feed
             if (rawConfig.ContainsKey("editblank"))
-                config.editBlank = Int32.Parse(rawConfig["editblank"]);
+            {
+                config.editBlank = int.Parse(rawConfig["editblank"]);
+            }
+
             if (rawConfig.ContainsKey("editbig"))
-                config.editBig = Int32.Parse(rawConfig["editbig"]);
+            {
+                config.editBig = int.Parse(rawConfig["editbig"]);
+            }
+
             if (rawConfig.ContainsKey("newbig"))
-                config.newBig = Int32.Parse(rawConfig["newbig"]);
+            {
+                config.newBig = int.Parse(rawConfig["newbig"]);
+            }
+
             if (rawConfig.ContainsKey("newsmall"))
-                config.newSmall = Int32.Parse(rawConfig["newsmall"]);
+            {
+                config.newSmall = int.Parse(rawConfig["newsmall"]);
+            }
+
             config.isCubbie = rawConfig.ContainsKey("IsCubbie");
             config.disableClassifyEditor = rawConfig.ContainsKey("disableClassifyEditor");
             if (rawConfig.ContainsKey("feedFilterUsersAnon"))
-                config.feedFilterUsersAnon = Int32.Parse(rawConfig["feedFilterUsersAnon"]);
+            {
+                config.feedFilterUsersAnon = int.Parse(rawConfig["feedFilterUsersAnon"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterUsersReg"))
-                config.feedFilterUsersReg = Int32.Parse(rawConfig["feedFilterUsersReg"]);
+            {
+                config.feedFilterUsersReg = int.Parse(rawConfig["feedFilterUsersReg"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterUsersBot"))
-                config.feedFilterUsersBot = Int32.Parse(rawConfig["feedFilterUsersBot"]);
+            {
+                config.feedFilterUsersBot = int.Parse(rawConfig["feedFilterUsersBot"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventMinorEdit"))
-                config.feedFilterEventMinorEdit = Int32.Parse(rawConfig["feedFilterEventMinorEdit"]);
+            {
+                config.feedFilterEventMinorEdit = int.Parse(rawConfig["feedFilterEventMinorEdit"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventEdit"))
-                config.feedFilterEventEdit = Int32.Parse(rawConfig["feedFilterEventEdit"]);
+            {
+                config.feedFilterEventEdit = int.Parse(rawConfig["feedFilterEventEdit"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventNewpage"))
-                config.feedFilterEventNewpage = Int32.Parse(rawConfig["feedFilterEventNewpage"]);
+            {
+                config.feedFilterEventNewpage = int.Parse(rawConfig["feedFilterEventNewpage"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventMove"))
-                config.feedFilterEventMove = Int32.Parse(rawConfig["feedFilterEventMove"]);
+            {
+                config.feedFilterEventMove = int.Parse(rawConfig["feedFilterEventMove"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventBlock"))
-                config.feedFilterEventBlock = Int32.Parse(rawConfig["feedFilterEventBlock"]);
+            {
+                config.feedFilterEventBlock = int.Parse(rawConfig["feedFilterEventBlock"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventDelete"))
-                config.feedFilterEventDelete = Int32.Parse(rawConfig["feedFilterEventDelete"]);
+            {
+                config.feedFilterEventDelete = int.Parse(rawConfig["feedFilterEventDelete"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventNewuser"))
-                config.feedFilterEventNewuser = Int32.Parse(rawConfig["feedFilterEventNewuser"]);
+            {
+                config.feedFilterEventNewuser = int.Parse(rawConfig["feedFilterEventNewuser"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventUpload"))
-                config.feedFilterEventUpload = Int32.Parse(rawConfig["feedFilterEventUpload"]);
+            {
+                config.feedFilterEventUpload = int.Parse(rawConfig["feedFilterEventUpload"]);
+            }
+
             if (rawConfig.ContainsKey("feedFilterEventProtect"))
-                config.feedFilterEventProtect = Int32.Parse(rawConfig["feedFilterEventProtect"]);
+            {
+                config.feedFilterEventProtect = int.Parse(rawConfig["feedFilterEventProtect"]);
+            }
 
             // Include bot nick in all logs from any thread.
             // Especially useful when running mulitple CVTBot instances that
@@ -153,7 +259,7 @@ namespace CVTBot
 
             logger.InfoFormat("Loading messages from {0}", config.messagesFile);
             ReadMessages(config.messagesFile);
-            if ((!msgs.ContainsKey("00000")) || ((String)msgs["00000"] != "2.03"))
+            if ((!msgs.ContainsKey("00000")) || ((string)msgs["00000"] != "2.03"))
             {
                 logger.Fatal("Message file version mismatch or read messages failed");
                 Exit();
@@ -236,7 +342,7 @@ namespace CVTBot
             }
         }
 
-        static void Irc_OnConnectionError(object sender, EventArgs e)
+        private static void Irc_OnConnectionError(object sender, EventArgs e)
         {
             logger.Error("OnConnectionError in Program, restarting...");
             Restart();
@@ -270,7 +376,7 @@ namespace CVTBot
             }
         }
 
-        static void Irc_OnError(object sender, Meebey.SmartIrc4net.ErrorEventArgs e)
+        private static void Irc_OnError(object sender, Meebey.SmartIrc4net.ErrorEventArgs e)
         {
             logger.Error("IRC: " + e.ErrorMessage);
             if (e.ErrorMessage.Contains("Excess Flood")) // Do not localize
@@ -286,12 +392,18 @@ namespace CVTBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        static void Irc_OnChannelNotice(object sender, IrcEventArgs e)
+        private static void Irc_OnChannelNotice(object sender, IrcEventArgs e)
         {
             if (e.Data.Channel != config.broadcastChannel)
+            {
                 return; // Just in case
+            }
+
             if (string.IsNullOrEmpty(e.Data.Message))
+            {
                 return; // Prevent empty messages from crashing the bot
+            }
+
             Match bm = broadcastMsg.Match(e.Data.Message);
             if (bm.Success)
             {
@@ -312,25 +424,25 @@ namespace CVTBot
                             switch (list)
                             {
                                 case "WL":
-                                    listman.AddUserToList(item, "", UserType.whitelisted, adder, reason, len);
+                                    _ = listman.AddUserToList(item, "", UserType.whitelisted, adder, reason, len);
                                     break;
                                 case "BL":
-                                    listman.AddUserToList(item, "", UserType.blacklisted, adder, reason, len);
+                                    _ = listman.AddUserToList(item, "", UserType.blacklisted, adder, reason, len);
                                     break;
                                 case "GL":
-                                    listman.AddUserToList(item, "", UserType.greylisted, adder, reason, len);
+                                    _ = listman.AddUserToList(item, "", UserType.greylisted, adder, reason, len);
                                     break;
                                 case "BNU":
-                                    listman.AddItemToList(item, 11, adder, reason, len);
+                                    _ = listman.AddItemToList(item, 11, adder, reason, len);
                                     break;
                                 case "BNA":
-                                    listman.AddItemToList(item, 12, adder, reason, len);
+                                    _ = listman.AddItemToList(item, 12, adder, reason, len);
                                     break;
                                 case "BES":
-                                    listman.AddItemToList(item, 20, adder, reason, len);
+                                    _ = listman.AddItemToList(item, 20, adder, reason, len);
                                     break;
                                 case "CVP":
-                                    listman.AddPageToWatchlist(item, "", adder, reason, len);
+                                    _ = listman.AddPageToWatchlist(item, "", adder, reason, len);
                                     break;
                                     //Gracefully ignore unknown message types
                             }
@@ -339,42 +451,53 @@ namespace CVTBot
                             switch (list)
                             {
                                 case "WL":
-                                    listman.DelUserFromList(item, "", UserType.whitelisted);
+                                    _ = listman.DelUserFromList(item, "", UserType.whitelisted);
                                     break;
                                 case "BL":
-                                    listman.DelUserFromList(item, "", UserType.blacklisted);
+                                    _ = listman.DelUserFromList(item, "", UserType.blacklisted);
                                     break;
                                 case "GL":
-                                    listman.DelUserFromList(item, "", UserType.greylisted);
+                                    _ = listman.DelUserFromList(item, "", UserType.greylisted);
                                     break;
                                 case "BNU":
-                                    listman.DelItemFromList(item, 11);
+                                    _ = listman.DelItemFromList(item, 11);
                                     break;
                                 case "BNA":
-                                    listman.DelItemFromList(item, 12);
+                                    _ = listman.DelItemFromList(item, 12);
                                     break;
                                 case "BES":
-                                    listman.DelItemFromList(item, 20);
+                                    _ = listman.DelItemFromList(item, 20);
                                     break;
                                 case "CVP":
-                                    listman.DelPageFromWatchlist(item, "");
+                                    _ = listman.DelPageFromWatchlist(item, "");
                                     break;
                                     //Gracefully ignore unknown message types
                             }
                             break;
                         case "FIND":
                             if (list == "BLEEP")
+                            {
                                 if (prjlist.ContainsKey(item))
+                                {
                                     SendMessageF(SendType.Action, reason, "has " + item + ", " + adder + " :D", Priority.High);
+                                }
+                            }
+
                             break;
                         case "COUNT":
                             if (list == "BLEEP")
+                            {
                                 SendMessageF(SendType.Action, reason, "owns " + prjlist.Count.ToString() + " wikis; version is " + version,
                                              Priority.High);
+                            }
+
                             break;
                         case "CONFIG":
                             if (list == "BLEEP")
+                            {
                                 BotConfigMsg(reason);
+                            }
+
                             break;
 
                             //Gracefully ignore unknown action types
@@ -388,7 +511,7 @@ namespace CVTBot
             }
         }
 
-        static void Irc_OnConnected(object sender, EventArgs e)
+        private static void Irc_OnConnected(object sender, EventArgs e)
         {
             logger.InfoFormat("Connected to {0}", config.ircServerName);
         }
@@ -430,21 +553,21 @@ namespace CVTBot
 
         #endregion
 
-        static bool HasPrivileges(char minimum, ref IrcEventArgs e)
+        private static bool HasPrivileges(char minimum, ref IrcEventArgs e)
         {
             switch (minimum)
             {
                 case '@':
                     if (!irc.GetChannelUser(e.Data.Channel, e.Data.Nick).IsOp)
                     {
-                        SendMessageF(SendType.Notice, e.Data.Nick, (String)msgs["00122"]);
+                        SendMessageF(SendType.Notice, e.Data.Nick, (string)msgs["00122"]);
                         return false;
                     }
                     return true;
                 case '+':
                     if (!irc.GetChannelUser(e.Data.Channel, e.Data.Nick).IsOp && !irc.GetChannelUser(e.Data.Channel, e.Data.Nick).IsVoice)
                     {
-                        SendMessageF(SendType.Notice, e.Data.Nick, (String)msgs["00120"]);
+                        SendMessageF(SendType.Notice, e.Data.Nick, (string)msgs["00120"]);
                         return false;
                     }
                     return true;
@@ -453,11 +576,13 @@ namespace CVTBot
             }
         }
 
-        static void Irc_OnChannelMessage(object sender, IrcEventArgs e)
+        private static void Irc_OnChannelMessage(object sender, IrcEventArgs e)
         {
             // Prevent empty messages from crashing the bot
             if (string.IsNullOrEmpty(e.Data.Message))
+            {
                 return;
+            }
 
             Match cmdMatch = botCmd.Match(e.Data.Message);
 
@@ -465,7 +590,9 @@ namespace CVTBot
             {
                 // Have to be voiced to issue any commands
                 if (!HasPrivileges('+', ref e))
+                {
                     return;
+                }
 
                 string command = cmdMatch.Groups["command"].Captures[0].Value;
 
@@ -485,14 +612,20 @@ namespace CVTBot
                 {
                     case "quit":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         logger.Info(e.Data.Nick + " ordered a quit");
                         PartIRC(config.partMsg);
                         Exit();
                         break;
                     case "restart":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         logger.Info(e.Data.Nick + " ordered a restart");
                         PartIRC("Rebooting by order of " + e.Data.Nick + " ...");
                         Restart();
@@ -503,7 +636,7 @@ namespace CVTBot
                                      + ago.TotalSeconds.ToString() + " seconds ago", Priority.High);
                         break;
                     case "help":
-                        SendMessageF(SendType.Message, e.Data.Channel, (String)msgs["20004"], Priority.High);
+                        SendMessageF(SendType.Message, e.Data.Channel, (string)msgs["20004"], Priority.High);
                         break;
                     case "version":
                     case "settings":
@@ -517,14 +650,19 @@ namespace CVTBot
                     case "msgs":
                         // Reloads messages
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         ReadMessages(rawConfig["messages"]);
                         SendMessageF(SendType.Message, e.Data.Channel, "Re-read messages", Priority.High);
                         break;
                     case "reload":
                         // Reloads wiki data for a project
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
 
                         if (!prjlist.ContainsKey(cmdParams[0]))
                         {
@@ -546,7 +684,10 @@ namespace CVTBot
                         break;
                     case "bleep":
                         if (!HasPrivileges('+', ref e))
+                        {
                             return;
+                        }
+
                         try
                         {
                             if (cmdParams[0].Length > 0)
@@ -569,14 +710,20 @@ namespace CVTBot
                         break;
                     case "count":
                         if (!HasPrivileges('+', ref e))
+                        {
                             return;
+                        }
+
                         Broadcast("BLEEP", "COUNT", "BLEEP", 0, e.Data.Channel, e.Data.Nick);
                         SendMessageF(SendType.Action, e.Data.Channel, "owns " + prjlist.Count.ToString() + " wikis; version is " + version,
                                      Priority.High);
                         break;
                     case "drop":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         try
                         {
                             prjlist.DeleteProject(cmdParams[0]);
@@ -599,7 +746,10 @@ namespace CVTBot
                         break;
                     case "batchgetusers":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         new Thread(listman.BatchGetAllAdminsAndBots).Start(e.Data.Channel);
                         break;
                     case "bl":
@@ -643,12 +793,18 @@ namespace CVTBot
                     //_1568: Restrict the "get" command to ops
                     case "getadmins":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         SendMessageF(SendType.Message, e.Data.Channel, listman.ConfigGetAdmins(extraParams), Priority.High);
                         break;
                     case "getbots":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         SendMessageF(SendType.Message, e.Data.Channel, listman.ConfigGetBots(extraParams), Priority.High);
                         break;
 
@@ -658,12 +814,18 @@ namespace CVTBot
                         break;
                     case "purge":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         SendMessageF(SendType.Message, e.Data.Channel, listman.PurgeWikiData(extraParams), Priority.High);
                         break;
                     case "batchreload":
                         if (!HasPrivileges('@', ref e))
+                        {
                             return;
+                        }
+
                         prjlist.currentBatchReloadChannel = e.Data.Channel;
                         new Thread(new ThreadStart(prjlist.ReloadAllWikis)).Start();
                         break;
@@ -675,14 +837,14 @@ namespace CVTBot
         /// Reads messages from filename (Console.msgs) into SortedList msgs
         /// </summary>
         /// <param name="filename">File to read messages from</param>
-        static void ReadMessages(string filename)
+        private static void ReadMessages(string filename)
         {
             msgs.Clear();
             try
             {
                 using (StreamReader sr = new StreamReader(filename))
                 {
-                    String line;
+                    string line;
                     while ((line = sr.ReadLine()) != null)
                     {
                         if (line.StartsWith("#") || (line == ""))
@@ -709,7 +871,7 @@ namespace CVTBot
         /// <param name="msgCode">The five-digit message code</param>
         /// <param name="attributes">The attributes to place in the message</param>
         /// <returns></returns>
-        static string GetMessage(int msgCode, ref Hashtable attributes)
+        private static string GetMessage(int msgCode, ref Hashtable attributes)
         {
             try
             {
@@ -734,12 +896,12 @@ namespace CVTBot
         /// <param name="msgCode">The five-digit message code</param>
         /// <param name="fParams">The parameters to place in the string</param>
         /// <returns></returns>
-        public static string GetFormatMessage(int msgCode, params String[] fParams)
+        public static string GetFormatMessage(int msgCode, params string[] fParams)
         {
             try
             {
                 string message = (string)msgs[msgCode.ToString().PadLeft(5, '0')];
-                return String.Format(message, fParams);
+                return string.Format(message, fParams);
             }
             catch (Exception e)
             {
@@ -751,7 +913,10 @@ namespace CVTBot
         public static void Broadcast(string list, string action, string item, int expiry, string reason, string adder)
         {
             if (config.broadcastChannel == "None")
+            {
                 return;
+            }
+
             string bMsg = "*%BB/1.1%B*" + list + "*" + action + "*%C07%B" + item + "%B%C*%C13" + expiry.ToString()
                 + "%C*%C09%B" + reason + "%B%C*%C11%B" + adder + "%C%B*";
             SendMessageF(SendType.Notice, config.broadcastChannel, bMsg.Replace(@"%C", "\x03").Replace(@"%B", "\x02"), Priority.High);
@@ -760,7 +925,10 @@ namespace CVTBot
         public static void BroadcastDD(string type, string codename, string message, string ingredients)
         {
             if (config.broadcastChannel == "None")
+            {
                 return;
+            }
+
             string bMsg = "*%BDD/1.0%B*" + type + "*" + codename + "*%C07%B" + message + "%B%C*%C13" + ingredients + "%C*";
             SendMessageF(SendType.Notice, config.broadcastChannel, bMsg.Replace(@"%C", "\x03").Replace(@"%B", "\x02"), Priority.High);
             logger.Info("Broadcasted DD: " + type + "," + codename + "," + message + "," + ingredients);
@@ -772,13 +940,13 @@ namespace CVTBot
         /// <param name="userOffset"></param>
         /// <param name="username"></param>
         /// <param name="reason"></param>
-        static void AddToGreylist(UserType userOffset, string username, string reason)
+        private static void AddToGreylist(UserType userOffset, string username, string reason)
         {
             // Only do greylisting if they are currently blacklisted, reguser, anon, or already greylisted.
             // In other words, never greylist trusted users (bot, admin, whitelist).
             if (userOffset == UserType.blacklisted || userOffset == UserType.user || userOffset == UserType.anon || userOffset == UserType.greylisted)
             {
-                listman.AddUserToList(username, "", UserType.greylisted, "CVTBot", reason, 1);
+                _ = listman.AddUserToList(username, "", UserType.greylisted, "CVTBot", reason, 1);
                 // Greylist for 900 seconds = 15 mins
                 // TODO: Why is the broadcasted expiry different from local expiry (line above)
                 Broadcast("GL", "ADD", username, 900, reason, "CVTBot");
@@ -798,45 +966,69 @@ namespace CVTBot
             // Perform these checks before even classifying the user
             // EventType is available right away, thus saving a db connection when setting is on 4 ('ignore')
             if (r.minor)
+            {
                 feedFilterThisEvent = config.feedFilterEventMinorEdit;
+            }
 
             if (r.eventtype == RCEvent.EventType.edit && !r.newpage)
+            {
                 feedFilterThisEvent = config.feedFilterEventEdit;
+            }
 
             if (r.eventtype == RCEvent.EventType.edit && r.newpage)
+            {
                 feedFilterThisEvent = config.feedFilterEventNewpage;
+            }
 
             if (r.eventtype == RCEvent.EventType.move)
+            {
                 feedFilterThisEvent = config.feedFilterEventMove;
+            }
 
             if (r.eventtype == RCEvent.EventType.delete)
+            {
                 feedFilterThisEvent = config.feedFilterEventDelete;
+            }
 
             if (r.eventtype == RCEvent.EventType.block || r.eventtype == RCEvent.EventType.unblock)
+            {
                 feedFilterThisEvent = config.feedFilterEventBlock;
+            }
 
             if (r.eventtype == RCEvent.EventType.newuser || r.eventtype == RCEvent.EventType.newuser2 || r.eventtype == RCEvent.EventType.autocreate)
+            {
                 feedFilterThisEvent = config.feedFilterEventNewuser;
+            }
 
             if (r.eventtype == RCEvent.EventType.upload)
+            {
                 feedFilterThisEvent = config.feedFilterEventUpload;
+            }
 
             if (r.eventtype == RCEvent.EventType.protect || r.eventtype == RCEvent.EventType.unprotect || r.eventtype == RCEvent.EventType.modifyprotect)
+            {
                 feedFilterThisEvent = config.feedFilterEventProtect;
+            }
 
             if (feedFilterThisEvent == 4)
+            {
                 // 4 means "ignore"
                 return;
+            }
 
             if (config.isCubbie && (r.eventtype != RCEvent.EventType.upload))
+            {
                 //If this IsCubbie, then ignore all non-uploads
                 return;
+            }
 
             if (r.botflag && (config.feedFilterUsersBot == 4))
+            {
                 return;
+            }
 
             Hashtable attribs = new Hashtable();
-            String message = "";
+            string message = "";
             UserType userOffset = listman.ClassifyEditor(r.user, r.project);
 
             // FIXME: If the current event is by a bot user and it blocks (eg. bot admin) and
@@ -845,18 +1037,26 @@ namespace CVTBot
 
             // Feed filters -> Users
             if (userOffset == UserType.anon)
+            {
                 feedFilterThisUser = config.feedFilterUsersAnon;
+            }
 
             if (userOffset == UserType.user)
+            {
                 feedFilterThisUser = config.feedFilterUsersReg;
+            }
 
             if (userOffset == UserType.bot)
+            {
                 feedFilterThisUser = config.feedFilterUsersBot;
+            }
 
             if (feedFilterThisUser == 4)// 4 is "ignore"
+            {
                 return;
+            }
 
-            Project project = ((Project)prjlist[r.project]);
+            Project project = (Project)prjlist[r.project];
 
             switch (r.eventtype)
             {
@@ -864,11 +1064,8 @@ namespace CVTBot
                 // - New page creations
                 // - Page edits
                 case RCEvent.EventType.edit:
-                    String diffsize;
-                    if (r.szdiff >= 0)
-                        diffsize = "+" + r.szdiff.ToString();
-                    else
-                        diffsize = r.szdiff.ToString();
+                    string diffsize;
+                    diffsize = r.szdiff >= 0 ? "+" + r.szdiff.ToString() : r.szdiff.ToString();
 
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
@@ -884,8 +1081,10 @@ namespace CVTBot
                         bool createSpecial = false;
 
                         if (userOffset == UserType.admin || userOffset == UserType.whitelisted)
+                        {
                             // Ignore new pages created by an admin or whitelisted user
                             return;
+                        }
 
                         // Initialise the "sizeattrib" and "sizereset" attributes, which are used
                         // by all messages, including the later messages for listman-matches.
@@ -923,7 +1122,7 @@ namespace CVTBot
                         {
                             // Matches watchlist (CVP)
                             message = GetMessage(5030 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16301, (String)attribs["article"]));
+                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16301, (string)attribs["article"]));
                             break;
                         }
 
@@ -934,7 +1133,7 @@ namespace CVTBot
                             // Matches BNA
                             attribs.Add("watchword", eslm.matchedItem);
                             message = GetMessage(5040 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16300, (String)attribs["article"], eslm.matchedItem));
+                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16300, (string)attribs["article"], eslm.matchedItem));
                             break;
                         }
 
@@ -945,7 +1144,7 @@ namespace CVTBot
                             // Matches BES
                             attribs.Add("watchword", lm.matchedItem);
                             message = GetMessage(95040 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16300, (String)attribs["article"], lm.matchedItem));
+                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16300, (string)attribs["article"], lm.matchedItem));
                             break;
                         }
 
@@ -959,11 +1158,15 @@ namespace CVTBot
                         //   (By default this is for anonymous users, via feedFilterUsersAnon=1,
                         //   but feedFilterUsersReg or feedFilterUsersBot could also be set to 1)
                         if (userOffset == UserType.blacklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
+                        {
                             break;
+                        }
 
                         if (userOffset == UserType.user && !createSpecial)
+                        {
                             // Ignore page creation by unlisted reguser with non-special create size
                             return;
+                        }
 
                         // Else: Create had special size, so let it shown (default), don't return!
                     }
@@ -973,8 +1176,10 @@ namespace CVTBot
                         bool editSpecial = false;
 
                         if (userOffset == UserType.admin || userOffset == UserType.whitelisted)
+                        {
                             // Ignore edit by admin or whitelisted user
                             return;
+                        }
 
                         // Initialise the "sizeattrib" and "sizereset" attributes, which are used
                         // by all messages, including the later messages for listman-matches.
@@ -1014,7 +1219,7 @@ namespace CVTBot
                             // Matches BES
                             attribs.Add("watchword", elm.matchedItem);
                             message = GetMessage(95130 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16310, r.comment, (String)attribs["article"]));
+                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16310, r.comment, (string)attribs["article"]));
                             break;
                         }
 
@@ -1022,7 +1227,7 @@ namespace CVTBot
                         if (project.rautosummBlank.IsMatch(r.comment))
                         {
                             message = GetMessage(96010 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16311, (String)attribs["article"]));
+                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16311, (string)attribs["article"]));
                             break;
                         }
 
@@ -1063,11 +1268,15 @@ namespace CVTBot
                         //   (By default this is for anonymous users, via feedFilterUsersAnon=1,
                         //   but feedFilterUsersReg or feedFilterUsersBot could also be set to 1)
                         if (userOffset == UserType.blacklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
+                        {
                             break;
+                        }
 
                         // If nothing special about the edit, return to ignore
                         if (!editSpecial)
+                        {
                             return;
+                        }
                     }
                     break;
                 case RCEvent.EventType.move:
@@ -1197,21 +1406,29 @@ namespace CVTBot
                     // Check if upload is watched
                     ListMatch uwa = listman.IsWatchedArticle(r.title, r.project);
                     if (uwa.Success)
+                    {
                         uMsg = 5610;
+                    }
 
                     // If normal and uploaded by an admin, bot or whitelisted person always hide
                     if (uMsg == 5600 && (userOffset == UserType.admin || userOffset == UserType.bot || userOffset == UserType.whitelisted))
+                    {
                         return;
+                    }
 
                     // if normal and uploads are softhidden hide normal user and anon
                     if (uMsg == 5600 && config.feedFilterEventUpload == 2 && (userOffset == UserType.anon || userOffset == UserType.user))
+                    {
                         return;
+                    }
 
                     // If our message is 95620, we might need to truncate r.comment
                     if (uMsg == 95620)
                     {
                         if (r.comment.Length > 25)
+                        {
                             r.comment = r.comment.Substring(0, 23) + "...";
+                        }
                     }
 
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
@@ -1337,7 +1554,7 @@ namespace CVTBot
             string cmd = config.restartCmd;
             string args = config.restartArgs.Replace("$1", Assembly.GetExecutingAssembly().Location);
             logger.InfoFormat("Executing: {0} {1}", cmd, args);
-            System.Diagnostics.Process.Start(cmd, args);
+            _ = System.Diagnostics.Process.Start(cmd, args);
             Exit();
         }
 

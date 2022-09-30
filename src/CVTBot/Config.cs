@@ -1,6 +1,6 @@
 namespace CVTBot
 {
-    class Config
+    internal class Config
     {
         /**
          * User

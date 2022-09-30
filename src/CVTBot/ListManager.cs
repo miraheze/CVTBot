@@ -1020,16 +1020,7 @@ namespace CVTBot
 
             Thread.CurrentThread.Name = "Get" + getGroup + "@" + projectName;
 
-            UserType getGroupUT;
-            if (getGroup == "sysop")
-            {
-                getGroupUT = UserType.admin;
-            }
-            else
-            {
-                getGroupUT = getGroup == "bot" ? UserType.bot : throw new Exception("Undefined group: " + getGroup);
-            }
-
+            UserType getGroupUT = getGroup == "sysop" ? UserType.admin : getGroup == "bot" ? UserType.bot : throw new Exception("Undefined group: " + getGroup);
             logger.InfoFormat("Fetching list of {0} users from {1}", getGroup, projectName);
 
 
