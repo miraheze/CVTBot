@@ -75,7 +75,7 @@ namespace CVTBot
 
             try
             {
-                rcirc.Login(Program.config.readerBotNick, "CVTBotReader", 4, "CVTBotReader");
+                rcirc.Login(Program.config.readerBotNick, "CVTBotReader", 4, Program.config.botUser, Program.config.botPass);
 
                 logger.InfoFormat("Joining {0}", Program.config.readerFeedChannel);
                 rcirc.RfcJoin(Program.config.readerFeedChannel);

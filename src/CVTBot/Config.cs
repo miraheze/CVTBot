@@ -7,6 +7,7 @@ namespace CVTBot
          */
         public string botNick = "CVTBot";
         public string readerBotNick = "CVTBotReader";
+        public string botUser = "CVTBot";
         public string botPass = "";
         public string botRealName = "CVTBot"; // gets concatenated with a space and Program.version
         public string partMsg = "https://github.com/Universal-Omega/CVTBot";

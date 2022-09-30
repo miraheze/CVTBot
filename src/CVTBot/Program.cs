@@ -63,6 +63,8 @@ namespace CVTBot
                 config.botNick = rawConfig["botnick"];
             if (rawConfig.ContainsKey("readerbotnick"))
                 config.readerBotNick = rawConfig["readerbotnick"];
+            if (rawConfig.ContainsKey("botuser"))
+                config.botUser = rawConfig["botuser"];
             if (rawConfig.ContainsKey("botpass"))
                 config.botPass = rawConfig["botpass"];
             if (rawConfig.ContainsKey("botrealname"))
@@ -187,7 +189,7 @@ namespace CVTBot
 
             try
             {
-                irc.Login(config.botNick, config.botRealName + " " + version, 4, config.botNick, config.botPass);
+                irc.Login(config.botNick, config.botRealName + " " + version, 4, config.botUser, config.botPass);
 
                 string feedChannel = config.feedChannel;
                 string controlChannel = config.controlChannel;
