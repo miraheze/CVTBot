@@ -1,15 +1,15 @@
+using log4net;
 using System;
 using System.Collections;
 using System.IO;
 using System.Threading;
 using System.Xml;
-using log4net;
 
 namespace CVTBot
 {
-    class ProjectList : SortedList
+    internal class ProjectList : SortedList
     {
-        ILog logger = LogManager.GetLogger("CVTBot.ProjectList");
+        private readonly ILog logger = LogManager.GetLogger("CVTBot.ProjectList");
 
         public string fnProjectsXML;
         public string currentBatchReloadChannel = "";
@@ -17,7 +17,7 @@ namespace CVTBot
         /// <summary>
         /// Dumps all Projects to an XML file (Projects.xml)
         /// </summary>
-        void DumpToFile()
+        private void DumpToFile()
         {
             logger.Info("Saving configuration to " + fnProjectsXML);
 
@@ -48,7 +48,7 @@ namespace CVTBot
                 string prjDefinition = "<project>" + parentnode.ChildNodes[i].InnerXml + "</project>";
                 Project prj = new Project();
                 prj.ReadProjectDetails(prjDefinition);
-                this.Add(prj.projectName, prj);
+                Add(prj.projectName, prj);
             }
         }
 
@@ -58,12 +58,16 @@ namespace CVTBot
         /// <param name="projectName">Name of the project (e.g., loginwiki) to add</param>
         public void AddNewProject(string projectName)
         {
-            if (this.ContainsKey(projectName))
+            if (ContainsKey(projectName))
+            {
                 throw new Exception(Program.GetFormatMessage(16400, projectName));
+            }
 
             logger.InfoFormat("Registering new project {0}", projectName);
-            Project prj = new Project();
-            prj.projectName = projectName;
+            Project prj = new Project
+            {
+                projectName = projectName
+            };
 
             string subdomain = projectName.Substring(0, projectName.Length - Program.config.projectSuffix.Length);
             string domain = Program.config.projectDomain;
@@ -71,7 +75,7 @@ namespace CVTBot
             prj.rooturl = "https://" + subdomain + "." + domain + "/";
 
             prj.RetrieveWikiDetails();
-            this.Add(projectName, prj);
+            Add(projectName, prj);
 
             // Dump new settings
             DumpToFile();
@@ -83,7 +87,7 @@ namespace CVTBot
         /// <param name="projectName">Name of the project to remove</param>
         public void DeleteProject(string projectName)
         {
-            if (!this.ContainsKey(projectName))
+            if (!ContainsKey(projectName))
             {
                 throw new Exception(Program.GetFormatMessage(16401, projectName));
             }
@@ -94,7 +98,7 @@ namespace CVTBot
             Thread.Sleep(4000);
 
             // Finally, remove from list:
-            this.Remove(projectName);
+            Remove(projectName);
 
             // Dump new settings:
             DumpToFile();
@@ -105,11 +109,13 @@ namespace CVTBot
             Thread.CurrentThread.Name = "ReloadAll";
 
             Program.SendMessageF(Meebey.SmartIrc4net.SendType.Message, currentBatchReloadChannel,
-                                 "Request to reload all " + this.Count.ToString() + " wikis accepted.",
+                                 "Request to reload all " + Count.ToString() + " wikis accepted.",
                                  Meebey.SmartIrc4net.Priority.High);
 
-            ProjectList original = new ProjectList();
-            original.fnProjectsXML = Program.config.projectsFile;
+            ProjectList original = new ProjectList
+            {
+                fnProjectsXML = Program.config.projectsFile
+            };
             original.LoadFromFile();
 
             foreach (DictionaryEntry dicent in original)

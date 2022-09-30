@@ -1,9 +1,8 @@
-using System;
-using System.Data.Common;
-using System.Text.RegularExpressions;
-using System.Threading;
 using log4net;
 using Meebey.SmartIrc4net;
+using System;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace CVTBot
 {

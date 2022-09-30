@@ -1,16 +1,16 @@
+using log4net;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
-using log4net;
 
 namespace CVTBot
 {
-    class Project
+    internal class Project
     {
-        static ILog logger = LogManager.GetLogger("CVTBot.Project");
+        private static readonly ILog logger = LogManager.GetLogger("CVTBot.Project");
 
         public string projectName;
         public string rooturl; // Format: https://login.miraheze.org/
@@ -32,16 +32,14 @@ namespace CVTBot
         public Regex rCreate2Regex;
 
         public Hashtable namespaces;
-
-        Dictionary<string, string> regexDict = new Dictionary<string, string>();
-
-        static char[] rechars = {'\\', '.' ,'(', ')', '[' , ']' ,'^' ,'*' ,'+' ,'?' ,'{' ,'}' ,'|' };
-        string snamespaces;
+        private readonly Dictionary<string, string> regexDict = new Dictionary<string, string>();
+        private static readonly char[] rechars = { '\\', '.', '(', ')', '[', ']', '^', '*', '+', '?', '{', '}', '|' };
+        private string snamespaces;
 
         /// <summary>
         /// Generates Regex objects from regex strings in class. Always generate the namespace list before calling this!
         /// </summary>
-        void GenerateRegexen()
+        private void GenerateRegexen()
         {
             rrestoreRegex = new Regex(regexDict["restoreRegex"]);
             rdeleteRegex = new Regex(regexDict["deleteRegex"]);
@@ -60,7 +58,8 @@ namespace CVTBot
             rmoveredirRegex = new Regex(regexDict["moveredirRegex"]);
             rblockRegex = new Regex(regexDict["blockRegex"]);
             runblockRegex = new Regex(regexDict["unblockRegex"]);
-            if (!regexDict.ContainsKey("reblockRegex")) {
+            if (!regexDict.ContainsKey("reblockRegex"))
+            {
                 // Fallback if missing in older XML files.
                 regexDict["reblockRegex"] = "^$";
                 logger.Warn("generateRegexen: reblockRegex is missing. Please reload this wiki.");
@@ -71,7 +70,7 @@ namespace CVTBot
 
             rSpecialLogRegex = new Regex(regexDict["specialLogRegex"]);
 
-            rCreate2Regex = new Regex( namespaces["2"]+@":([^:]+)" );
+            rCreate2Regex = new Regex(namespaces["2"] + @":([^:]+)");
         }
 
         public string DumpProjectDetails()
@@ -144,14 +143,16 @@ namespace CVTBot
             GenerateRegexen();
         }
 
-        void GetNamespaces(bool snamespacesAlreadySet)
+        private void GetNamespaces(bool snamespacesAlreadySet)
         {
             if (!snamespacesAlreadySet)
             {
                 logger.InfoFormat("Fetching namespaces from {0}", rooturl);
                 snamespaces = CVTBotUtils.GetRawDocument(rooturl + "w/api.php?format=xml&action=query&meta=siteinfo&siprop=namespaces");
                 if (snamespaces == "")
+                {
                     throw new Exception("Can't load list of namespaces from " + rooturl);
+                }
             }
 
             namespaces = new Hashtable();
@@ -163,7 +164,7 @@ namespace CVTBot
             for (int i = 0; i < namespacesNode.ChildNodes.Count; i++)
             {
                 namespaces.Add(namespacesNode.ChildNodes[i].Attributes["id"].Value, namespacesNode.ChildNodes[i].InnerText);
-                namespacesLogline += "id["+namespacesNode.ChildNodes[i].Attributes["id"].Value + "]="+namespacesNode.ChildNodes[i].InnerText + "; ";
+                namespacesLogline += "id[" + namespacesNode.ChildNodes[i].Attributes["id"].Value + "]=" + namespacesNode.ChildNodes[i].InnerText + "; ";
             }
         }
 
@@ -172,7 +173,7 @@ namespace CVTBot
             public int NumberOfArgs;
             public string RegexName;
             public bool NonStrictFlag;
-            public MessagesOption (int ArgNumberOfArgs, string ArgRegexName, bool ArgNonStrictFlag)
+            public MessagesOption(int ArgNumberOfArgs, string ArgRegexName, bool ArgNonStrictFlag)
             {
                 NumberOfArgs = ArgNumberOfArgs;
                 RegexName = ArgRegexName;
@@ -189,41 +190,42 @@ namespace CVTBot
 
             logger.InfoFormat("Fetching interface messages from {0}", Program.config.projectRootUrl);
 
-            Dictionary<string, MessagesOption> Messages = new Dictionary<string, MessagesOption>();
+            Dictionary<string, MessagesOption> Messages = new Dictionary<string, MessagesOption>
+            {
+                // Location of message, number of required parameters, reference to regex, allow lazy
+                // Retrieve messages for all the required events and generate regexen for them
 
-            // Location of message, number of required parameters, reference to regex, allow lazy
-            // Retrieve messages for all the required events and generate regexen for them
+                { "Undeletedarticle", new MessagesOption(1, "restoreRegex", false) },
+                { "Deletedarticle", new MessagesOption(1, "deleteRegex", false) },
+                { "Protectedarticle", new MessagesOption(1, "protectRegex", false) },
+                { "Unprotectedarticle", new MessagesOption(1, "unprotectRegex", false) },
+                { "Modifiedarticleprotection", new MessagesOption(1, "modifyprotectRegex", true) },
+                { "Uploadedimage", new MessagesOption(0, "uploadRegex", false) },
+                { "1movedto2", new MessagesOption(2, "moveRegex", false) },
+                { "1movedto2_redir", new MessagesOption(2, "moveredirRegex", false) },
 
-            Messages.Add("Undeletedarticle", new MessagesOption(1, "restoreRegex", false));
-            Messages.Add("Deletedarticle", new MessagesOption(1, "deleteRegex", false));
-            Messages.Add("Protectedarticle", new MessagesOption(1, "protectRegex", false));
-            Messages.Add("Unprotectedarticle", new MessagesOption(1, "unprotectRegex", false));
-            Messages.Add("Modifiedarticleprotection", new MessagesOption(1, "modifyprotectRegex", true));
-            Messages.Add("Uploadedimage", new MessagesOption(0, "uploadRegex", false));
-            Messages.Add("1movedto2",new MessagesOption(2, "moveRegex", false));
-            Messages.Add("1movedto2_redir", new MessagesOption(2, "moveredirRegex", false));
+                // blockRegex is nonStrict because some wikis override the message without including $2 (block length).
+                // RCReader will fall back to "24 hours" if this is the case.
+                // Some newer messages have a third item,
+                // $3 ("anononly,nocreate,autoblock"). This may conflict with $2 detection.
+                // Trying (changed 2 -> 3) to see if length of time will be correctly detected using just this method:
+                { "Blocklogentry", new MessagesOption(3, "blockRegex", true) },
 
-            // blockRegex is nonStrict because some wikis override the message without including $2 (block length).
-            // RCReader will fall back to "24 hours" if this is the case.
-            // Some newer messages have a third item,
-            // $3 ("anononly,nocreate,autoblock"). This may conflict with $2 detection.
-            // Trying (changed 2 -> 3) to see if length of time will be correctly detected using just this method:
-            Messages.Add("Blocklogentry", new MessagesOption(3, "blockRegex", true));
+                { "Unblocklogentry", new MessagesOption(0, "unblockRegex", false) },
+                { "Reblock-logentry", new MessagesOption(3, "reblockRegex", false) },
+                { "Autosumm-blank", new MessagesOption(0, "autosummBlank", false) },
 
-            Messages.Add("Unblocklogentry", new MessagesOption(0, "unblockRegex", false));
-            Messages.Add("Reblock-logentry", new MessagesOption(3, "reblockRegex", false));
-            Messages.Add("Autosumm-blank", new MessagesOption(0, "autosummBlank", false));
-
-            // autosummReplace is nonStrict because some wikis use translations overrides without
-            // a "$1" parameter for the content.
-            Messages.Add("Autosumm-replace", new MessagesOption(1, "autosummReplace", true));
+                // autosummReplace is nonStrict because some wikis use translations overrides without
+                // a "$1" parameter for the content.
+                { "Autosumm-replace", new MessagesOption(1, "autosummReplace", true) }
+            };
 
             GetInterfaceMessages(Messages);
 
             GenerateRegexen();
         }
 
-        void GetInterfaceMessages(Dictionary<string, MessagesOption> Messages)
+        private void GetInterfaceMessages(Dictionary<string, MessagesOption> Messages)
         {
             string CombinedMessages = string.Join("|", Messages.Keys);
 
@@ -233,7 +235,9 @@ namespace CVTBot
                 "&ammessages=" + CombinedMessages
             );
             if (sMwMessages == "")
+            {
                 throw new Exception("Can't load list of InterfaceMessages from " + Program.config.projectRootUrl);
+            }
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(sMwMessages);
@@ -249,15 +253,17 @@ namespace CVTBot
                     Messages[elmName].RegexName,
                     Messages[elmName].NonStrictFlag
                 );
-                mwMessagesLogline += "name[" + elmName + "]="+allmessagesNode.ChildNodes[i].InnerText + "; ";
+                mwMessagesLogline += "name[" + elmName + "]=" + allmessagesNode.ChildNodes[i].InnerText + "; ";
             }
         }
 
-        void GenerateRegex(string mwMessageTitle, string mwMessage, int reqCount, string destRegex, bool nonStrict)
+        private void GenerateRegex(string mwMessageTitle, string mwMessage, int reqCount, string destRegex, bool nonStrict)
         {
             // Now gently coax that into a regex
             foreach (char c in rechars)
+            {
                 mwMessage = mwMessage.Replace(c.ToString(), @"\" + c.ToString());
+            }
 
             mwMessage = mwMessage.Replace("$1", "(?<item1>.+?)");
             mwMessage = mwMessage.Replace("$2", "(?<item2>.+?)");
@@ -277,7 +283,7 @@ namespace CVTBot
 
             try
             {
-                Regex.Match("", mwMessage);
+                _ = Regex.Match("", mwMessage);
             }
             catch (Exception e)
             {
@@ -287,11 +293,16 @@ namespace CVTBot
             if (reqCount >= 1)
             {
                 if (!mwMessage.Contains(@"(?<item1>.+?)") && !nonStrict)
-                    throw new Exception("Regex " + mwMessageTitle + " requires one or more items but item1 not found in "+mwMessage);
+                {
+                    throw new Exception("Regex " + mwMessageTitle + " requires one or more items but item1 not found in " + mwMessage);
+                }
+
                 if (reqCount >= 2)
                 {
                     if (!mwMessage.Contains(@"(?<item2>.+?)") && !nonStrict)
-                        throw new Exception("Regex " + mwMessageTitle + " requires two or more items but item2 not found in "+mwMessage);
+                    {
+                        throw new Exception("Regex " + mwMessageTitle + " requires two or more items but item2 not found in " + mwMessage);
+                    }
                 }
             }
 
@@ -309,10 +320,12 @@ namespace CVTBot
             {
                 string nsLocal = pageTitle.Substring(0, pageTitle.IndexOf(':'));
                 // Try to locate value (As fast as ContainsValue())
-                foreach (DictionaryEntry de in this.namespaces)
+                foreach (DictionaryEntry de in namespaces)
                 {
                     if ((string)de.Value == nsLocal)
+                    {
                         return Convert.ToInt32(de.Key);
+                    }
                 }
             }
             // If no match for the prefix found, or if no colon,
@@ -331,10 +344,10 @@ namespace CVTBot
             {
                 string nsEnglish;
 
-		        // *Don't change these* unless it's a stopping bug. These names are made part of the title
-		        // in the watchlist and items database. (ie. don't change Image to File unless Image is broken)
-		        // When they do need to be changed, make sure to make note in the RELEASE-NOTES that databases
-		        // should be updated manually to keep all regexes and watchlists functional!
+                // *Don't change these* unless it's a stopping bug. These names are made part of the title
+                // in the watchlist and items database. (ie. don't change Image to File unless Image is broken)
+                // When they do need to be changed, make sure to make note in the RELEASE-NOTES that databases
+                // should be updated manually to keep all regexes and watchlists functional!
                 switch (((Project)Program.prjlist[project]).DetectNamespace(originalTitle))
                 {
                     case -2:
@@ -396,7 +409,7 @@ namespace CVTBot
                 return nsEnglish + originalTitle.Substring(originalTitle.IndexOf(':'));
             }
 
-	    // Mainspace articles do not need translation
+            // Mainspace articles do not need translation
             return originalTitle;
         }
     }

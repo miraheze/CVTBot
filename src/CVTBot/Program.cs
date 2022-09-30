@@ -1,12 +1,12 @@
+using log4net;
+using Meebey.SmartIrc4net;
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using Meebey.SmartIrc4net;
-using System.Threading;
-using System.Text.RegularExpressions;
 using System.IO;
-using log4net;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 // Logging:
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]

@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using System.Text;
-using System.Net;
 using System.IO;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -161,12 +161,12 @@ namespace CVTBot
         {
             for (int i = 1; i <= maxChars; i++)
             {
-				// Find first oldChar
+                // Find first oldChar
                 int place = input.IndexOf(oldChar);
                 if (place == -1)
                     // If not found then finish
                     break;
-				// Replace first oldChar with newChar
+                // Replace first oldChar with newChar
                 input = input.Substring(0, place) + newChar.ToString() + input.Substring(place + 1);
             }
             return input;
@@ -179,7 +179,7 @@ namespace CVTBot
         /// <returns></returns>
         public static string WikiEncode(string input)
         {
-            return HttpUtility.UrlEncode(input.Replace(' ', '_')).Replace("(","%28").Replace(")","%29").Replace("!","%21");
+            return HttpUtility.UrlEncode(input.Replace(' ', '_')).Replace("(", "%28").Replace(")", "%29").Replace("!", "%21");
         }
     }
 }
