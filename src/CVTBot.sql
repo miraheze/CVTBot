@@ -1,5 +1,5 @@
 --
--- MySQL Database structure for CVNBot (expiremental)
+-- MySQL Database structure for CVTBot (expiremental)
 --
 
 -- --------------------------------------------------------
