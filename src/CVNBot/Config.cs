@@ -5,11 +5,11 @@ namespace CVNBot
         /**
          * User
          */
-        public string botNick = "MirahezeCVNBot";
-        public string readerBotNick = "MirahezeCVNReader";
+        public string botNick = "MirahezeCVTBot";
+        public string readerBotNick = "MirahezeCVTReader";
         public string botPass = "";
-        public string botRealName = "CVNBot"; // gets concatenated with a space and Program.version
-        public string partMsg = "https://github.com/Universal-Omega/MirahezeCVNBot";
+        public string botRealName = "CVTBot"; // gets concatenated with a space and Program.version
+        public string partMsg = "https://github.com/Universal-Omega/MirahezeCVTBot";
 
         /**
          * Server
