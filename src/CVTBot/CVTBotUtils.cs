@@ -6,9 +6,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace CVNBot
+namespace CVTBot
 {
-    static class CVNBotUtils
+    static class CVTBotUtils
     {
         static Regex rStripper = new Regex(@"(,|and)");
         static Regex rSpaces = new Regex(@"\s{2,}");
