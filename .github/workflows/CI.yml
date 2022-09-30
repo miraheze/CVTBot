@@ -17,8 +17,8 @@ jobs:
         run: |
           mono --version
           msbuild /version
-      - run: msbuild src/CVNBot.sln /p:Configuration=Release
-      - run: msbuild src/CVNBot.sln /p:Configuration=Debug
+      - run: msbuild src/CVTBot.sln /p:Configuration=Release
+      - run: msbuild src/CVTBot.sln /p:Configuration=Debug
 
   macos:
     name: macOS
@@ -32,5 +32,5 @@ jobs:
         run: |
           mono --version
           msbuild /version
-      - run: msbuild src/CVNBot.sln /p:Configuration=Release
-      - run: msbuild src/CVNBot.sln /p:Configuration=Debug
+      - run: msbuild src/CVTBot.sln /p:Configuration=Release
+      - run: msbuild src/CVTBot.sln /p:Configuration=Debug
