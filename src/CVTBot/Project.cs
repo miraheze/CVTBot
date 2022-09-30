@@ -6,11 +6,11 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using log4net;
 
-namespace CVNBot
+namespace CVTBot
 {
     class Project
     {
-        static ILog logger = LogManager.GetLogger("CVNBot.Project");
+        static ILog logger = LogManager.GetLogger("CVTBot.Project");
 
         public string projectName;
         public string rooturl; // Format: https://login.miraheze.org/
@@ -50,7 +50,7 @@ namespace CVNBot
 
             if (!regexDict.ContainsKey("modifyprotectRegex"))
             {
-                // Added in CVNBot 1.20, fallback if missing in older XML files.
+                // Fallback if missing in older XML files.
                 regexDict["modifyprotectRegex"] = regexDict["protectRegex"];
                 logger.Warn("generateRegexen: modifyprotectRegex is missing. Please reload this wiki.");
             }
@@ -61,7 +61,7 @@ namespace CVNBot
             rblockRegex = new Regex(regexDict["blockRegex"]);
             runblockRegex = new Regex(regexDict["unblockRegex"]);
             if (!regexDict.ContainsKey("reblockRegex")) {
-                // Added in CVNBot 1.22, fallback if missing in older XML files.
+                // Fallback if missing in older XML files.
                 regexDict["reblockRegex"] = "^$";
                 logger.Warn("generateRegexen: reblockRegex is missing. Please reload this wiki.");
             }
@@ -149,7 +149,7 @@ namespace CVNBot
             if (!snamespacesAlreadySet)
             {
                 logger.InfoFormat("Fetching namespaces from {0}", rooturl);
-                snamespaces = CVNBotUtils.GetRawDocument(rooturl + "w/api.php?format=xml&action=query&meta=siteinfo&siprop=namespaces");
+                snamespaces = CVTBotUtils.GetRawDocument(rooturl + "w/api.php?format=xml&action=query&meta=siteinfo&siprop=namespaces");
                 if (snamespaces == "")
                     throw new Exception("Can't load list of namespaces from " + rooturl);
             }
@@ -227,7 +227,7 @@ namespace CVNBot
         {
             string CombinedMessages = string.Join("|", Messages.Keys);
 
-            string sMwMessages = CVNBotUtils.GetRawDocument(
+            string sMwMessages = CVTBotUtils.GetRawDocument(
                 Program.config.projectRootUrl +
                 "w/api.php?action=query&meta=allmessages&format=xml" +
                 "&ammessages=" + CombinedMessages
