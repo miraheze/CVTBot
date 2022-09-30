@@ -11,7 +11,7 @@ using System.Reflection;
 // Logging:
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
-namespace CVNBot
+namespace CVTBot
 {
     class Program
     {
@@ -25,7 +25,7 @@ namespace CVNBot
         public static StringDictionary rawConfig = new StringDictionary();
         public static Config config = new Config();
 
-        static ILog logger = LogManager.GetLogger("CVNBot.Program");
+        static ILog logger = LogManager.GetLogger("CVTBot.Program");
 
         static Regex broadcastMsg = new Regex(@"\*\x02B/1.1\x02\*(?<list>.+?)\*(?<action>.+?)\*\x03"
             + @"07\x02(?<item>.+?)\x02\x03\*\x03"
@@ -40,7 +40,7 @@ namespace CVNBot
             Thread.GetDomain().UnhandledException += Application_UnhandledException;
 
             string rawConfigFN = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-                                     + Path.DirectorySeparatorChar.ToString() + "CVNBot.ini";
+                                     + Path.DirectorySeparatorChar.ToString() + "CVTBot.ini";
 
             // Read config file
             using (StreamReader sr = new StreamReader(rawConfigFN))
@@ -142,7 +142,7 @@ namespace CVNBot
                 config.feedFilterEventProtect = Int32.Parse(rawConfig["feedFilterEventProtect"]);
 
             // Include bot nick in all logs from any thread.
-            // Especially useful when running mulitple CVNBot instances that
+            // Especially useful when running mulitple CVTBot instances that
             // log to the same syslog.
             GlobalContext.Properties["Nick"] = config.botNick;
             logger.InfoFormat("Loaded main configuration from {0}", rawConfigFN);
@@ -414,7 +414,7 @@ namespace CVNBot
                 foreach (string line in message.Split(new char[] { '\n' }))
                 {
                     //Chunk messages that are too long
-                    foreach (string chunk in CVNBotUtils.StringSplit(line, 400))
+                    foreach (string chunk in CVTBotUtils.StringSplit(line, 400))
                     {
                         // Ignore "" and "
                         if ((chunk.Trim() != "\"\"") && (chunk.Trim() != "\""))
@@ -776,10 +776,10 @@ namespace CVNBot
             // In other words, never greylist trusted users (bot, admin, whitelist).
             if (userOffset == UserType.blacklisted || userOffset == UserType.user || userOffset == UserType.anon || userOffset == UserType.greylisted)
             {
-                listman.AddUserToList(username, "", UserType.greylisted, "CVNBot", reason, 1);
+                listman.AddUserToList(username, "", UserType.greylisted, "CVTBot", reason, 1);
                 // Greylist for 900 seconds = 15 mins
                 // TODO: Why is the broadcasted expiry different from local expiry (line above)
-                Broadcast("GL", "ADD", username, 900, reason, "CVNBot");
+                Broadcast("GL", "ADD", username, 900, reason, "CVTBot");
             }
         }
 
@@ -1090,7 +1090,7 @@ namespace CVNBot
                     attribs.Add("cblockname", r.title.Split(new char[] { ':' }, 2)[1]);
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.title.Split(new char[] { ':' }, 2)[1]));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVTBotUtils.WikiEncode(r.title.Split(new char[] { ':' }, 2)[1]));
                     attribs.Add("length", r.blockLength);
                     attribs.Add("reason", r.comment);
                     message = GetMessage(5400, ref attribs);
@@ -1100,7 +1100,7 @@ namespace CVNBot
                         // If this isn't an indefinite/infinite block, add to blacklist
                         if ((r.blockLength.ToLower() != "indefinite") && (r.blockLength.ToLower() != "infinite"))
                         {                                                               // 2,678,400 seconds = 744 hours = 31 days
-                            int listLen = Convert.ToInt32(CVNBotUtils.ParseDateTimeLength(r.blockLength, 2678400) * 2.5);
+                            int listLen = Convert.ToInt32(CVTBotUtils.ParseDateTimeLength(r.blockLength, 2678400) * 2.5);
                             string blComment = "Autoblacklist: " + r.comment + " on " + r.project;
                             message += "\n" + listman.AddUserToList(r.title.Split(new char[] { ':' }, 2)[1], "" //Global bl
                                 , UserType.blacklisted, r.user, blComment, listLen);
@@ -1113,7 +1113,7 @@ namespace CVNBot
                     attribs.Add("cblockname", r.title.Split(new char[] { ':' }, 2)[1]);
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVTBotUtils.WikiEncode(r.user));
                     attribs.Add("reason", r.comment);
                     message = GetMessage(5700, ref attribs);
                     break;
@@ -1122,16 +1122,16 @@ namespace CVNBot
                     attribs.Add("ceditor", r.user);
                     attribs.Add("article", r.interwikiLink + r.title);
                     attribs.Add("carticle", r.title);
-                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", project.rooturl + "wiki/" + CVTBotUtils.WikiEncode(r.title));
                     attribs.Add("reason", r.comment);
                     message = GetMessage(05300, ref attribs);
                     break;
                 case RCEvent.EventType.newuser:
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
-                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("caurl", config.projectRootUrl + "wiki/Special:CentralAuth/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVTBotUtils.WikiEncode(r.user));
+                    attribs.Add("caurl", config.projectRootUrl + "wiki/Special:CentralAuth/" + CVTBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVTBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch = listman.MatchesList(r.user, 11);
                     if (bnuMatch.Success && feedFilterThisEvent == 1)
                     {
@@ -1152,8 +1152,8 @@ namespace CVNBot
                     attribs.Add("ccreator", r.user);
                     attribs.Add("editor", r.interwikiLink + "User:" + r.title);
                     attribs.Add("ceditor", r.title);
-                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVNBotUtils.WikiEncode(r.user));
-                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVNBotUtils.WikiEncode(r.user));
+                    attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVTBotUtils.WikiEncode(r.user));
+                    attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVTBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch2 = listman.MatchesList(r.user, 11);
                     if (bnuMatch2.Success)
                     {
@@ -1217,7 +1217,7 @@ namespace CVNBot
                     attribs.Add("uploaditem", r.interwikiLink + r.title);
                     attribs.Add("cuploaditem", r.title);
                     attribs.Add("reason", r.comment);
-                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", project.rooturl + "wiki/" + CVTBotUtils.WikiEncode(r.title));
                     message = GetMessage(uMsg + (int)userOffset, ref attribs);
                     break;
                 case RCEvent.EventType.protect:
@@ -1227,7 +1227,7 @@ namespace CVNBot
                     attribs.Add("carticle", r.title);
                     attribs.Add("comment", r.comment);
                     // 'url' in protect is broken, it also contains " [move=sysop] (indefinite)" etc.
-                    //attribs.Add("url", CVNBotUtils.rootUrl(project.rooturl) + "wiki/" + CVNBotUtils.wikiEncode(r.title));
+                    //attribs.Add("url", CVTBotUtils.rootUrl(project.rooturl) + "wiki/" + CVTBotUtils.wikiEncode(r.title));
                     message = GetMessage(5900, ref attribs);
                     break;
                 case RCEvent.EventType.unprotect:
@@ -1237,7 +1237,7 @@ namespace CVNBot
                     attribs.Add("carticle", r.title);
                     attribs.Add("comment", r.comment);
                     // 'url' in unprotect is fine, it's just the pagetitle
-                    attribs.Add("url", project.rooturl + "wiki/" + CVNBotUtils.WikiEncode(r.title));
+                    attribs.Add("url", project.rooturl + "wiki/" + CVTBotUtils.WikiEncode(r.title));
                     message = GetMessage(5901, ref attribs);
                     break;
                 case RCEvent.EventType.modifyprotect:
@@ -1247,7 +1247,7 @@ namespace CVNBot
                     attribs.Add("carticle", r.title);
                     attribs.Add("comment", r.comment);
                     // 'url' in modifyprotect is broken, it also contains " [move=sysop] (indefinite)" etc.
-                    //attribs.Add("url", CVNBotUtils.rootUrl(project.rooturl) + "wiki/" + CVNBotUtils.wikiEncode(r.title));
+                    //attribs.Add("url", CVTBotUtils.rootUrl(project.rooturl) + "wiki/" + CVTBotUtils.wikiEncode(r.title));
                     message = GetMessage(5902, ref attribs);
                     break;
             }
@@ -1272,7 +1272,7 @@ namespace CVNBot
             // Operational configuration for servers, files, and restarts is not
             // interesting to users.
 
-            string message = "runs CVNBot " + version + " in " + config.feedChannel + "; settings: ";
+            string message = "runs CVTBot " + version + " in " + config.feedChannel + "; settings: ";
 
             FieldInfo[] fields = config.GetType().GetFields();
             foreach (FieldInfo field in fields)

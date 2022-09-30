@@ -44,21 +44,21 @@
     <Content Include="..\Console.msgs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\CVNBot-sample.ini">
+    <Content Include="..\CVTBot-sample.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>CVNBot.ini</Link>
+      <Link>CVTBot.ini</Link>
     </Content>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <Content Include="..\CVNBot.exe.debug.config">
+    <Content Include="..\CVTBot.exe.debug.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>CVNBot.exe.config</Link>
+      <Link>CVTBot.exe.config</Link>
     </Content>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-    <Content Include="..\CVNBot.exe.release.config">
+    <Content Include="..\CVTBot.exe.release.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>CVNBot.exe.config</Link>
+      <Link>CVTBot.exe.config</Link>
     </Content>
   </ItemGroup>
 </Project>

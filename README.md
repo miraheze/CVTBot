@@ -28,12 +28,12 @@ Currently supported versions of Mono: **6.8**
 Once mono is installed, build the project. The below uses Debug, for local development. (See [Installation](./docs/install.md) for how to install it in production):
 
 ```bash
-Universal-Omega/CVTBot:$ msbuild src/CVNBot.sln /p:Configuration=Debug
+Universal-Omega/CVTBot:$ msbuild src/CVTBot.sln /p:Configuration=Debug
 ```
 
 Once built, you can run it:
 ```bash
-Universal-Omega/CVTBot/src/CVNBot/bin/Debug:$ mono CVNBot.exe
+Universal-Omega/CVTBot/src/CVTBot/bin/Debug:$ mono CVTBot.exe
 ```
 
 

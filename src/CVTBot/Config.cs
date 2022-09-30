@@ -1,4 +1,4 @@
-namespace CVNBot
+namespace CVTBot
 {
     class Config
     {
@@ -115,7 +115,7 @@ namespace CVNBot
 
         public override string ToString()
         {
-            return "[CVNBot.config]";
+            return "[CVTBot.config]";
         }
     }
 }
