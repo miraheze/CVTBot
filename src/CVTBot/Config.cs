@@ -24,9 +24,9 @@ namespace CVTBot
         public int ircServerPort = 6667;
         public int ircReaderServerPort = 6667;
 
-        // Use SSL?
-        public bool ircServerUseSsl = false;
-        public bool ircReaderServerUseSsl = false;
+        // SSL
+        public bool ircServerUseSsl;
+        public bool ircReaderServerUseSsl;
 
         // Channel name or "None" — the feed that logs events to
         public string feedChannel = "None";
