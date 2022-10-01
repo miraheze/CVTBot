@@ -2,6 +2,6 @@
 /src/CVTBot/bin
 /src/CVTBot/obj
 # Visual Studio
-.vs
+.vs/**
 /src/.vs
 *.userprefs
