@@ -23,7 +23,7 @@ Recommended installation methods:
 
 For standalone command-line installations on Mac or Windows, see [monodevelop.com](https://www.monodevelop.com/download/).
 
-Currently supported versions of Mono: **6.8**
+Currently supported versions of Mono: **6.12**
 
 Once mono is installed, build the project. The below uses Debug, for local development. (See [Installation](./docs/install.md) for how to install it in production):
 
@@ -40,8 +40,7 @@ Universal-Omega/CVTBot/src/CVTBot/bin/Debug:$ mono CVTBot.exe
 Bug tracker
 -----------
 
-Found a bug? Please report it using our [issue
-tracker](https://github.com/Universal-Omega/CVTBot/issues)!
+Found a bug? Please report it using our [issue tracker](https://github.com/Universal-Omega/CVTBot/issues)!
 
 
 Documentation, support and contact
