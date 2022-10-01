@@ -92,9 +92,29 @@ namespace CVTBot
                 config.ircServerName = rawConfig["ircserver"];
             }
 
+            if (rawConfig.ContainsKey("ircport"))
+            {
+                config.ircServerPort = int.Parse(rawConfig["ircport"]);
+            }
+
+            if (rawConfig.ContainsKey("ircusessl"))
+            {
+                config.ircServerUseSsl = bool.Parse(rawConfig["ircusessl"]);
+            }
+
             if (rawConfig.ContainsKey("ircreaderserver"))
             {
                 config.ircReaderServerName = rawConfig["ircreaderserver"];
+            }
+
+            if (rawConfig.ContainsKey("ircreaderport"))
+            {
+                config.ircReaderServerPort = int.Parse(rawConfig["ircreaderport"]);
+            }
+
+            if (rawConfig.ContainsKey("ircreaderusessl"))
+            {
+                config.ircReaderServerUseSsl = bool.Parse(rawConfig["ircreaderusessl"]);
             }
 
             if (rawConfig.ContainsKey("feedchannel"))
@@ -283,9 +303,11 @@ namespace CVTBot
             irc.OnError += Irc_OnError;
             irc.OnConnectionError += Irc_OnConnectionError;
 
+            irc.UseSsl = config.ircServerUseSsl;
+
             try
             {
-                irc.Connect(config.ircServerName, 6667);
+                irc.Connect(config.ircServerName, config.ircServerPort);
             }
             catch (ConnectionException e)
             {

@@ -19,6 +19,15 @@ namespace CVTBot
         // Host name
         public string ircServerName = "irc.libera.chat";
         public string ircReaderServerName = "irc.libera.chat";
+
+        // Port
+        public int ircServerPort = 6667;
+        public int ircReaderServerPort = 6667;
+
+        // Use SSL?
+        public bool ircServerUseSsl = false;
+        public bool ircReaderServerUseSsl = false;
+
         // Channel name or "None" — the feed that logs events to
         public string feedChannel = "None";
         // Channel name or "None"

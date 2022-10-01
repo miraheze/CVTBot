@@ -61,9 +61,11 @@ namespace CVTBot
             rcirc.OnChannelMessage += Rcirc_OnChannelMessage;
             rcirc.OnConnected += Rcirc_OnConnected;
 
+            rcirc.UseSsl = Program.config.ircReaderServerUseSsl;
+
             try
             {
-                rcirc.Connect(Program.config.ircReaderServerName, 6667);
+                rcirc.Connect(Program.config.ircReaderServerName, Program.config.ircReaderServerPort);
             }
             catch (ConnectionException e)
             {
