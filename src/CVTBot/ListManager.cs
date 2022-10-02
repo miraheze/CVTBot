@@ -33,12 +33,12 @@ namespace CVTBot
     {
         public IDbConnection dbcon;
         public string connectionString = "";
+        public Timer garbageCollector;
         private static readonly Regex ipv4 = new Regex(@"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b");
         private static readonly Regex ipv6 = new Regex(@"\b(?:[0-9A-F]{1,4}:){7}[0-9A-F]{1,4}\b");
         private static readonly Regex rlistCmd = new Regex(@"^(?<cmd>add|del|show|test) +(?<item>.+?)(?: +p=(?<project>\S+?))?(?: +x=(?<len>\d{1,4}))?(?: +r=(?<reason>.+?))?$"
             , RegexOptions.IgnoreCase);
         private readonly object dbtoken = new object();
-        private Timer garbageCollector;
         private static readonly ILog logger = LogManager.GetLogger("CVTBot.ListManager");
 
         public void InitDBConnection(string filename)
