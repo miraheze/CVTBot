@@ -148,10 +148,30 @@ namespace CVTBot
             if (!snamespacesAlreadySet)
             {
                 logger.InfoFormat("Fetching namespaces from {0}", rooturl);
-                snamespaces = CVTBotUtils.GetRawDocument(rooturl + "w/api.php?format=xml&action=query&meta=siteinfo&siprop=namespaces");
+                try
+                {
+                    snamespaces = CVTBotUtils.GetRawDocument(rooturl + "w/api.php?format=xml&action=query&meta=siteinfo&siprop=namespaces");
+                }
+                catch (Exception)
+                {
+                    logger.ErrorFormat("Can't load list of namespaces from {0}", rooturl);
+                    try
+                    {
+                        Program.prjlist.DeleteProject(projectName);
+                        _ = Program.listman.PurgeWikiData(projectName);
+                        logger.InfoFormat("Deleted and purged project {0}", projectName);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Delete/purge project failed", ex);
+                    }
+
+                    return;
+                }
+
                 if (snamespaces == "")
                 {
-                    throw new Exception("Can't load list of namespaces from " + rooturl);
+                    logger.ErrorFormat("Can't load list of namespaces from {0}", rooturl);
                 }
             }
 
