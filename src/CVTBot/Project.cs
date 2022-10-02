@@ -172,6 +172,8 @@ namespace CVTBot
                 if (snamespaces == "")
                 {
                     logger.ErrorFormat("Can't load list of namespaces from {0}", rooturl);
+
+                    return;
                 }
             }
 
