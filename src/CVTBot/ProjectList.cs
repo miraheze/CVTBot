@@ -122,7 +122,7 @@ namespace CVTBot
             {
                 Project prj = (Project)dicent.Value;
                 prj.RetrieveWikiDetails();
-                Thread.Sleep(600);
+                Thread.Sleep(2000);
             }
 
             // Dump new settings:

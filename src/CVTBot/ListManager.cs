@@ -1114,7 +1114,7 @@ namespace CVTBot
                     Thread.Sleep(1);
                 }
 
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
 
                 // Get bots
                 _ = args.Remove("group");
@@ -1126,7 +1126,7 @@ namespace CVTBot
                     Thread.Sleep(1);
                 }
 
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
             }
 
             Program.SendMessageF(Meebey.SmartIrc4net.SendType.Message, originChannel,

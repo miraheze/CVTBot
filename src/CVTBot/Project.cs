@@ -183,6 +183,22 @@ namespace CVTBot
             doc.LoadXml(snamespaces);
             string namespacesLogline = "";
             XmlNode namespacesNode = doc.GetElementsByTagName("namespaces")[0];
+            if (namespacesNode == null)
+            {
+                logger.ErrorFormat("Namespaces returned null from {0}", rooturl);
+                try
+                {
+                    Program.prjlist.DeleteProject(projectName);
+                    _ = Program.listman.PurgeWikiData(projectName);
+                    logger.InfoFormat("Deleted and purged project {0}", projectName);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Delete/purge project failed", ex);
+                }
+
+                return;
+            }
             for (int i = 0; i < namespacesNode.ChildNodes.Count; i++)
             {
                 namespaces.Add(namespacesNode.ChildNodes[i].Attributes["id"].Value, namespacesNode.ChildNodes[i].InnerText);
