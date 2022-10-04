@@ -180,7 +180,7 @@ namespace CVTBot
         /// <summary>
         /// Gets the root URL from a project name
         /// </summary>
-        /// <param name="projectName">Name of the project (e.g., loginwiki) to add</param>
+        /// <param name="projectName">Name of the project (e.g., metawiki) to add</param>
         /// <returns></returns>
         public static string GetRootUrl(string projectName)
         {

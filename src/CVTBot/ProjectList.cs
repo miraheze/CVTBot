@@ -55,7 +55,7 @@ namespace CVTBot
         /// <summary>
         /// Adds a new Project to the ProjectList. Remember to dump the configuration afterwards by calling dumpToFile()
         /// </summary>
-        /// <param name="projectName">Name of the project (e.g., loginwiki) to add</param>
+        /// <param name="projectName">Name of the project (e.g., metawiki) to add</param>
         public void AddNewProject(string projectName)
         {
             if (ContainsKey(projectName))
