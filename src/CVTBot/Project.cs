@@ -215,12 +215,33 @@ namespace CVTBot
 
         public void RetrieveWikiDetails()
         {
-            //Find out what the localized Special: (ID -1) namespace is, and create a regex
+            // Find out what the localized Special: (ID -1) namespace is, and create a regex
             GetNamespaces(false);
 
             if (namespaces == null)
             {
-                return;
+                // Set defaults for namespaces
+                namespaces = new Hashtable
+                {
+                    { "-2", "Media" },
+                    { "-1", "Special" },
+                    { "0", "" },
+                    { "1", "Talk" },
+                    { "2", "User" },
+                    { "3", "User talk" },
+                    { "4", "Project" },
+                    { "5", "Project talk" },
+                    { "6", "File" },
+                    { "7", "File talk" },
+                    { "8", "MediaWiki" },
+                    { "9", "MediaWiki talk" },
+                    { "10", "Template" },
+                    { "11", "Template talk" },
+                    { "12", "Help" },
+                    { "13", "Help talk" },
+                    { "14", "Category" },
+                    { "15", "Category talk" }
+                };
             }
 
             regexDict["specialLogRegex"] = namespaces["-1"] + @":.+?/(.+)";
@@ -258,14 +279,15 @@ namespace CVTBot
             };
 
             GetInterfaceMessages(Messages);
+            GenerateRegexen();
         }
 
         private void GetInterfaceMessages(Dictionary<string, MessagesOption> Messages)
         {
+            string CombinedMessages = string.Join("|", Messages.Keys);
+
             try
             {
-                string CombinedMessages = string.Join("|", Messages.Keys);
-
                 sMwMessages = CVTBotUtils.GetRawDocument(
                     rooturl +
                     "w/api.php?action=query&meta=allmessages&format=xml" +
@@ -274,22 +296,21 @@ namespace CVTBot
             }
             catch (Exception e)
             {
-                logger.ErrorFormat("Can't load list of InterfaceMessages from {0}", rooturl);
-                if (e.Message.Contains("404"))
+                try
                 {
-                    try
-                    {
-                        Program.prjlist.DeleteProject(projectName);
-                        _ = Program.listman.PurgeWikiData(projectName);
-                        logger.InfoFormat("Deleted and purged project {0}", projectName);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error("Delete/purge project failed", ex);
-                    }
+                    logger.ErrorFormat("Can't load list of InterfaceMessages from {0}. {1} Trying {2}.", rooturl, e.Message, Program.config.centralProject);
+                    sMwMessages = CVTBotUtils.GetRawDocument(
+                        CVTBotUtils.GetRootUrl(Program.config.centralProject) +
+                        "w/api.php?action=query&meta=allmessages&format=xml" +
+                        "&ammessages=" + CombinedMessages
+                    );
                 }
+                catch (Exception ex)
+                {
+                    logger.ErrorFormat("Can't load list of InterfaceMessages from {0} or {1}. {2}", rooturl, Program.config.centralProject, ex.Message);
 
-                return;
+                    return;
+                }
             }
 
             if (sMwMessages == "")
@@ -305,7 +326,7 @@ namespace CVTBot
             XmlNode allmessagesNode = doc.GetElementsByTagName("allmessages")[0];
             if (allmessagesNode == null)
             {
-                logger.ErrorFormat("Messages returned null from {0}", rooturl);
+                logger.ErrorFormat("InterfaceMessages returned null from {0}", rooturl);
 
                 return;
             }
@@ -321,8 +342,6 @@ namespace CVTBot
                 );
                 mwMessagesLogline += "name[" + elmName + "]=" + allmessagesNode.ChildNodes[i].InnerText + "; ";
             }
-
-            GenerateRegexen();
         }
 
         private void GenerateRegex(string mwMessageTitle, string mwMessage, int reqCount, string destRegex, bool nonStrict)
