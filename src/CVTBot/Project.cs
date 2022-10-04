@@ -85,7 +85,7 @@ namespace CVTBot
                 dump.WriteElementString("projectName", projectName);
                 dump.WriteElementString("rooturl", rooturl);
                 dump.WriteElementString("speciallog", regexDict["specialLogRegex"]);
-                dump.WriteElementString("namespaces", snamespaces.Replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>", ""));
+                dump.WriteElementString("namespaces", snamespaces);
 
                 dump.WriteElementString("restoreRegex", regexDict["restoreRegex"]);
                 dump.WriteElementString("deleteRegex", regexDict["deleteRegex"]);
@@ -181,22 +181,25 @@ namespace CVTBot
                 }
             }
 
-            namespaces = new Hashtable();
-
+            // Load the orignal API response first so that we
+            // can use it to rebuild XML later, isolating namespaces
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(snamespaces);
-            string namespacesLogline = "";
-            XmlNode namespacesNode = doc.GetElementsByTagName("namespaces")[0];
-            if (namespacesNode == null)
-            {
-                logger.ErrorFormat("Namespaces returned null from {0}", rooturl);
 
-                return;
-            }
-            for (int i = 0; i < namespacesNode.ChildNodes.Count; i++)
+            if (doc.GetElementsByTagName("namespaces").Count == 1)
             {
-                namespaces.Add(namespacesNode.ChildNodes[i].Attributes["id"].Value, namespacesNode.ChildNodes[i].InnerText);
-                namespacesLogline += "id[" + namespacesNode.ChildNodes[i].Attributes["id"].Value + "]=" + namespacesNode.ChildNodes[i].InnerText + "; ";
+                namespaces = new Hashtable();
+                string namespacesLogline = "";
+
+                snamespaces = doc.GetElementsByTagName("namespaces")[0].OuterXml;
+                doc.LoadXml(snamespaces);
+
+                XmlNode namespacesNode = doc.GetElementsByTagName("namespaces")[0];
+                for (int i = 0; i < namespacesNode.ChildNodes.Count; i++)
+                {
+                    namespaces.Add(namespacesNode.ChildNodes[i].Attributes["id"].Value, namespacesNode.ChildNodes[i].InnerText);
+                    namespacesLogline += "id[" + namespacesNode.ChildNodes[i].Attributes["id"].Value + "]=" + namespacesNode.ChildNodes[i].InnerText + "; ";
+                }
             }
         }
 
