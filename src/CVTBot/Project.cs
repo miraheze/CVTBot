@@ -13,7 +13,7 @@ namespace CVTBot
         private static readonly ILog logger = LogManager.GetLogger("CVTBot.Project");
 
         public string projectName;
-        public string rooturl; // Format: https://login.miraheze.org/
+        public string rooturl; // Format: https://meta.miraheze.org/
 
         public Regex rrestoreRegex;
         public Regex rdeleteRegex;
