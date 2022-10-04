@@ -137,9 +137,9 @@ namespace CVTBot
                 config.readerFeedChannel = rawConfig["readerfeedchannel"];
             }
             // Project
-            if (rawConfig.ContainsKey("defaultproject"))
+            if (rawConfig.ContainsKey("centralproject"))
             {
-                config.defaultProject = rawConfig["defaultproject"];
+                config.centralProject = rawConfig["centralproject"];
             }
 
             if (rawConfig.ContainsKey("projectsuffix"))
@@ -150,11 +150,6 @@ namespace CVTBot
             if (rawConfig.ContainsKey("projectdomain"))
             {
                 config.projectDomain = rawConfig["projectdomain"];
-            }
-
-            if (rawConfig.ContainsKey("projectrooturl"))
-            {
-                config.projectRootUrl = rawConfig["projectrooturl"];
             }
 
             if (rawConfig.ContainsKey("interwikiprefix"))
@@ -1363,7 +1358,7 @@ namespace CVTBot
                     attribs.Add("editor", r.interwikiLink + "User:" + r.user);
                     attribs.Add("ceditor", r.user);
                     attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVTBotUtils.WikiEncode(r.user));
-                    attribs.Add("caurl", config.projectRootUrl + "wiki/Special:CentralAuth/" + CVTBotUtils.WikiEncode(r.user));
+                    attribs.Add("caurl", CVTBotUtils.GetRootUrl(config.centralProject) + "wiki/Special:CentralAuth/" + CVTBotUtils.WikiEncode(r.user));
                     attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVTBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch = listman.MatchesList(r.user, 11);
                     if (bnuMatch.Success && feedFilterThisEvent == 1)

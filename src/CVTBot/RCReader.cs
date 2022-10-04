@@ -123,7 +123,7 @@ namespace CVTBot
                 rce.eventtype = RCEvent.EventType.unknown;
                 rce.blockLength = "";
                 rce.movedTo = "";
-                rce.project = fields[0].Trim() ?? Program.config.defaultProject;
+                rce.project = fields[0].Trim() ?? Program.config.centralProject;
 
                 if (!Program.prjlist.ContainsKey(rce.project))
                 {

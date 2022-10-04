@@ -35,6 +35,7 @@ namespace CVTBot
         private readonly Dictionary<string, string> regexDict = new Dictionary<string, string>();
         private static readonly char[] rechars = { '\\', '.', '(', ')', '[', ']', '^', '*', '+', '?', '{', '}', '|' };
         private string snamespaces;
+        private string sMwMessages;
 
         /// <summary>
         /// Generates Regex objects from regex strings in class. Always generate the namespace list before calling this!
@@ -152,18 +153,21 @@ namespace CVTBot
                 {
                     snamespaces = CVTBotUtils.GetRawDocument(rooturl + "w/api.php?format=xml&action=query&meta=siteinfo&siprop=namespaces");
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    logger.ErrorFormat("Can't load list of namespaces from {0}", rooturl);
-                    try
+                    logger.ErrorFormat("Can't load list of namespaces from {0}, returned {1}", rooturl, e.Message);
+                    if (e.Message.Contains("404"))
                     {
-                        Program.prjlist.DeleteProject(projectName);
-                        _ = Program.listman.PurgeWikiData(projectName);
-                        logger.InfoFormat("Deleted and purged project {0}", projectName);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error("Delete/purge project failed", ex);
+                        try
+                        {
+                            Program.prjlist.DeleteProject(projectName);
+                            _ = Program.listman.PurgeWikiData(projectName);
+                            logger.InfoFormat("Deleted and purged project {0}", projectName);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error("Delete/purge project failed", ex);
+                        }
                     }
 
                     return;
@@ -186,16 +190,6 @@ namespace CVTBot
             if (namespacesNode == null)
             {
                 logger.ErrorFormat("Namespaces returned null from {0}", rooturl);
-                try
-                {
-                    Program.prjlist.DeleteProject(projectName);
-                    _ = Program.listman.PurgeWikiData(projectName);
-                    logger.InfoFormat("Deleted and purged project {0}", projectName);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("Delete/purge project failed", ex);
-                }
 
                 return;
             }
@@ -224,9 +218,14 @@ namespace CVTBot
             //Find out what the localized Special: (ID -1) namespace is, and create a regex
             GetNamespaces(false);
 
+            if (namespaces == null)
+            {
+                return;
+            }
+
             regexDict["specialLogRegex"] = namespaces["-1"] + @":.+?/(.+)";
 
-            logger.InfoFormat("Fetching interface messages from {0}", Program.config.projectRootUrl);
+            logger.InfoFormat("Fetching interface messages from {0}", rooturl);
 
             Dictionary<string, MessagesOption> Messages = new Dictionary<string, MessagesOption>
             {
@@ -259,28 +258,57 @@ namespace CVTBot
             };
 
             GetInterfaceMessages(Messages);
-
-            GenerateRegexen();
         }
 
         private void GetInterfaceMessages(Dictionary<string, MessagesOption> Messages)
         {
-            string CombinedMessages = string.Join("|", Messages.Keys);
+            try
+            {
+                string CombinedMessages = string.Join("|", Messages.Keys);
 
-            string sMwMessages = CVTBotUtils.GetRawDocument(
-                Program.config.projectRootUrl +
-                "w/api.php?action=query&meta=allmessages&format=xml" +
-                "&ammessages=" + CombinedMessages
-            );
+                sMwMessages = CVTBotUtils.GetRawDocument(
+                    rooturl +
+                    "w/api.php?action=query&meta=allmessages&format=xml" +
+                    "&ammessages=" + CombinedMessages
+                );
+            }
+            catch (Exception e)
+            {
+                logger.ErrorFormat("Can't load list of InterfaceMessages from {0}", rooturl);
+                if (e.Message.Contains("404"))
+                {
+                    try
+                    {
+                        Program.prjlist.DeleteProject(projectName);
+                        _ = Program.listman.PurgeWikiData(projectName);
+                        logger.InfoFormat("Deleted and purged project {0}", projectName);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Delete/purge project failed", ex);
+                    }
+                }
+
+                return;
+            }
+
             if (sMwMessages == "")
             {
-                throw new Exception("Can't load list of InterfaceMessages from " + Program.config.projectRootUrl);
+                logger.ErrorFormat("Can't load list of InterfaceMessages from {0}", rooturl);
+
+                return;
             }
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(sMwMessages);
             string mwMessagesLogline = "";
             XmlNode allmessagesNode = doc.GetElementsByTagName("allmessages")[0];
+            if (allmessagesNode == null)
+            {
+                logger.ErrorFormat("Messages returned null from {0}", rooturl);
+
+                return;
+            }
             for (int i = 0; i < allmessagesNode.ChildNodes.Count; i++)
             {
                 string elmName = allmessagesNode.ChildNodes[i].Attributes["name"].Value;
@@ -293,6 +321,8 @@ namespace CVTBot
                 );
                 mwMessagesLogline += "name[" + elmName + "]=" + allmessagesNode.ChildNodes[i].InnerText + "; ";
             }
+
+            GenerateRegexen();
         }
 
         private void GenerateRegex(string mwMessageTitle, string mwMessage, int reqCount, string destRegex, bool nonStrict)

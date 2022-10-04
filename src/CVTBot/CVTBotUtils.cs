@@ -176,5 +176,17 @@ namespace CVTBot
         {
             return HttpUtility.UrlEncode(input.Replace(' ', '_')).Replace("(", "%28").Replace(")", "%29").Replace("!", "%21");
         }
+
+        /// <summary>
+        /// Gets the root URL from a project name
+        /// </summary>
+        /// <param name="projectName">Name of the project (e.g., loginwiki) to add</param>
+        /// <returns></returns>
+        public static string GetRootUrl(string projectName)
+        {
+            string subdomain = projectName.Substring(0, projectName.Length - Program.config.projectSuffix.Length);
+            string domain = Program.config.projectDomain;
+            return "https://" + subdomain + "." + domain + "/";
+        }
     }
 }

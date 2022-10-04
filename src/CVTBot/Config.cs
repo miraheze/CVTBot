@@ -40,10 +40,9 @@ namespace CVTBot
         /**
          * Project
          */
-        public string defaultProject = "";
+        public string centralProject = "";
         public string projectSuffix = "";
         public string projectDomain = "";
-        public string projectRootUrl = "";
         public string interwikiPrefix = "";
 
         /**

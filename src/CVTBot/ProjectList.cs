@@ -66,13 +66,9 @@ namespace CVTBot
             logger.InfoFormat("Registering new project {0}", projectName);
             Project prj = new Project
             {
-                projectName = projectName
+                projectName = projectName,
+                rooturl = CVTBotUtils.GetRootUrl(projectName)
             };
-
-            string subdomain = projectName.Substring(0, projectName.Length - Program.config.projectSuffix.Length);
-            string domain = Program.config.projectDomain;
-
-            prj.rooturl = "https://" + subdomain + "." + domain + "/";
 
             prj.RetrieveWikiDetails();
             Add(projectName, prj);
