@@ -28,20 +28,20 @@ namespace CVTBot
         public bool ircServerUseSsl;
         public bool ircReaderServerUseSsl;
 
-        // Channel name or "None" — the feed that logs events to
+        // Channel name or "None" — the feed that logs CVT events to
         public string feedChannel = "None";
         // Channel name or "None"
         public string controlChannel = "None";
-        // Channel name or "None" — the feed that broadcasts events picked up by reader
+        // Channel name or "None" — the channel that notice events are broadcasted to
         public string broadcastChannel = "None";
-        // Channel name — the reader feed channel
-        public string readerFeedChannel = "#cvt-feed";
+        // Channel name — the reader feed channel (required)
+        public string readerFeedChannel = "";
 
         /**
          * Project
          */
-        public string centralProject = "";
-        public string projectSuffix = "";
+        public string centralProject = "metawiki";
+        public string projectSuffix = "wiki"; // accepts regex
         public string projectDomain = "";
         public string interwikiPrefix = "";
 
