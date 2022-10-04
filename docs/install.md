@@ -11,6 +11,7 @@
 1. Edit `CVTBot.ini`: Set at least `botnick`.
 1. Set permissions and ownership correctly. This step is after the copying of files because group ownership is usually not preserved when copying files.
    * For personal use, `chmod 644 *`, `chmod 600 CVTBot.ini`, and `chmod 755 CVTBot.exe`.
+   * For organisational use, `chmod 664 *`, `chmod 660 CVTBot.ini`, `chmod 755 CVTBot.exe`, and `chgrp cvt.cvtservice *`.
 1. You can now start the start the bot by running `mono CVTBot.exe` from your bot directory.<br/>The bot will join the specified `feedchannel`.
 
 ## Upgrade
@@ -26,4 +27,5 @@
 1. Copy all remaining files in `src/CVTBot/bin/Release` to your existing bot directory. For example: `src/CVTBot/bin/Release$ cp * /srv/cvt/services/cvtbot/CVTBotXYZ/`
 1. Set permissions and ownership correctly. This step is after the copying of files because group ownership is usually not preserved when copying files.
    * For personal use, `chmod 644 *`, `chmod 600 CVTBot.ini`, and `chmod 755 CVTBot.exe`.
-1. Start the bot (or, let [stillalive](https://github.com/countervandalism/stillalive) start it).
+   * For organisational use, `chmod 664 *`, `chmod 660 CVTBot.ini`, `chmod 755 CVTBot.exe`, and `chgrp cvt.cvtservice *`.
+1. Start the bot.
