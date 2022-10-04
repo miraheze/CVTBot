@@ -132,7 +132,7 @@ namespace CVTBot
                     _ = Program.listman.ConfigGetBots(rce.project);
                 }
 
-                string subdomain = rce.project.Substring(0, rce.project.Length - Program.config.projectSuffix.Length);
+                string subdomain = Regex.Replace(rce.project, Program.config.projectSuffix + "$", "");
 
                 rce.interwikiLink = Program.config.interwikiPrefix + subdomain + ":";
                 rce.title = Project.TranslateNamespace(rce.project, fields[4]);

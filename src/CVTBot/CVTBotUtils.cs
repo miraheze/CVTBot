@@ -184,7 +184,7 @@ namespace CVTBot
         /// <returns></returns>
         public static string GetRootUrl(string projectName)
         {
-            string subdomain = projectName.Substring(0, projectName.Length - Program.config.projectSuffix.Length);
+            string subdomain = Regex.Replace(projectName, Program.config.projectSuffix + "$", "");
             string domain = Program.config.projectDomain;
             return "https://" + subdomain + "." + domain + "/";
         }
