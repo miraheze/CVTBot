@@ -42,35 +42,37 @@ namespace CVTBot
         /// </summary>
         private void GenerateRegexen()
         {
-            rrestoreRegex = new Regex(regexDict["restoreRegex"]);
-            rdeleteRegex = new Regex(regexDict["deleteRegex"]);
-            rprotectRegex = new Regex(regexDict["protectRegex"]);
-            runprotectRegex = new Regex(regexDict["unprotectRegex"]);
+            Dictionary<string, string> regexPatterns = regexDict.ContainsKey("restoreRegex") ?
+                regexDict : ((Project)Program.prjlist[Program.config.centralProject]).regexDict;
 
-            if (!regexDict.ContainsKey("modifyprotectRegex"))
+            rrestoreRegex = new Regex(regexPatterns["restoreRegex"]);
+            rdeleteRegex = new Regex(regexPatterns["deleteRegex"]);
+            rprotectRegex = new Regex(regexPatterns["protectRegex"]);
+            runprotectRegex = new Regex(regexPatterns["unprotectRegex"]);
+
+            if (!regexPatterns.ContainsKey("modifyprotectRegex"))
             {
                 // Fallback if missing in older XML files.
-                regexDict["modifyprotectRegex"] = regexDict["protectRegex"];
+                regexPatterns["modifyprotectRegex"] = regexPatterns["protectRegex"];
                 logger.Warn("generateRegexen: modifyprotectRegex is missing. Please reload this wiki.");
             }
-            rmodifyprotectRegex = new Regex(regexDict["modifyprotectRegex"]);
-            ruploadRegex = new Regex(regexDict["uploadRegex"]);
-            rmoveRegex = new Regex(regexDict["moveRegex"]);
-            rmoveredirRegex = new Regex(regexDict["moveredirRegex"]);
-            rblockRegex = new Regex(regexDict["blockRegex"]);
-            runblockRegex = new Regex(regexDict["unblockRegex"]);
-            if (!regexDict.ContainsKey("reblockRegex"))
+            rmodifyprotectRegex = new Regex(regexPatterns["modifyprotectRegex"]);
+            ruploadRegex = new Regex(regexPatterns["uploadRegex"]);
+            rmoveRegex = new Regex(regexPatterns["moveRegex"]);
+            rmoveredirRegex = new Regex(regexPatterns["moveredirRegex"]);
+            rblockRegex = new Regex(regexPatterns["blockRegex"]);
+            runblockRegex = new Regex(regexPatterns["unblockRegex"]);
+            if (!regexPatterns.ContainsKey("reblockRegex"))
             {
                 // Fallback if missing in older XML files.
-                regexDict["reblockRegex"] = "^$";
+                regexPatterns["reblockRegex"] = "^$";
                 logger.Warn("generateRegexen: reblockRegex is missing. Please reload this wiki.");
             }
-            rreblockRegex = new Regex(regexDict["reblockRegex"]);
-            rautosummBlank = new Regex(regexDict["autosummBlank"]);
-            rautosummReplace = new Regex(regexDict["autosummReplace"]);
+            rreblockRegex = new Regex(regexPatterns["reblockRegex"]);
+            rautosummBlank = new Regex(regexPatterns["autosummBlank"]);
+            rautosummReplace = new Regex(regexPatterns["autosummReplace"]);
 
             rSpecialLogRegex = new Regex(regexDict["specialLogRegex"]);
-
             rCreate2Regex = new Regex(namespaces["2"] + @":([^:]+)");
         }
 
@@ -84,22 +86,22 @@ namespace CVTBot
 
                 dump.WriteElementString("projectName", projectName);
                 dump.WriteElementString("rooturl", rooturl);
-                dump.WriteElementString("speciallog", regexDict["specialLogRegex"]);
+                dump.WriteElementString("speciallog", rSpecialLogRegex.ToString());
                 dump.WriteElementString("namespaces", snamespaces);
 
-                dump.WriteElementString("restoreRegex", regexDict["restoreRegex"]);
-                dump.WriteElementString("deleteRegex", regexDict["deleteRegex"]);
-                dump.WriteElementString("protectRegex", regexDict["protectRegex"]);
-                dump.WriteElementString("unprotectRegex", regexDict["unprotectRegex"]);
-                dump.WriteElementString("modifyprotectRegex", regexDict["modifyprotectRegex"]);
-                dump.WriteElementString("uploadRegex", regexDict["uploadRegex"]);
-                dump.WriteElementString("moveRegex", regexDict["moveRegex"]);
-                dump.WriteElementString("moveredirRegex", regexDict["moveredirRegex"]);
-                dump.WriteElementString("blockRegex", regexDict["blockRegex"]);
-                dump.WriteElementString("unblockRegex", regexDict["unblockRegex"]);
-                dump.WriteElementString("reblockRegex", regexDict["reblockRegex"]);
-                dump.WriteElementString("autosummBlank", regexDict["autosummBlank"]);
-                dump.WriteElementString("autosummReplace", regexDict["autosummReplace"]);
+                dump.WriteElementString("restoreRegex", rrestoreRegex.ToString());
+                dump.WriteElementString("deleteRegex", rdeleteRegex.ToString());
+                dump.WriteElementString("protectRegex", rprotectRegex.ToString());
+                dump.WriteElementString("unprotectRegex", runprotectRegex.ToString());
+                dump.WriteElementString("modifyprotectRegex", rmodifyprotectRegex.ToString());
+                dump.WriteElementString("uploadRegex", ruploadRegex.ToString());
+                dump.WriteElementString("moveRegex", rmoveRegex.ToString());
+                dump.WriteElementString("moveredirRegex", rmoveredirRegex.ToString());
+                dump.WriteElementString("blockRegex", rblockRegex.ToString());
+                dump.WriteElementString("unblockRegex", runblockRegex.ToString());
+                dump.WriteElementString("reblockRegex", rreblockRegex.ToString());
+                dump.WriteElementString("autosummBlank", rautosummBlank.ToString());
+                dump.WriteElementString("autosummReplace", rautosummReplace.ToString());
 
                 dump.WriteEndElement();
                 dump.Flush();
@@ -299,21 +301,9 @@ namespace CVTBot
             }
             catch (Exception e)
             {
-                try
-                {
-                    logger.ErrorFormat("Can't load list of InterfaceMessages from {0}. {1} Trying {2}.", rooturl, e.Message, Program.config.centralProject);
-                    sMwMessages = CVTBotUtils.GetRawDocument(
-                        CVTBotUtils.GetRootUrl(Program.config.centralProject) +
-                        "w/api.php?action=query&meta=allmessages&format=xml" +
-                        "&ammessages=" + CombinedMessages
-                    );
-                }
-                catch (Exception ex)
-                {
-                    logger.ErrorFormat("Can't load list of InterfaceMessages from {0} or {1}. {2}", rooturl, Program.config.centralProject, ex.Message);
+                logger.ErrorFormat("Can't load list of InterfaceMessages from {0}. {1} Getting from {2}.", rooturl, e.Message, Program.config.centralProject);
 
-                    return;
-                }
+                return;
             }
 
             if (sMwMessages == "")
