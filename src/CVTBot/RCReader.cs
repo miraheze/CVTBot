@@ -161,7 +161,7 @@ namespace CVTBot
                         case "newusers":
                             // Could be a user creating their own account, or a user creating a sockpuppet
 
-                            if (fields[6].Contains("create2"))
+                            if (fields[6].Contains("create2") || fields[6].Contains("byemail"))
                             {
                                 Match mc2 = project.rCreate2Regex.Match(rce.comment);
                                 if (mc2.Success)
