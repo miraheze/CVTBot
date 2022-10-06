@@ -504,7 +504,7 @@ namespace CVTBot
                         case "COUNT":
                             if (list == "BLEEP")
                             {
-                                SendMessageF(SendType.Action, reason, "owns " + prjlist.Count.ToString() + " wikis; version is " + version,
+                                SendMessageF(SendType.Action, reason, "knows " + prjlist.Count.ToString() + " wikis; version is " + version,
                                              Priority.High);
                             }
 
@@ -732,7 +732,7 @@ namespace CVTBot
                         }
 
                         Broadcast("BLEEP", "COUNT", "BLEEP", 0, e.Data.Channel, e.Data.Nick);
-                        SendMessageF(SendType.Action, e.Data.Channel, "owns " + prjlist.Count.ToString() + " wikis; version is " + version,
+                        SendMessageF(SendType.Action, e.Data.Channel, "knows " + prjlist.Count.ToString() + " wikis; version is " + version,
                                      Priority.High);
                         break;
                     case "drop":
