@@ -49,25 +49,12 @@ namespace CVTBot
             rdeleteRegex = new Regex(regexPatterns["deleteRegex"]);
             rprotectRegex = new Regex(regexPatterns["protectRegex"]);
             runprotectRegex = new Regex(regexPatterns["unprotectRegex"]);
-
-            if (!regexPatterns.ContainsKey("modifyprotectRegex"))
-            {
-                // Fallback if missing in older XML files.
-                regexPatterns["modifyprotectRegex"] = regexPatterns["protectRegex"];
-                logger.Warn("generateRegexen: modifyprotectRegex is missing. Please reload this wiki.");
-            }
             rmodifyprotectRegex = new Regex(regexPatterns["modifyprotectRegex"]);
             ruploadRegex = new Regex(regexPatterns["uploadRegex"]);
             rmoveRegex = new Regex(regexPatterns["moveRegex"]);
             rmoveredirRegex = new Regex(regexPatterns["moveredirRegex"]);
             rblockRegex = new Regex(regexPatterns["blockRegex"]);
             runblockRegex = new Regex(regexPatterns["unblockRegex"]);
-            if (!regexPatterns.ContainsKey("reblockRegex"))
-            {
-                // Fallback if missing in older XML files.
-                regexPatterns["reblockRegex"] = "^$";
-                logger.Warn("generateRegexen: reblockRegex is missing. Please reload this wiki.");
-            }
             rreblockRegex = new Regex(regexPatterns["reblockRegex"]);
             rautosummBlank = new Regex(regexPatterns["autosummBlank"]);
             rautosummReplace = new Regex(regexPatterns["autosummReplace"]);
