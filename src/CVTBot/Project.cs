@@ -3,8 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace CVTBot
 {
@@ -168,6 +170,49 @@ namespace CVTBot
 
                     return;
                 }
+            }
+
+            if (snamespaces.Contains("readapidenied") || snamespaces.Count() == 0)
+            {
+                // Set defaults for namespaces
+                namespaces = new Hashtable
+                    {
+                        { "-2", "Media" },
+                        { "-1", "Special" },
+                        { "0", "" },
+                        { "1", "Talk" },
+                        { "2", "User" },
+                        { "3", "User talk" },
+                        { "4", "Project" },
+                        { "5", "Project talk" },
+                        { "6", "File" },
+                        { "7", "File talk" },
+                        { "8", "MediaWiki" },
+                        { "9", "MediaWiki talk" },
+                        { "10", "Template" },
+                        { "11", "Template talk" },
+                        { "12", "Help" },
+                        { "13", "Help talk" },
+                        { "14", "Category" },
+                        { "15", "Category talk" }
+                };
+
+                XDocument namespacesDefault = new XDocument(
+                    new XElement("namespaces",
+                        from DictionaryEntry de in namespaces
+                        select new XElement("ns",
+                            new XAttribute("_idx", de.Key),
+                            new XAttribute("id", de.Key),
+                            new XAttribute("case", "first-letter"),
+                            new XAttribute("canonical", de.Value),
+                            de.Value
+                        )
+                    )
+                );
+
+                snamespaces = namespacesDefault.ToString();
+
+                return;
             }
 
             // Load the orignal API response first so that we
