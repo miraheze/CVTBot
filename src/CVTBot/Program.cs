@@ -753,6 +753,17 @@ namespace CVTBot
                         }
                         break;
                     case "list":
+                        if (!HasPrivileges('+', ref e))
+                        {
+                            return;
+                        }
+
+                        if (prjlist.Count > 100)
+                        {
+                            SendMessageF(SendType.Message, e.Data.Channel, "Unable to list wikis: there are more than 100 wikis. We can not list them all.", Priority.High);
+                            return;
+                        }
+
                         string result = "Currently monitoring: ";
                         foreach (string p in prjlist.Keys)
                         {
