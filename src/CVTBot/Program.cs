@@ -15,7 +15,7 @@ namespace CVTBot
 {
     internal class Program
     {
-        private const string version = "2.1.1";
+        private const string version = "2.1.2";
 
         public static IrcClient irc = new IrcClient();
         public static RCReader rcirc = new RCReader();
@@ -1392,6 +1392,7 @@ namespace CVTBot
                     attribs.Add("editor", r.interwikiLink + "User:" + r.title);
                     attribs.Add("ceditor", r.title);
                     attribs.Add("blockurl", project.rooturl + "wiki/Special:Block/" + CVTBotUtils.WikiEncode(r.user));
+                    attribs.Add("caurl", CVTBotUtils.GetRootUrl(config.centralProject) + "wiki/Special:CentralAuth/" + CVTBotUtils.WikiEncode(r.user));
                     attribs.Add("talkurl", project.rooturl + "wiki/User_talk:" + CVTBotUtils.WikiEncode(r.user));
                     ListMatch bnuMatch2 = listman.MatchesList(r.user, 11);
                     if (bnuMatch2.Success)

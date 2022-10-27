@@ -94,11 +94,11 @@
 05135=%c14Bot%c14 [[${editor}]] %c14edited watched page%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05136=%c07Greylist%c14 [[${editor}]] %c07edited watched page%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12  ${url}%c14 "${reason}"
 
-05200=%c14New user [[${editor}]] created. Block: ${blockurl}
-05201=%c14New user [[${editor}]] %c04containing watch word "${watchword}" ("${wwreason}"). Block: ${blockurl}
+05200=%c14New user [[${editor}]] created. CentralAuth: ${caurl}
+05201=%c14New user [[${editor}]] %c04containing watch word "${watchword}" ("${wwreason}"). CentralAuth: ${caurl}
 
-05210=%c14New user [[${editor}]] created by [[${creator}]]. Block: ${blockurl}
-05211=%c14New user [[${editor}]] created by [[${creator}]] %c04containing watch word "${watchword}" ("${wwreason}"). Block: ${blockurl}
+05210=%c14New user [[${editor}]] created by [[${creator}]]. CentralAuth: ${caurl}
+05211=%c14New user [[${editor}]] created by [[${creator}]] %c04containing watch word "${watchword}" ("${wwreason}"). CentralAuth: ${caurl}
 
 05300=%c14[[${editor}]] deleted article [[${article}]] "${reason}" %c12${url}
 05301=%c04[[${editor}]] deleted watched article [[${article}]] "${reason}" %c12${url}
