@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.Sockets;
 
 namespace CVTBot
 {
@@ -11,7 +12,7 @@ namespace CVTBot
             {
                 string[] parts = cidr.Split('/');
                 IPAddress ip = IPAddress.Parse(parts[0]);
-                if (ip.AddressFamily == IPAddress.AddressFamily.InterNetwork)
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
                     byte prefix = byte.Parse(parts[1]);
                     if (prefix >= 0 && prefix <= 32)
@@ -19,7 +20,7 @@ namespace CVTBot
                         return true;
                     }
                 }
-                else if (ip.AddressFamily == IPAddress.AddressFamily.InterNetworkV6)
+                else if (ip.AddressFamily == AddressFamily.InterNetworkV6)
                 {
                     byte prefix = byte.Parse(parts[1]);
                     if (prefix >= 0 && prefix <= 128)
@@ -40,7 +41,7 @@ namespace CVTBot
             try
             {
                 IPAddress ipAddress = IPAddress.Parse(ip);
-                if (ipAddress.AddressFamily == IPAddress.AddressFamily.InterNetwork)
+                if (ipAddress.AddressFamily == AddressFamily.InterNetwork)
                 {
                     IPAddress cidrAddress = IPAddress.Parse(cidr.Split('/')[0]);
                     byte cidrPrefix = byte.Parse(cidr.Split('/')[1]);
@@ -68,7 +69,7 @@ namespace CVTBot
 
                     return true;
                 }
-                else if(ipAddress.AddressFamily == IPAddress.AddressFamily.InterNetworkV6)
+                else if(ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
                 {
                     var cidrParts = cidr.Split('/');
                     var ipAddressBytes = ipAddress.GetAddressBytes();
