@@ -11,7 +11,7 @@ namespace CVTBot
             {
                 string[] parts = cidr.Split('/');
                 IPAddress ip = IPAddress.Parse(parts[0]);
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                if (ip.AddressFamily == ip.AddressFamily.InterNetwork)
                 {
                     byte prefix = byte.Parse(parts[1]);
                     if (prefix >= 0 && prefix <= 32)
