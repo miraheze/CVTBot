@@ -29,6 +29,8 @@
 05004=%c13User%c14 [[${editor}]] %c13created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05005=%c14Bot [[${editor}]] %c14created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05006=%c07Greylist%c14 [[${editor}]] %c07created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+05007=%c10Whitelist (CIDR)%c14 [[${editor}]] %c10created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+05008=%c04%bBlacklist (CIDR)%b%c14 [[${editor}]] %c04%bcreated%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 
 05010=%c10Whitelist%c14 [[${editor}]] %c10Large create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05011=%c04%bBlacklist%b%c14 [[${editor}]] %c04%bCopyvio?%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
