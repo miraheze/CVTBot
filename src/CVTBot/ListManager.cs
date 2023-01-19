@@ -905,7 +905,7 @@ namespace CVTBot
                         {
                             if (CIDRChecker.IsIPInCIDR(username, CIDR))
                             {
-                                return UserType.whitelisted;
+                                return UserType.whitelistedCIDR;
                             }
                         }
 
@@ -913,7 +913,7 @@ namespace CVTBot
                         {
                             if (CIDRChecker.IsIPInCIDR(username, CIDR))
                             {
-                                return UserType.blacklisted;
+                                return UserType.blacklistedCIDR;
                             }
                         }
                     }
