@@ -921,13 +921,13 @@ namespace CVTBot
             return ipv4.Match(username).Success || ipv6.Match(username).Success ? UserType.anon : UserType.user;
         }
 
-        private List<string> GetCIDRRangesFromDatabase( int listtype )
+        private List<string> GetCIDRRangesFromDatabase( UserType type )
         {
             List<string> cidrRanges = new List<string>();
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "SELECT name FROM users WHERE type = @type AND project = @project AND name LIKE '%.%.%.%/%' OR name LIKE '%:%:%:%:%:%:%:%/%'";
-                _ = cmd.Parameters.Add(new SqliteParameter("@type", listtype));
+                _ = cmd.Parameters.Add(new SqliteParameter("@type", type));
                 _ = cmd.Parameters.Add(new SqliteParameter("@project", string.Empty));
                 cmd.Prepare();
                 lock (dbtoken)
