@@ -894,11 +894,57 @@ namespace CVTBot
                             }
                         }
                     }
+
+                    // Now check the user is a whitelisted or blacklisted CIDR range
+                    List<string> blacklistedCIDRList = GetCIDRRangesFromDatabase( UserType.blacklisted );
+                    List<string> whitelistedCIDRList = GetCIDRRangesFromDatabase( UserType.whitelisted );
+
+                    foreach (string CIDR in whitelistedCIDRList)
+                    {
+                        if (CIDRChecker.IsIPInCIDR(username, CIDR))
+                        {
+                            return UserType.whitelisted;
+                        }
+                    }
+
+                    foreach (string CIDR in blacklistedCIDRList)
+                    {
+                        if (CIDRChecker.IsIPInCIDR(username, CIDR))
+                        {
+                            return UserType.blacklisted;
+                        }
+                    }
                 }
             }
 
             // Finally, if we're still here, user is either user or anon
             return ipv4.Match(username).Success || ipv6.Match(username).Success ? UserType.anon : UserType.user;
+        }
+
+        private List<string> GetCIDRRangesFromDatabase( int listtype )
+        {
+            List<string> cidrRanges = new List<string>();
+            using (IDbCommand cmd = dbcon.CreateCommand())
+            {
+                cmd.CommandText = "SELECT name FROM users WHERE type = @type AND project = @project AND name LIKE '%.%.%.%/%' OR name LIKE '%:%:%:%:%:%:%:%/%'";
+                _ = cmd.Parameters.Add(new SqliteParameter("@type", listtype));
+                _ = cmd.Parameters.Add(new SqliteParameter("@project", string.Empty));
+                cmd.Prepare();
+                lock (dbtoken)
+                {
+                    using (IDataReader idr = cmd.ExecuteReader())
+                    {
+                        while (idr.Read())
+                        {
+                            if (CIDRChecker.IsValidCIDR(idr.GetString(0)))
+                            {
+                                cidrRanges.Add(idr.GetString(0));
+                            }
+                        }
+                    }
+                }
+            }
+            return cidrRanges;
         }
 
         public ListMatch IsWatchedArticle(string title, string project)
