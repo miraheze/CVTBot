@@ -440,7 +440,7 @@ namespace CVTBot
                         case "ADD":
                             switch (list)
                             {
-                                case "WL":
+                                case "TL":
                                     _ = listman.AddUserToList(item, "", UserType.trustlisted, adder, reason, len);
                                     break;
                                 case "BL":
@@ -467,7 +467,7 @@ namespace CVTBot
                         case "DEL":
                             switch (list)
                             {
-                                case "WL":
+                                case "TL":
                                     _ = listman.DelUserFromList(item, "", UserType.trustlisted);
                                     break;
                                 case "BL":
@@ -784,7 +784,7 @@ namespace CVTBot
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(1, e.Data.Nick, extraParams), Priority.High);
                         break;
-                    case "wl":
+                    case "tl":
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(0, e.Data.Nick, extraParams), Priority.High);
                         break;
