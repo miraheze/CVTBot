@@ -2,8 +2,8 @@
 {
     public enum UserType
     {
-        whitelisted = 0,
-        blacklisted = 1,
+        trustlisted = 0,
+        blocklisted = 1,
         admin = 2,
         anon = 3,
         user = 4,
