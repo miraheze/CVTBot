@@ -69,15 +69,15 @@ namespace CVTBot
 
                     return true;
                 }
-                else if(ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
+                else if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
                 {
-                    var cidrParts = cidr.Split('/');
-                    var ipAddressBytes = ipAddress.GetAddressBytes();
-                    var cidrAddressBytes = IPAddress.Parse(cidrParts[0]).GetAddressBytes();
-                    var cidrPrefix = int.Parse(cidrParts[1]);
-                    var bytesToCheck = cidrPrefix / 8;
-                    var bitsToCheck = cidrPrefix % 8;
-                    var mask = (byte)(0xff >> bitsToCheck);
+                    string[] cidrParts = cidr.Split('/');
+                    byte[] ipAddressBytes = ipAddress.GetAddressBytes();
+                    byte[] cidrAddressBytes = IPAddress.Parse(cidrParts[0]).GetAddressBytes();
+                    int cidrPrefix = int.Parse(cidrParts[1]);
+                    int bytesToCheck = cidrPrefix / 8;
+                    int bitsToCheck = cidrPrefix % 8;
+                    byte mask = (byte)(0xff >> bitsToCheck);
                     for (int i = 0; i < bytesToCheck; i++)
                     {
                         if (ipAddressBytes[i] != cidrAddressBytes[i])

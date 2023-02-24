@@ -898,8 +898,8 @@ namespace CVTBot
                     // Now check the user is a whitelisted or blacklisted CIDR range
                     if (ipv4.Match(username).Success || ipv6.Match(username).Success)
                     {
-                        List<string> blacklistedCIDRList = GetCIDRRangesFromDatabase( UserType.blacklisted );
-                        List<string> whitelistedCIDRList = GetCIDRRangesFromDatabase( UserType.whitelisted );
+                        List<string> blacklistedCIDRList = GetCIDRRangesFromDatabase(UserType.blacklisted);
+                        List<string> whitelistedCIDRList = GetCIDRRangesFromDatabase(UserType.whitelisted);
 
                         foreach (string CIDR in whitelistedCIDRList)
                         {
@@ -924,7 +924,7 @@ namespace CVTBot
             return ipv4.Match(username).Success || ipv6.Match(username).Success ? UserType.anon : UserType.user;
         }
 
-        private List<string> GetCIDRRangesFromDatabase( UserType type )
+        private List<string> GetCIDRRangesFromDatabase(UserType type)
         {
             List<string> cidrRanges = new List<string>();
             using (IDbCommand cmd = dbcon.CreateCommand())
