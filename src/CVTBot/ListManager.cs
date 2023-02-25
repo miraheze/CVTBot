@@ -901,11 +901,11 @@ namespace CVTBot
                         List<string> blocklistedCIDRList = GetCIDRRangesFromDatabase(UserType.blocklisted);
                         List<string> trustlistedCIDRList = GetCIDRRangesFromDatabase(UserType.trustlisted);
 
-                        foreach (string CIDR in whitelistedCIDRList)
+                        foreach (string CIDR in trustlistedCIDRList)
                         {
                             if (CIDRChecker.IsIPInCIDR(username, CIDR))
                             {
-                                return UserType.whitelisted;
+                                return UserType.trustlisted;
                             }
                         }
 
