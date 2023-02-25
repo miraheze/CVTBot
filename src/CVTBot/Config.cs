@@ -79,7 +79,7 @@ namespace CVTBot
         // to load a many (or even, all) of the wikis without producing an ever-growing backlog
         // of change events faster than we can process them.
         // Disabling the database means the actual output in the feedchannel will not be useful (all edits go through,
-        // no bot, user, or whitelist detection).
+        // no bot, user, or trustlist detection).
         // Recommended to be used in combination with high(est) feedFilter settings for the purposes
         // of detecting block events from all wikis to then automatically broadcast to other bots
         // for cross-wiki vandalism detection. Originally written for the CVNBlackRock bot.
@@ -94,7 +94,7 @@ namespace CVTBot
          *  1 "show"     (show and allow autolist) - default
          *  2 "softhide" (hide non-specials, show exceptions and allow autolist)
          *     softhide users: only large actions or matching watchlist/BES/BNU etc.
-         *     softhide events: hide bots, admins, whitelist performing the event
+         *     softhide events: hide bots, admins, trustlist performing the event
          *  3 "hardhide" (hide all but do autolist)
          *  4 "ignore"   (hide and ignore totally)
          * show/ignore is dealt with at beginning of ReactToRCEvent()

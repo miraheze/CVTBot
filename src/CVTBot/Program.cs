@@ -15,7 +15,7 @@ namespace CVTBot
 {
     internal class Program
     {
-        private const string version = "2.2.0";
+        private const string version = "2.2.1";
 
         public static IrcClient irc = new IrcClient();
         public static RCReader rcirc = new RCReader();
@@ -440,11 +440,11 @@ namespace CVTBot
                         case "ADD":
                             switch (list)
                             {
-                                case "WL":
-                                    _ = listman.AddUserToList(item, "", UserType.whitelisted, adder, reason, len);
+                                case "TL":
+                                    _ = listman.AddUserToList(item, "", UserType.trustlisted, adder, reason, len);
                                     break;
                                 case "BL":
-                                    _ = listman.AddUserToList(item, "", UserType.blacklisted, adder, reason, len);
+                                    _ = listman.AddUserToList(item, "", UserType.blocklisted, adder, reason, len);
                                     break;
                                 case "GL":
                                     _ = listman.AddUserToList(item, "", UserType.greylisted, adder, reason, len);
@@ -467,11 +467,11 @@ namespace CVTBot
                         case "DEL":
                             switch (list)
                             {
-                                case "WL":
-                                    _ = listman.DelUserFromList(item, "", UserType.whitelisted);
+                                case "TL":
+                                    _ = listman.DelUserFromList(item, "", UserType.trustlisted);
                                     break;
                                 case "BL":
-                                    _ = listman.DelUserFromList(item, "", UserType.blacklisted);
+                                    _ = listman.DelUserFromList(item, "", UserType.blocklisted);
                                     break;
                                 case "GL":
                                     _ = listman.DelUserFromList(item, "", UserType.greylisted);
@@ -784,7 +784,7 @@ namespace CVTBot
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(1, e.Data.Nick, extraParams), Priority.High);
                         break;
-                    case "wl":
+                    case "tl":
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(0, e.Data.Nick, extraParams), Priority.High);
                         break;
@@ -970,9 +970,9 @@ namespace CVTBot
         /// <param name="reason"></param>
         private static void AddToGreylist(UserType userOffset, string username, string reason)
         {
-            // Only do greylisting if they are currently blacklisted, reguser, anon, or already greylisted.
-            // In other words, never greylist trusted users (bot, admin, whitelist).
-            if (userOffset == UserType.blacklisted || userOffset == UserType.user || userOffset == UserType.anon || userOffset == UserType.greylisted)
+            // Only do greylisting if they are currently blocklisted, reguser, anon, or already greylisted.
+            // In other words, never greylist trusted users (bot, admin, trustlist).
+            if (userOffset == UserType.blocklisted || userOffset == UserType.user || userOffset == UserType.anon || userOffset == UserType.greylisted)
             {
                 _ = listman.AddUserToList(username, "", UserType.greylisted, "CVTBot", reason, 1);
                 // Greylist for 900 seconds = 15 mins
@@ -1060,7 +1060,7 @@ namespace CVTBot
             UserType userOffset = listman.ClassifyEditor(r.user, r.project);
 
             // FIXME: If the current event is by a bot user and it blocks (eg. bot admin) and
-            // bot edits are ignored (default) then the user will not be blacklisted
+            // bot edits are ignored (default) then the user will not be blocklisted
             // TODO: Add new userOffset for botadmin?
 
             // Feed filters -> Users
@@ -1108,9 +1108,9 @@ namespace CVTBot
                     {
                         bool createSpecial = false;
 
-                        if (userOffset == UserType.admin || userOffset == UserType.whitelisted)
+                        if (userOffset == UserType.admin || userOffset == UserType.trustlisted)
                         {
-                            // Ignore new pages created by an admin or whitelisted user
+                            // Ignore new pages created by an admin or trustlisted user
                             return;
                         }
 
@@ -1177,15 +1177,15 @@ namespace CVTBot
                         }
 
                         // If we're still here that means
-                        // - the create didn't get ignored by adminlist or whitelist
+                        // - the create didn't get ignored by adminlist or trustlist
                         // - the create didn't match any watch patterns
                         // Now, if any of the following is true, we'll must report it.
-                        // - Create by blacklisted user
+                        // - Create by blocklisted user
                         // - Create by greylisted user
                         // - Current usertype is configured to always report
                         //   (By default this is for anonymous users, via feedFilterUsersAnon=1,
                         //   but feedFilterUsersReg or feedFilterUsersBot could also be set to 1)
-                        if (userOffset == UserType.blacklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
+                        if (userOffset == UserType.blocklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
                         {
                             break;
                         }
@@ -1203,9 +1203,9 @@ namespace CVTBot
                     {
                         bool editSpecial = false;
 
-                        if (userOffset == UserType.admin || userOffset == UserType.whitelisted)
+                        if (userOffset == UserType.admin || userOffset == UserType.trustlisted)
                         {
-                            // Ignore edit by admin or whitelisted user
+                            // Ignore edit by admin or trustlisted user
                             return;
                         }
 
@@ -1286,16 +1286,16 @@ namespace CVTBot
                         }
 
                         // If we're still here that means:
-                        // - the edit didn't get ignored by adminlist or whitelist
+                        // - the edit didn't get ignored by adminlist or trustlist
                         // - the edit didn't match any watch patterns
                         //
                         // Now, if any of the following is true, we must still report it:
-                        // - Edit by blacklisted user
+                        // - Edit by blocklisted user
                         // - Edit by greylisted user
                         // - Current usertype is configured to always report
                         //   (By default this is for anonymous users, via feedFilterUsersAnon=1,
                         //   but feedFilterUsersReg or feedFilterUsersBot could also be set to 1)
-                        if (userOffset == UserType.blacklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
+                        if (userOffset == UserType.blocklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
                         {
                             break;
                         }
@@ -1308,8 +1308,8 @@ namespace CVTBot
                     }
                     break;
                 case RCEvent.EventType.move:
-                    // if moves are softhidden, then hide moves by admin, bot or whitelist
-                    if (config.feedFilterEventMove == 2 && (userOffset == UserType.admin || userOffset == UserType.bot || userOffset == UserType.whitelisted))
+                    // if moves are softhidden, then hide moves by admin, bot or trustlist
+                    if (config.feedFilterEventMove == 2 && (userOffset == UserType.admin || userOffset == UserType.bot || userOffset == UserType.trustlisted))
                     {
                         return;
                     }
@@ -1333,16 +1333,16 @@ namespace CVTBot
                     attribs.Add("length", r.blockLength);
                     attribs.Add("reason", r.comment);
                     message = GetMessage(5400, ref attribs);
-                    // If the blocked user (r.title) isn't botlisted, add to blacklist
+                    // If the blocked user (r.title) isn't botlisted, add to blocklist
                     if (listman.ClassifyEditor(r.title.Split(new char[] { ':' }, 2)[1], r.project) != UserType.bot)
                     {
-                        // If this isn't an indefinite/infinite block, add to blacklist
+                        // If this isn't an indefinite/infinite block, add to blocklist
                         if ((r.blockLength.ToLower() != "indefinite") && (r.blockLength.ToLower() != "infinite"))
                         {                                                               // 2,678,400 seconds = 744 hours = 31 days
                             int listLen = Convert.ToInt32(CVTBotUtils.ParseDateTimeLength(r.blockLength, 2678400) * 2.5);
-                            string blComment = "Autoblacklist: " + r.comment + " on " + r.project;
+                            string blComment = "Autoblocklist: " + r.comment + " on " + r.project;
                             message += "\n" + listman.AddUserToList(r.title.Split(new char[] { ':' }, 2)[1], "" //Global bl
-                                , UserType.blacklisted, r.user, blComment, listLen);
+                                , UserType.blocklisted, r.user, blComment, listLen);
                             Broadcast("BL", "ADD", r.title.Split(new char[] { ':' }, 2)[1], listLen, blComment, r.user);
                         }
                     }
@@ -1439,8 +1439,8 @@ namespace CVTBot
                         uMsg = 5610;
                     }
 
-                    // If normal and uploaded by an admin, bot or whitelisted person always hide
-                    if (uMsg == 5600 && (userOffset == UserType.admin || userOffset == UserType.bot || userOffset == UserType.whitelisted))
+                    // If normal and uploaded by an admin, bot or trustlisted person always hide
+                    if (uMsg == 5600 && (userOffset == UserType.admin || userOffset == UserType.bot || userOffset == UserType.trustlisted))
                     {
                         return;
                     }

@@ -164,12 +164,12 @@ namespace CVTBot
                     return Program.GetFormatMessage(16104, ShowUserOnList(name, project));
                 }
             }
-            // Also allow adding greylisted users to the blacklist
+            // Also allow adding greylisted users to the blocklist
             // If adding to greylist, we can accept a new entry, as they may overlap
             if ((originalType == UserType.anon)
                 || (originalType == UserType.user)
                 || (type == UserType.greylisted)
-                || ((originalType == UserType.greylisted) && (type == UserType.blacklisted)))
+                || ((originalType == UserType.greylisted) && (type == UserType.blocklisted)))
             {
                 // User was originally unlisted or is on non-conflicting list
                 using (IDbCommand cmd = dbcon.CreateCommand())
@@ -272,7 +272,7 @@ namespace CVTBot
                     }
                 }
 
-                // Next, if we're still here, check if user is globally whitelisted or blacklisted
+                // Next, if we're still here, check if user is on the global trustlist or blocklist
                 cmd.Parameters.Clear();
                 cmd.CommandText = "SELECT type, adder, reason, expiry FROM users WHERE name = @name AND project = @project AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
                 _ = cmd.Parameters.Add(new SqliteParameter("@name", username));
@@ -285,7 +285,7 @@ namespace CVTBot
                     {
                         if (idr.Read())
                         {
-                            // Is on blacklist or whitelist?
+                            // Is on blocklist or trustlist?
                             if ((idr.GetInt32(0) == 0) || (idr.GetInt32(0) == 1))
                             {
                                 string result = Program.GetFormatMessage(16004, username, FriendlyProject(""), FriendlyList(idr.GetInt32(0))
@@ -594,10 +594,10 @@ namespace CVTBot
                     string cmd = groups["cmd"].Captures[0].Value.ToLower();
                     string item = groups["item"].Captures[0].Value.Trim();
                     int len;
-                    // Set length defaults: except for blacklist (listtype=1), the default is 0 (indefinite)
+                    // Set length defaults: except for blocklist (listtype=1), the default is 0 (indefinite)
                     if (listtype == 1)
                     {
-                        // Default expiry for blacklist: 90 days (in seconds)
+                        // Default expiry for blocklist: 90 days (in seconds)
                         len = 7776000;
                     }
                     else
@@ -632,12 +632,12 @@ namespace CVTBot
                         case "add":
                             switch (listtype)
                             {
-                                case 0: //Whitelist
-                                    Program.Broadcast("WL", "ADD", item, len, reason, user);
-                                    return AddUserToList(item, "", UserType.whitelisted, user, reason, len);
-                                case 1: //Blacklist
+                                case 0: //Trustlist
+                                    Program.Broadcast("TL", "ADD", item, len, reason, user);
+                                    return AddUserToList(item, "", UserType.trustlisted, user, reason, len);
+                                case 1: //Blocklist
                                     Program.Broadcast("BL", "ADD", item, len, reason, user);
-                                    return AddUserToList(item, "", UserType.blacklisted, user, reason, len);
+                                    return AddUserToList(item, "", UserType.blocklisted, user, reason, len);
                                 case 6: //Greylist
                                     return "You cannot directly add users to the greylist";
                                 case 2: //Adminlist
@@ -676,12 +676,12 @@ namespace CVTBot
                         case "del":
                             switch (listtype)
                             {
-                                case 0: //Whitelist
-                                    Program.Broadcast("WL", "DEL", item, 0, reason, user);
-                                    return DelUserFromList(item, "", UserType.whitelisted);
-                                case 1: //Blacklist
+                                case 0: //Trustlist
+                                    Program.Broadcast("TL", "DEL", item, 0, reason, user);
+                                    return DelUserFromList(item, "", UserType.trustlisted);
+                                case 1: //Blocklist
                                     Program.Broadcast("BL", "DEL", item, 0, reason, user);
-                                    return DelUserFromList(item, "", UserType.blacklisted);
+                                    return DelUserFromList(item, "", UserType.blocklisted);
                                 case 6: //Greylist
                                     Program.Broadcast("GL", "DEL", item, 0, reason, user);
                                     return DelUserFromList(item, "", UserType.greylisted);
@@ -721,8 +721,8 @@ namespace CVTBot
                         case "show":
                             switch (listtype)
                             {
-                                case 0: //Whitelist
-                                case 1: //Blacklist
+                                case 0: //Trustlist
+                                case 1: //Blocklist
                                 case 6: //Greylist
                                     return ShowUserOnList(item, "");
                                 case 2: //Adminlist
@@ -872,7 +872,7 @@ namespace CVTBot
                         }
                     }
 
-                    // Next, if we're still here, check if user is globally whitelisted or blacklisted
+                    // Next, if we're still here, check if user is on the global trustlist or blocklist
                     cmd.CommandText = "SELECT type FROM users WHERE name = @username AND project = @project AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
                     _ = cmd.Parameters.Add(new SqliteParameter("@username", username));
                     _ = cmd.Parameters.Add(new SqliteParameter("@project", string.Empty));
@@ -887,33 +887,33 @@ namespace CVTBot
                                 switch (idr2.GetInt32(0))
                                 {
                                     case 0:
-                                        return UserType.whitelisted;
+                                        return UserType.trustlisted;
                                     case 1:
-                                        return UserType.blacklisted;
+                                        return UserType.blocklisted;
                                 }
                             }
                         }
                     }
 
-                    // Now check the user is a whitelisted or blacklisted CIDR range
+                    // Now check the user is a trustlisted or blocklisted CIDR range
                     if (ipv4.Match(username).Success || ipv6.Match(username).Success)
                     {
-                        List<string> blacklistedCIDRList = GetCIDRRangesFromDatabase(UserType.blacklisted);
-                        List<string> whitelistedCIDRList = GetCIDRRangesFromDatabase(UserType.whitelisted);
+                        List<string> blocklistedCIDRList = GetCIDRRangesFromDatabase(UserType.blocklisted);
+                        List<string> trustlistedCIDRList = GetCIDRRangesFromDatabase(UserType.trustlisted);
 
-                        foreach (string CIDR in whitelistedCIDRList)
+                        foreach (string CIDR in trustlistedCIDRList)
                         {
                             if (CIDRChecker.IsIPInCIDR(username, CIDR))
                             {
-                                return UserType.whitelisted;
+                                return UserType.trustlisted;
                             }
                         }
 
-                        foreach (string CIDR in blacklistedCIDRList)
+                        foreach (string CIDR in blocklistedCIDRList)
                         {
                             if (CIDRChecker.IsIPInCIDR(username, CIDR))
                             {
-                                return UserType.blacklisted;
+                                return UserType.blocklisted;
                             }
                         }
                     }
