@@ -895,11 +895,11 @@ namespace CVTBot
                         }
                     }
 
-                    // Now check the user is a whitelisted or blacklisted CIDR range
+                    // Now check the user is a trustlisted or blocklisted CIDR range
                     if (ipv4.Match(username).Success || ipv6.Match(username).Success)
                     {
-                        List<string> blacklistedCIDRList = GetCIDRRangesFromDatabase(UserType.blacklisted);
-                        List<string> whitelistedCIDRList = GetCIDRRangesFromDatabase(UserType.whitelisted);
+                        List<string> blocklistedCIDRList = GetCIDRRangesFromDatabase(UserType.blocklisted);
+                        List<string> trustlistedCIDRList = GetCIDRRangesFromDatabase(UserType.trustlisted);
 
                         foreach (string CIDR in whitelistedCIDRList)
                         {
@@ -909,11 +909,11 @@ namespace CVTBot
                             }
                         }
 
-                        foreach (string CIDR in blacklistedCIDRList)
+                        foreach (string CIDR in blocklistedCIDRList)
                         {
                             if (CIDRChecker.IsIPInCIDR(username, CIDR))
                             {
-                                return UserType.blacklisted;
+                                return UserType.blocklisted;
                             }
                         }
                     }
