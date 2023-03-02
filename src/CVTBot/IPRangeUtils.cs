@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace CVTBot
 {
-    internal static class IPConverter
+    internal static class IPRangeUtils
     {
         public static string CIDRToIPRange(string cidr)
         {
@@ -25,8 +25,8 @@ namespace CVTBot
 
             var mask = IPAddressExtensions.CreateSubnetMask(ip.AddressFamily, maskBits);
             var network = ip.GetNetworkAddress(mask);
-            var broadcast = GetBroadcastAddress(ip, mask);
-            return $"{network} - {broadcast}";
+            var broadcast = ip.AddressFamily == AddressFamily.InterNetwork ? GetBroadcastAddress(ip, mask) : null;
+            return $"{network} - {(broadcast != null ? broadcast.ToString() : "N/A")}";
         }
 
         public static string IPRangeToCIDR(string start, string end)
@@ -51,8 +51,8 @@ namespace CVTBot
             var subnetMask = startIP.GetSubnetMask(endIP);
             var network = startIP.GetNetworkAddress(subnetMask);
             return network.Equals(ipToCheck.GetNetworkAddress(subnetMask))
-                && ipToCheck.CompareTo(startIP) >= 0
-                && ipToCheck.CompareTo(endIP) <= 0;
+                && IPAddress.Compare(ipToCheck, startIP) >= 0
+                && IPAddress.Compare(ipToCheck, endIP) <= 0;
         }
 
         private static IPAddress GetBroadcastAddress(IPAddress ipAddress, IPAddress subnetMask)
