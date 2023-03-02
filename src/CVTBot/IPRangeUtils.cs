@@ -50,9 +50,20 @@ namespace CVTBot
             }
             var subnetMask = startIP.GetSubnetMask(endIP);
             var network = startIP.GetNetworkAddress(subnetMask);
-            return network.Equals(ipToCheck.GetNetworkAddress(subnetMask))
-                && IPAddress.Compare(ipToCheck, startIP) >= 0
-                && IPAddress.Compare(ipToCheck, endIP) <= 0;
+            var startBytes = startIP.GetAddressBytes();
+            var endBytes = endIP.GetAddressBytes();
+            var ipBytes = ipToCheck.GetAddressBytes();
+            var networkBytes = network.GetAddressBytes();
+            for (int i = 0; i < startBytes.Length; i++)
+            {
+                startBytes[i] &= networkBytes[i];
+                endBytes[i] &= networkBytes[i];
+                ipBytes[i] &= networkBytes[i];
+            }
+            var startUInt = BitConverter.ToUInt32(startBytes, 0);
+            var endUInt = BitConverter.ToUInt32(endBytes, 0);
+            var ipUInt = BitConverter.ToUInt32(ipBytes, 0);
+            return ipUInt >= startUInt && ipUInt <= endUInt;
         }
 
         private static IPAddress GetBroadcastAddress(IPAddress ipAddress, IPAddress subnetMask)
