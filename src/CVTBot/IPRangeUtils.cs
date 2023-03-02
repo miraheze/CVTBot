@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.Sockets;
 
 namespace CVTBot
 {
@@ -7,10 +8,22 @@ namespace CVTBot
     {
         public static string CIDRToIPRange(string cidr)
         {
-            var parts = cidr.Split('/');
-            var ip = IPAddress.Parse(parts[0]);
-            var maskBits = int.Parse(parts[1]);
-            var mask = IPAddressExtensions.CreateSubnetMask(maskBits);
+            IPAddress ip;
+            int maskBits;
+            if (cidr.Contains(":")) // IPv6
+            {
+                var parts = cidr.Split('/');
+                ip = IPAddress.Parse(parts[0]);
+                maskBits = int.Parse(parts[1]);
+            }
+            else // IPv4
+            {
+                var parts = cidr.Split('/');
+                ip = IPAddress.Parse(parts[0]);
+                maskBits = int.Parse(parts[1]);
+            }
+
+            var mask = IPAddressExtensions.CreateSubnetMask(ip.AddressFamily, maskBits);
             var network = ip.GetNetworkAddress(mask);
             var broadcast = ip.GetBroadcastAddress(mask);
             return $"{network} - {broadcast}";
@@ -18,19 +31,23 @@ namespace CVTBot
 
         public static string IPRangeToCIDR(string start, string end)
         {
-            var startIP = IPAddress.Parse(start);
-            var endIP = IPAddress.Parse(end);
+            IPAddress startIP = IPAddress.Parse(start);
+            IPAddress endIP = IPAddress.Parse(end);
             var subnetMask = startIP.GetSubnetMask(endIP);
             var network = startIP.GetNetworkAddress(subnetMask);
             var maskBits = subnetMask.GetMaskBits();
             return $"{network}/{maskBits}";
         }
 
-        public static bool isIPInRange(string ip, string start, string end)
+        public static bool IsIPInRange(string ip, string start, string end)
         {
-            var startIP = IPAddress.Parse(start);
-            var endIP = IPAddress.Parse(end);
-            var ipToCheck = IPAddress.Parse(ip);
+            IPAddress startIP = IPAddress.Parse(start);
+            IPAddress endIP = IPAddress.Parse(end);
+            IPAddress ipToCheck = IPAddress.Parse(ip);
+            if (startIP.AddressFamily != ipToCheck.AddressFamily || endIP.AddressFamily != ipToCheck.AddressFamily)
+            {
+                return false; // IP versions must match
+            }
             var subnetMask = startIP.GetSubnetMask(endIP);
             var network = startIP.GetNetworkAddress(subnetMask);
             return network.Equals(ipToCheck.GetNetworkAddress(subnetMask))
@@ -41,9 +58,9 @@ namespace CVTBot
 
     internal static class IPAddressExtensions
     {
-        public static IPAddress CreateSubnetMask(int maskBits)
+        public static IPAddress CreateSubnetMask(AddressFamily addressFamily, int maskBits)
         {
-            var maskBytes = new byte[4];
+            var maskBytes = new byte[addressFamily == AddressFamily.InterNetwork ? 4 : 16];
             for (int i = 0; i < maskBits; i++)
             {
                 maskBytes[i / 8] |= (byte)(0x80 >> (i % 8));
@@ -55,8 +72,8 @@ namespace CVTBot
         {
             var ipBytes = ip.GetAddressBytes();
             var maskBytes = subnetMask.GetAddressBytes();
-            var networkBytes = new byte[4];
-            for (int i = 0; i < 4; i++)
+            var networkBytes = new byte[ipBytes.Length];
+            for (int i = 0; i < ipBytes.Length; i++)
             {
                 networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
             }
@@ -67,8 +84,8 @@ namespace CVTBot
         {
             var startBytes = startIP.GetAddressBytes();
             var endBytes = endIP.GetAddressBytes();
-            var maskBytes = new byte[4];
-            for (int i = 0; i < 4; i++)
+            var maskBytes = new byte[startBytes.Length];
+            for (int i = 0; i < startBytes.Length; i++)
             {
                 maskBytes[i] = (byte)(startBytes[i] & endBytes[i]);
             }
@@ -79,7 +96,7 @@ namespace CVTBot
         {
             var maskBytes = subnetMask.GetAddressBytes();
             var maskBits = 0;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < maskBytes.Length; i++)
             {
                 maskBits += BitCount(maskBytes[i]);
             }
