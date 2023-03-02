@@ -25,7 +25,7 @@ namespace CVTBot
 
             var mask = IPAddressExtensions.CreateSubnetMask(ip.AddressFamily, maskBits);
             var network = ip.GetNetworkAddress(mask);
-            var broadcast = ip.GetBroadcastAddress(mask);
+            var broadcast = GetBroadcastAddress(ip, mask);
             return $"{network} - {broadcast}";
         }
 
@@ -53,6 +53,19 @@ namespace CVTBot
             return network.Equals(ipToCheck.GetNetworkAddress(subnetMask))
                 && ipToCheck.CompareTo(startIP) >= 0
                 && ipToCheck.CompareTo(endIP) <= 0;
+        }
+
+        private static IPAddress GetBroadcastAddress(IPAddress ipAddress, IPAddress subnetMask)
+        {
+            var ipBytes = ipAddress.GetAddressBytes();
+            var maskBytes = subnetMask.GetAddressBytes();
+            var broadcastBytes = new byte[ipBytes.Length];
+            for (int i = 0; i < ipBytes.Length; i++)
+            {
+                broadcastBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
+                broadcastBytes[i] |= (byte)~maskBytes[i];
+            }
+            return new IPAddress(broadcastBytes);
         }
     }
 
