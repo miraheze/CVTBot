@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -299,6 +301,8 @@ namespace CVTBot
             irc.OnConnectionError += Irc_OnConnectionError;
 
             irc.UseSsl = config.ircServerUseSsl;
+
+            HttpClient.DefaultProxy = new WebProxy("http://bastion.wikitide.net:8080");
 
             try
             {
