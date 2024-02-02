@@ -301,7 +301,7 @@ namespace CVTBot
             irc.UseSsl = config.ircServerUseSsl;
             irc.ProxyType = ProxyType.Http;
             irc.ProxyHost = "bastion.wikitide.net";
-            irc.ProxyPort = 8080
+            irc.ProxyPort = 8080;
 
             try
             {
