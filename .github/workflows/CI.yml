@@ -13,10 +13,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Versions
         run: |
-          mono --version
-          msbuild /version
-      - run: msbuild src/CVTBot.sln /p:Configuration=Release
-      - run: msbuild src/CVTBot.sln /p:Configuration=Debug
+          dotnet --version
+      - run: dotnet build src/CVTBot.sln --configuration=Release
+      - run: dotnet build src/CVTBot.sln --configuration=Debug
 
   macos:
     name: macOS
@@ -25,7 +24,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Versions
         run: |
-          mono --version
-          msbuild /version
-      - run: msbuild src/CVTBot.sln /p:Configuration=Release
-      - run: msbuild src/CVTBot.sln /p:Configuration=Debug
+          dotnet --version
+      - run: dotnet build src/CVTBot.sln --configuration=Release
+      - run: dotnet build src/CVTBot.sln --configuration=Debug
