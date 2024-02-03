@@ -15,7 +15,7 @@ jobs:
         run: dotnet --version
       - run: dotnet build src/CVTBot.sln --configuration=Release
       - run: dotnet build src/CVTBot.sln --configuration=Debug
-      - run: cd src/CVTBot && dotnet run --project CVTBot.csproj --configuration=Debug
+      - run: cd src/CVTBot/bin/Release/net6.0 && dotnet run --project ../../../CVTBot.csproj --configuration=Debug
 
   macos:
     name: macOS
