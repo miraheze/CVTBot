@@ -1,64 +1,43 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="restore;Clean;Build">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
-    <PackageVersion>1.0.0.0</PackageVersion>
-    <!-- [Restore pre-2017 behaviour]
-         Output to "bin/Release", not "bin/Release/:TargetFramework". s-->
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <!-- [Restore pre-2017 behaviour] No NuGetpackaging -->
-    <IsPackable>false</IsPackable>
-    <!-- MSBuild 16+ overwrite our exe.config by default, which means
-         no more console or syslog logging. Keep MWBuild <= 15 behaviour.
-         https://github.com/nunit/nunit-console/pull/587 -->
-    <GenerateSupportedRuntime>false</GenerateSupportedRuntime>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
-    <StartAction>Project</StartAction>
-    <!-- [Restore pre-2017 behaviour] Send application output to a tab inside
-         the editor, not to an external console window. -->
-    <ExternalConsole>false</ExternalConsole>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="log4net, Version=2.0.8, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Meebey.SmartIrc4net, Version=1.1, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Meebey.SmartIrc4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Data.Sqlite, Version=1.0.61.0, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Mono.Data.Sqlite.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Projects.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Console.msgs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\CVTBot-sample.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>CVTBot.ini</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <Content Include="..\CVTBot.exe.debug.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>CVTBot.exe.config</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-    <Content Include="..\CVTBot.exe.release.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>CVTBot.exe.config</Link>
-    </Content>
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+  	</PropertyGroup>
+
+  	<ItemGroup>
+		<PackageReference Include="log4net" Version="2.0.15" />
+		<PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+		<PackageReference Include="SmartIrc4net" Version="1.1.0">
+			<NoWarn>NU1701</NoWarn>
+		</PackageReference>
+  	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Projects.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\Console.msgs">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\CVTBot-sample.ini">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>CVTBot.ini</Link>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<Content Include="..\CVTBot.exe.debug.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<Link>CVTBot.exe.config</Link>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+		<Content Include="..\CVTBot.exe.release.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<Link>CVTBot.exe.config</Link>
+		</Content>
+	</ItemGroup>
+
 </Project>
