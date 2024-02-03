@@ -1,9 +1,9 @@
 using log4net;
+using Mono.Data.Sqlite;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -35,18 +35,18 @@ namespace CVTBot
             FileInfo fi = new FileInfo(filename);
             bool alreadyExists = fi.Exists;
             connectionString = "URI=file:" + filename + ",version=3";
-            dbcon = new SQLiteConnection(connectionString);
+            dbcon = new SqliteConnection(connectionString);
             dbcon.Open();
             if (!alreadyExists)
             {
                 // The file didn't exist before, so initialize tables
                 using (IDbCommand cmd = dbcon.CreateCommand())
                 {
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS users ( name varchar(64), project varchar(32), type integer(2), adder varchar(64), reason varchar(80), expiry integer(32) )";
+                    cmd.CommandText = "CREATE TABLE users ( name varchar(64), project varchar(32), type integer(2), adder varchar(64), reason varchar(80), expiry integer(32) )";
                     _ = cmd.ExecuteNonQuery();
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS watchlist ( article varchar(64), project varchar(32), adder varchar(64), reason varchar(80), expiry integer(32) )";
+                    cmd.CommandText = "CREATE TABLE watchlist ( article varchar(64), project varchar(32), adder varchar(64), reason varchar(80), expiry integer(32) )";
                     _ = cmd.ExecuteNonQuery();
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS items ( item varchar(80), itemtype integer(2), adder varchar(64), reason varchar(80), expiry integer(32) )";
+                    cmd.CommandText = "CREATE TABLE items ( item varchar(80), itemtype integer(2), adder varchar(64), reason varchar(80), expiry integer(32) )";
                     _ = cmd.ExecuteNonQuery();
                 }
             }
@@ -59,7 +59,7 @@ namespace CVTBot
         private void CollectGarbage(object stateInfo)
         {
             int total = 0;
-            using (IDbConnection timdbcon = new SQLiteConnection(connectionString))
+            using (IDbConnection timdbcon = new SqliteConnection(connectionString))
             {
                 timdbcon.Open();
                 using (IDbCommand timcmd = timdbcon.CreateCommand())
@@ -67,20 +67,20 @@ namespace CVTBot
                     lock (dbtoken)
                     {
                         timcmd.CommandText = "DELETE FROM users WHERE ((expiry < @expiry) AND (expiry != '0'))";
-                        _ = timcmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                        _ = timcmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                         timcmd.Prepare();
                         total += timcmd.ExecuteNonQuery();
 
                         // Clean out parameters list for the next statement
                         timcmd.Parameters.Clear();
                         timcmd.CommandText = "DELETE FROM watchlist WHERE ((expiry < @expiry) AND (expiry != '0'))";
-                        _ = timcmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                        _ = timcmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                         timcmd.Prepare();
                         total += timcmd.ExecuteNonQuery();
 
                         timcmd.Parameters.Clear();
                         timcmd.CommandText = "DELETE FROM items WHERE ((expiry < @expiry) AND (expiry != '0'))";
-                        _ = timcmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                        _ = timcmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                         timcmd.Prepare();
                         total += timcmd.ExecuteNonQuery();
                     }
@@ -148,12 +148,12 @@ namespace CVTBot
                 using (IDbCommand cmd = dbcon.CreateCommand())
                 {
                     cmd.CommandText = "UPDATE users SET adder = @adder, reason = @reason, expiry = @expiry WHERE name = @name AND project = @project AND type = @type";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@adder", adder));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@reason", reason));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", GetExpiryDate(expiry)));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@name", name));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@type", ((int)originalType).ToString()));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@adder", adder));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@reason", reason));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@expiry", GetExpiryDate(expiry)));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@name", name));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@type", ((int)originalType).ToString()));
                     cmd.Prepare();
 
                     lock (dbtoken)
@@ -175,12 +175,12 @@ namespace CVTBot
                 using (IDbCommand cmd = dbcon.CreateCommand())
                 {
                     cmd.CommandText = "INSERT INTO users (name, project, type, adder, reason, expiry) VALUES (@name,@project,@type,@adder,@reason,@expiry)";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@name", name));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@type", ((int)type).ToString()));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@adder", adder));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@reason", reason));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", GetExpiryDate(expiry)));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@name", name));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@type", ((int)type).ToString()));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@adder", adder));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@reason", reason));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@expiry", GetExpiryDate(expiry)));
                     cmd.Prepare();
 
                     lock (dbtoken)
@@ -208,9 +208,9 @@ namespace CVTBot
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "DELETE FROM users WHERE name = @name AND project = @project AND type = @type";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@name", name));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@type", ((int)uType).ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@name", name));
+                _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                _ = cmd.Parameters.Add(new SqliteParameter("@type", ((int)uType).ToString()));
                 cmd.Prepare();
                 lock (dbtoken)
                 {
@@ -230,9 +230,9 @@ namespace CVTBot
                 if (project != "")
                 {
                     cmd.CommandText = "SELECT type, adder, reason, expiry FROM users WHERE name = @name AND project = @project AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@name", username));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@name", username));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                     cmd.Prepare();
 
                     lock (dbtoken)
@@ -256,8 +256,8 @@ namespace CVTBot
                 // Is user globally greylisted? (This takes precedence)
                 cmd.Parameters.Clear();
                 cmd.CommandText = "SELECT reason, expiry FROM users WHERE name = @name AND project = '' AND type = '6' AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@name", username));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@name", username));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                 cmd.Prepare();
                 lock (dbtoken)
                 {
@@ -275,9 +275,9 @@ namespace CVTBot
                 // Next, if we're still here, check if user is on the global trustlist or blocklist
                 cmd.Parameters.Clear();
                 cmd.CommandText = "SELECT type, adder, reason, expiry FROM users WHERE name = @name AND project = @project AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@name", username));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@project", string.Empty));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@name", username));
+                _ = cmd.Parameters.Add(new SqliteParameter("@project", string.Empty));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                 cmd.Prepare();
                 lock (dbtoken)
                 {
@@ -313,9 +313,9 @@ namespace CVTBot
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "SELECT item FROM items WHERE item = @item AND itemtype = @itemtype AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@item", item));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@itemtype", itemType.ToString()));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@item", item));
+                _ = cmd.Parameters.Add(new SqliteParameter("@itemtype", itemType.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                 cmd.Prepare();
                 lock (dbtoken)
                 {
@@ -355,11 +355,11 @@ namespace CVTBot
                 {
                     // Item is already on the same list, need to update
                     dbCmd.CommandText = "UPDATE items SET adder = @adder, reason = @reason, expiry = @expiry WHERE item = @item AND itemtype = @itemtype";
-                    _ = dbCmd.Parameters.Add(new SQLiteParameter("@adder", adder));
-                    _ = dbCmd.Parameters.Add(new SQLiteParameter("@reason", reason));
-                    _ = dbCmd.Parameters.Add(new SQLiteParameter("@expiry", GetExpiryDate(expiry)));
-                    _ = dbCmd.Parameters.Add(new SQLiteParameter("@item", item));
-                    _ = dbCmd.Parameters.Add(new SQLiteParameter("@itemtype", itemType.ToString()));
+                    _ = dbCmd.Parameters.Add(new SqliteParameter("@adder", adder));
+                    _ = dbCmd.Parameters.Add(new SqliteParameter("@reason", reason));
+                    _ = dbCmd.Parameters.Add(new SqliteParameter("@expiry", GetExpiryDate(expiry)));
+                    _ = dbCmd.Parameters.Add(new SqliteParameter("@item", item));
+                    _ = dbCmd.Parameters.Add(new SqliteParameter("@itemtype", itemType.ToString()));
                     dbCmd.Prepare();
                     lock (dbtoken)
                     {
@@ -373,11 +373,11 @@ namespace CVTBot
                 dbCmd.Parameters.Clear();
 
                 dbCmd.CommandText = "INSERT INTO items (item, itemtype, adder, reason, expiry) VALUES(@item, @itemtype, @adder, @reason, @expiry)";
-                _ = dbCmd.Parameters.Add(new SQLiteParameter("@item", item));
-                _ = dbCmd.Parameters.Add(new SQLiteParameter("@itemtype", itemType.ToString()));
-                _ = dbCmd.Parameters.Add(new SQLiteParameter("@adder", adder));
-                _ = dbCmd.Parameters.Add(new SQLiteParameter("@reason", reason));
-                _ = dbCmd.Parameters.Add(new SQLiteParameter("@expiry", GetExpiryDate(expiry)));
+                _ = dbCmd.Parameters.Add(new SqliteParameter("@item", item));
+                _ = dbCmd.Parameters.Add(new SqliteParameter("@itemtype", itemType.ToString()));
+                _ = dbCmd.Parameters.Add(new SqliteParameter("@adder", adder));
+                _ = dbCmd.Parameters.Add(new SqliteParameter("@reason", reason));
+                _ = dbCmd.Parameters.Add(new SqliteParameter("@expiry", GetExpiryDate(expiry)));
                 dbCmd.Prepare();
 
                 lock (dbtoken)
@@ -393,9 +393,9 @@ namespace CVTBot
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "SELECT adder, reason, expiry FROM items WHERE item = @item AND itemtype = @itemtype AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@item", item));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@itemtype", itemType.ToString()));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@item", item));
+                _ = cmd.Parameters.Add(new SqliteParameter("@itemtype", itemType.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                 cmd.Prepare();
                 lock (dbtoken)
                 {
@@ -421,8 +421,8 @@ namespace CVTBot
                 using (IDbCommand cmd = dbcon.CreateCommand())
                 {
                     cmd.CommandText = "DELETE FROM items WHERE item = @item AND itemtype = @itemtype";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@item", item));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@itemtype", itemType.ToString()));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@item", item));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@itemtype", itemType.ToString()));
                     cmd.Prepare();
 
                     lock (dbtoken)
@@ -463,11 +463,11 @@ namespace CVTBot
                 {
                     // Item is already on same watchlist, need to update
                     cmd.CommandText = "UPDATE watchlist SET adder = @adder, reason = @reason, expiry = @expiry WHERE article = @item AND project = @project";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@adder", adder));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@reason", reason));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", GetExpiryDate(expiry)));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@item", item));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@adder", adder));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@reason", reason));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@expiry", GetExpiryDate(expiry)));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@item", item));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
                     cmd.Prepare();
 
                     lock (dbtoken)
@@ -480,11 +480,11 @@ namespace CVTBot
 
                 // Item is not on the watchlist yet, can do simple insert
                 cmd.CommandText = "INSERT INTO watchlist (article, project, adder, reason, expiry) VALUES(@article, @project, @adder, @reason, @expiry)";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@article", item));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@adder", adder));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@reason", reason));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", GetExpiryDate(expiry)));
+                _ = cmd.Parameters.Add(new SqliteParameter("@article", item));
+                _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                _ = cmd.Parameters.Add(new SqliteParameter("@adder", adder));
+                _ = cmd.Parameters.Add(new SqliteParameter("@reason", reason));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", GetExpiryDate(expiry)));
                 cmd.Prepare();
 
                 lock (dbtoken)
@@ -513,9 +513,9 @@ namespace CVTBot
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "SELECT adder, reason, expiry FROM watchlist WHERE article = @article AND project = @project AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@article", item));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@article", item));
+                _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                 cmd.Prepare();
 
                 lock (dbtoken)
@@ -554,8 +554,8 @@ namespace CVTBot
                 using (IDbCommand dbCmd = dbcon.CreateCommand())
                 {
                     dbCmd.CommandText = "DELETE FROM watchlist WHERE article = @article AND project = @project";
-                    _ = dbCmd.Parameters.Add(new SQLiteParameter("@article", item));
-                    _ = dbCmd.Parameters.Add(new SQLiteParameter("@project", project));
+                    _ = dbCmd.Parameters.Add(new SqliteParameter("@article", item));
+                    _ = dbCmd.Parameters.Add(new SqliteParameter("@project", project));
                     dbCmd.Prepare();
 
                     lock (dbtoken)
@@ -789,8 +789,8 @@ namespace CVTBot
                 using (IDbCommand cmd = dbcon.CreateCommand())
                 {
                     cmd.CommandText = "SELECT project, type, adder, reason, expiry FROM users WHERE name = @username AND ((expiry > @expiry) OR (expiry = '0'))";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@username", username));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@username", username));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                     cmd.Prepare();
                     lock (dbtoken)
                     {
@@ -833,9 +833,9 @@ namespace CVTBot
                     {
                         // First, check if user is an admin or bot on this particular wiki
                         cmd.CommandText = "SELECT type FROM users WHERE name = @username AND project = @project AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                        _ = cmd.Parameters.Add(new SQLiteParameter("@username", username));
-                        _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                        _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                        _ = cmd.Parameters.Add(new SqliteParameter("@username", username));
+                        _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                        _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                         cmd.Prepare();
                         lock (dbtoken)
                         {
@@ -857,9 +857,9 @@ namespace CVTBot
 
                     // Is user globally greylisted? (This takes precedence)
                     cmd.CommandText = "SELECT reason, expiry FROM users WHERE name = @username AND project = @project AND type = '6' AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@username", username));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@project", string.Empty));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@username", username));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@project", string.Empty));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                     cmd.Prepare();
                     lock (dbtoken)
                     {
@@ -874,9 +874,9 @@ namespace CVTBot
 
                     // Next, if we're still here, check if user is on the global trustlist or blocklist
                     cmd.CommandText = "SELECT type FROM users WHERE name = @username AND project = @project AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@username", username));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@project", string.Empty));
-                    _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@username", username));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@project", string.Empty));
+                    _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                     cmd.Prepare();
                     lock (dbtoken)
                     {
@@ -930,8 +930,8 @@ namespace CVTBot
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "SELECT name FROM users WHERE type = @type AND project = @project AND name LIKE '%.%.%.%/%' OR name LIKE '%:%:%:%:%:%:%:%/%'";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@type", type));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@project", string.Empty));
+                _ = cmd.Parameters.Add(new SqliteParameter("@type", type));
+                _ = cmd.Parameters.Add(new SqliteParameter("@project", string.Empty));
                 cmd.Prepare();
                 lock (dbtoken)
                 {
@@ -959,9 +959,9 @@ namespace CVTBot
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "SELECT reason FROM watchlist WHERE article=@article AND (project = @project OR project='') AND ((expiry > @expiry) OR (expiry = '0'))";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@article", title));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@project", project));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@article", title));
+                _ = cmd.Parameters.Add(new SqliteParameter("@project", project));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                 cmd.Prepare();
 
                 lock (dbtoken)
@@ -1010,8 +1010,8 @@ namespace CVTBot
             using (IDbCommand cmd = dbcon.CreateCommand())
             {
                 cmd.CommandText = "SELECT item, reason FROM items WHERE itemtype = @itemtype AND ((expiry > @expiry) OR (expiry = '0'))";
-                _ = cmd.Parameters.Add(new SQLiteParameter("@itemtype", list.ToString()));
-                _ = cmd.Parameters.Add(new SQLiteParameter("@expiry", DateTime.Now.Ticks.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@itemtype", list.ToString()));
+                _ = cmd.Parameters.Add(new SqliteParameter("@expiry", DateTime.Now.Ticks.ToString()));
                 cmd.Prepare();
 
                 lock (dbtoken)
@@ -1196,7 +1196,7 @@ namespace CVTBot
             }
 
             int total = 0;
-            using (IDbConnection timdbcon = new SQLiteConnection(connectionString))
+            using (IDbConnection timdbcon = new SqliteConnection(connectionString))
             {
                 timdbcon.Open();
                 using (IDbCommand timcmd = timdbcon.CreateCommand())
@@ -1204,14 +1204,14 @@ namespace CVTBot
                     lock (dbtoken)
                     {
                         timcmd.CommandText = "DELETE FROM users WHERE project = @project";
-                        _ = timcmd.Parameters.Add(new SQLiteParameter("@project", cmdParams));
+                        _ = timcmd.Parameters.Add(new SqliteParameter("@project", cmdParams));
                         timcmd.Prepare();
                         total += timcmd.ExecuteNonQuery();
 
                         timcmd.Parameters.Clear();
 
                         timcmd.CommandText = "DELETE FROM watchlist WHERE project = @project";
-                        _ = timcmd.Parameters.Add(new SQLiteParameter("@project", cmdParams));
+                        _ = timcmd.Parameters.Add(new SqliteParameter("@project", cmdParams));
                         timcmd.Prepare();
                         total += timcmd.ExecuteNonQuery();
                     }
