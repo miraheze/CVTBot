@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Versions
-        run: |
-          dotnet --version
+        run: dotnet --version
       - run: dotnet build src/CVTBot.sln --configuration=Release
       - run: dotnet build src/CVTBot.sln --configuration=Debug
+      - run: dotnet run --project src/CVTBot/CVTBot.csproj --configuration=Debug
 
   macos:
     name: macOS
@@ -23,7 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Versions
-        run: |
-          dotnet --version
+        run: dotnet --version
       - run: dotnet build src/CVTBot.sln --configuration=Release
       - run: dotnet build src/CVTBot.sln --configuration=Debug
