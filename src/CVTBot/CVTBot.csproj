@@ -27,16 +27,16 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<Content Include="..\CVTBot.exe.debug.config">
+		<Content Include="..\CVTBot.dll.debug.config">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<Link>CVTBot.exe.config</Link>
+			<Link>CVTBot.dll.config</Link>
 		</Content>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-		<Content Include="..\CVTBot.exe.release.config">
+		<Content Include="..\CVTBot.dll.release.config">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<Link>CVTBot.exe.config</Link>
+			<Link>CVTBot.dll.config</Link>
 		</Content>
 	</ItemGroup>
 
