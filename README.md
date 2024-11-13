@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/Universal-Omega/CVTBot/actions/workflows/CI.yml/badge.svg)](https://github.com/Universal-Omega/CVTBot/actions/workflows/CI.yml)
+[![Build Status](https://github.com/miraheze/CVTBot/actions/workflows/CI.yml/badge.svg)](https://github.com/miraheze/CVTBot/actions/workflows/CI.yml)
 
 CVTBot
 ==================================================
@@ -7,7 +7,7 @@ CVTBot
 Quick start
 ----------
 
-Clone the repo, `git clone git://github.com/Universal-Omega/CVTBot.git`
+Clone the repo, `git clone git://github.com/miraheze/CVTBot.git`
 
 
 Build
@@ -28,27 +28,27 @@ Currently supported versions of Mono: **6.12**
 Once mono is installed, build the project. The below uses Debug, for local development. (See [Installation](./docs/install.md) for how to install it in production):
 
 ```bash
-Universal-Omega/CVTBot:$ msbuild src/CVTBot.sln /p:Configuration=Debug
+CVTBot:$ msbuild src/CVTBot.sln /p:Configuration=Debug
 ```
 
 Once built, you can run it:
 ```bash
-Universal-Omega/CVTBot/src/CVTBot/bin/Debug:$ mono CVTBot.exe
+CVTBot/src/CVTBot/bin/Debug:$ mono CVTBot.exe
 ```
 
 
 Bug tracker
 -----------
 
-Found a bug? Please report it using our [issue tracker](https://github.com/Universal-Omega/CVTBot/issues)!
+Found a bug? Please report it using our [issue tracker](https://github.com/miraheze/CVTBot/issues)!
 
 
 Documentation, support and contact
 -----------
-* [Documentation (wiki)](https://github.com/Universal-Omega/CVTBot/wiki/Documentation)
+* [Documentation (wiki)](https://github.com/miraheze/CVTBot/wiki/Documentation)
 
 
 Copyright and license
 ---------------------
 
-See [LICENSE](https://raw.github.com/Universal-Omega/CVTBot/main/LICENSE.txt).
+See [LICENSE](https://raw.github.com/miraheze/CVTBot/main/LICENSE.txt).
