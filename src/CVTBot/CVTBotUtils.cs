@@ -120,7 +120,7 @@ namespace CVTBot
             try
             {
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.UserAgent = "Mozilla/5.0 (en-GB) CVTBot/1.0 More info: https://github.com/Universal-Omega/CVTBot";
+                req.UserAgent = "Mozilla/5.0 (en-US) CVTBot/1.0 More info: https://github.com/miraheze/CVTBot";
 
                 using (HttpWebResponse res = (HttpWebResponse)req.GetResponse())
                 {

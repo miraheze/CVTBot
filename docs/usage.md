@@ -77,4 +77,4 @@ The default duration is `0` for all lists, except for blocklist where the entrie
 
 <span id="install"></span><span id="upgrade"></span>
 ## Installation
-See [docs/install: Install and Upgrade](https://github.com/Universal-Omega/CVTBot/blob/main/docs/install.md).
+See [docs/install: Install and Upgrade](https://github.com/miraheze/CVTBot/blob/main/docs/install.md).
