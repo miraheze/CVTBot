@@ -7,7 +7,7 @@ CVTBot
 Quick start
 ----------
 
-Clone the repo, `git clone git://github.com/miraheze/CVTBot`
+Clone the repo, `git clone https://github.com/miraheze/CVTBot`
 
 
 Build
