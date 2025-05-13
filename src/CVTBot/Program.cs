@@ -788,7 +788,7 @@ namespace CVTBot
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(0, e.Data.Nick, extraParams), Priority.High);
                         break;
-                    case "gl":
+                    case "fl":
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(6, e.Data.Nick, extraParams), Priority.High);
                         break;
