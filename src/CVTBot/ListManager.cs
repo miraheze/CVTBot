@@ -164,12 +164,12 @@ namespace CVTBot
                     return Program.GetFormatMessage(16104, ShowUserOnList(name, project));
                 }
             }
-            // Also allow adding greylisted users to the blocklist
-            // If adding to greylist, we can accept a new entry, as they may overlap
+            // Also allow adding flaglisted users to the blocklist
+            // If adding to flaglist, we can accept a new entry, as they may overlap
             if ((originalType == UserType.anon)
                 || (originalType == UserType.user)
-                || (type == UserType.greylisted)
-                || ((originalType == UserType.greylisted) && (type == UserType.blocklisted)))
+                || (type == UserType.flaglisted)
+                || ((originalType == UserType.flaglisted) && (type == UserType.blocklisted)))
             {
                 // User was originally unlisted or is on non-conflicting list
                 using (IDbCommand cmd = dbcon.CreateCommand())
@@ -253,7 +253,7 @@ namespace CVTBot
                     }
                 }
 
-                // Is user globally greylisted? (This takes precedence)
+                // Is user globally flaglisted? (This takes precedence)
                 cmd.Parameters.Clear();
                 cmd.CommandText = "SELECT reason, expiry FROM users WHERE name = @name AND project = '' AND type = '6' AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
                 _ = cmd.Parameters.Add(new SQLiteParameter("@name", username));
@@ -638,8 +638,8 @@ namespace CVTBot
                                 case 1: //Blocklist
                                     Program.Broadcast("BL", "ADD", item, len, reason, user);
                                     return AddUserToList(item, "", UserType.blocklisted, user, reason, len);
-                                case 6: //Greylist
-                                    return "You cannot directly add users to the greylist";
+                                case 6: //Flaglist
+                                    return "You cannot directly add users to the flaglist";
                                 case 2: //Adminlist
                                     if (project == "")
                                     {
@@ -682,9 +682,9 @@ namespace CVTBot
                                 case 1: //Blocklist
                                     Program.Broadcast("BL", "DEL", item, 0, reason, user);
                                     return DelUserFromList(item, "", UserType.blocklisted);
-                                case 6: //Greylist
-                                    Program.Broadcast("GL", "DEL", item, 0, reason, user);
-                                    return DelUserFromList(item, "", UserType.greylisted);
+                                case 6: //Flaglist
+                                    Program.Broadcast("FL", "DEL", item, 0, reason, user);
+                                    return DelUserFromList(item, "", UserType.flaglisted);
                                 case 2: //Adminlist
                                     if (project == "")
                                     {
@@ -723,7 +723,7 @@ namespace CVTBot
                             {
                                 case 0: //Trustlist
                                 case 1: //Blocklist
-                                case 6: //Greylist
+                                case 6: //Flaglist
                                     return ShowUserOnList(item, "");
                                 case 2: //Adminlist
                                 case 5: //Botlist
@@ -855,7 +855,7 @@ namespace CVTBot
                         }
                     }
 
-                    // Is user globally greylisted? (This takes precedence)
+                    // Is user globally flaglisted? (This takes precedence)
                     cmd.CommandText = "SELECT reason, expiry FROM users WHERE name = @username AND project = @project AND type = '6' AND ((expiry > @expiry) OR (expiry = '0')) LIMIT 1";
                     _ = cmd.Parameters.Add(new SQLiteParameter("@username", username));
                     _ = cmd.Parameters.Add(new SQLiteParameter("@project", string.Empty));
@@ -867,7 +867,7 @@ namespace CVTBot
                         {
                             if (idr3.Read())
                             {
-                                return UserType.greylisted;
+                                return UserType.flaglisted;
                             }
                         }
                     }

@@ -28,7 +28,7 @@
 05003=%c03%bIP%b%c14 [[${editor}]] %c03%bcreated%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05004=%c13User%c14 [[${editor}]] %c13created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05005=%c14Bot [[${editor}]] %c14created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
-05006=%c07Greylist%c14 [[${editor}]] %c07created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+05006=%c07Flaglist%c14 [[${editor}]] %c07created%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 
 05010=%c10Trustlist%c14 [[${editor}]] %c10Large create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05011=%c04%bBlocklist%b%c14 [[${editor}]] %c04%bCopyvio?%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
@@ -36,7 +36,7 @@
 05013=%c03%bIP%b%c14 [[${editor}]] %c03%bCopyvio?%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05014=%c13User%c14 [[${editor}]] %c13Copyvio?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05015=%c14Bot%c14 [[${editor}]] %c14Large create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
-05016=%c07Greylist%c14 [[${editor}]] %c07Copyvio?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+05016=%c07Flaglist%c14 [[${editor}]] %c07Copyvio?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 
 05020=%c10Trustlist%c14 [[${editor}]] %c10Tiny create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05021=%c04%bBlocklist%c14%b [[${editor}]] %c04%bTiny create%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
@@ -44,7 +44,7 @@
 05023=%c03%bIP%c14%b [[${editor}]] %c03%bTiny create%c14%b [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05024=%c13User%c14 [[${editor}]] %c13Tiny create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05025=%c14Bot%c14 [[${editor}]] %c14Tiny create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
-05026=%c07Greylist%c14 [[${editor}]] %c07Tiny create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+05026=%c07Flaglist%c14 [[${editor}]] %c07Tiny create%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 
 05030=%c10Trustlist%c14 [[${editor}]] %c10created watched%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05031=%c04%bBlocklist%c14%b [[${editor}]] %c04%bcreated watched%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
@@ -52,7 +52,7 @@
 05033=%c03%bIP%c14%b [[${editor}]] %c03%bcreated watched%c14%b [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05034=%c13User%c14 [[${editor}]] %c13created watched%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05035=%c14Bot%c14 [[${editor}]] %c14created watched%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
-05036=%c07Greylist%c14 [[${editor}]] %c07created watched%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+05036=%c07Flaglist%c14 [[${editor}]] %c07created watched%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 
 05040=%c10Trustlist%c14 [[${editor}]] %c10create containing watch word "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05041=%c04%bBlocklist%c14%b [[${editor}]] %c04%bcreate containing watch word "${watchword}"%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
@@ -60,7 +60,7 @@
 05043=%c03%bIP%c14%b [[${editor}]] %c03%bcreate containing watch word "${watchword}"%c14%b [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05044=%c13User%c14 [[${editor}]] %c13create containing watch word "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 05045=%c14Bot%c14 [[${editor}]] %c14create containing watch word "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
-05046=%c07Greylist%c14 [[${editor}]] %c07create containing watch word "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+05046=%c07Flaglist%c14 [[${editor}]] %c07create containing watch word "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 
 05100=%c10Trustlist%c14 [[${editor}]] %c10edited%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05101=%c04%bBlocklist%b%c14 [[${editor}]] %c04%bedited%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
@@ -68,7 +68,7 @@
 05103=%c03%bIP%b%c14 [[${editor}]] %c03%bedited%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05104=%c13User%c14 [[${editor}]] %c13edited%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05105=%c14Bot%c14 [[${editor}]] %c14edited%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
-05106=%c07Greylist%c14 [[${editor}]] %c07edited%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
+05106=%c07Flaglist%c14 [[${editor}]] %c07edited%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 
 05110=%c10Trustlist%c14 [[${editor}]] %c10Large edit%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05111=%c04%bBlocklist%b%c14 [[${editor}]] %c04%bPossible gibberish?%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
@@ -76,7 +76,7 @@
 05113=%c03%bIP%b%c14 [[${editor}]] %c03%bPossible gibberish?%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05114=%c13User%c14 [[${editor}]] %c13Possible gibberish?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05115=%c14Bot%c14 [[${editor}]] %c14Large edit%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}" 
-05116=%c07Greylist%c14 [[${editor}]] %c07Possible gibberish?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
+05116=%c07Flaglist%c14 [[${editor}]] %c07Possible gibberish?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 
 05120=%c10Trustlist%c14 [[${editor}]] %c10Large removal%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05121=%c04%bBlocklist%b [[${editor}]] %bLarge removal%b [[${article}]] ${sizeattrib}(${size})${sizereset} %c10Diff:%c12 ${url}%c14%c04"${reason}"
@@ -84,7 +84,7 @@
 05123=%c03%bIP%b [[${editor}]] %bLarge removal%b [[${article}]] ${sizeattrib}(${size})${sizereset} %c10Diff:%c12 ${url}%c14%c03"${reason}"
 05124=%c13User%c14 [[${editor}]] %c13Large removal%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05125=%c14Bot%c14 [[${editor}]] %c14Large removal%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14reason "${reason}"
-05126=%c07Greylist%c14 [[${editor}]] %c07Large removal, blanking?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset} %c10Diff:%c12 ${url}%c14%c04"${reason}"
+05126=%c07Flaglist%c14 [[${editor}]] %c07Large removal, blanking?%c14 [[${article}]] ${sizeattrib}(${size})${sizereset} %c10Diff:%c12 ${url}%c14%c04"${reason}"
 
 05130=%c10Trustlist%c14 [[${editor}]] %c10edited watched page%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05131=%c04%bBlocklist%b%c14 [[${editor}]] %c04%bedited watched page%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
@@ -92,7 +92,7 @@
 05133=%c03%bIP%b%c14 [[${editor}]] %c03%bedited watched page%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05134=%c13User%c14 [[${editor}]] %c13edited watched page%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 05135=%c14Bot%c14 [[${editor}]] %c14edited watched page%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
-05136=%c07Greylist%c14 [[${editor}]] %c07edited watched page%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12  ${url}%c14 "${reason}"
+05136=%c07Flaglist%c14 [[${editor}]] %c07edited watched page%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12  ${url}%c14 "${reason}"
 
 05200=%c14New user [[${editor}]] created. CentralAuth: ${caurl}
 05201=%c14New user [[${editor}]] %c04containing watch word "${watchword}" ("${wwreason}"). CentralAuth: ${caurl}
@@ -112,7 +112,7 @@
 05503=%c03%bIP%b%c14 [[${editor}]] %c03%bMove from%b%c14 [[${fromname}]] to [[${toname}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05504=%c13User%c14 [[${editor}]] %c13Move from%c14 [[${fromname}]] to [[${toname}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05505=%c14Bot%c14 [[${editor}]] %c14Move from%c14 [[${fromname}]] to [[${toname}]] %c10URL:%c12 ${url}%c14 "${reason}"
-05506=%c07Greylist%c14 [[${editor}]] %c07Move from%c14 [[${fromname}]] to [[${toname}]] %c10URL:%c12 ${url}%c14 "${reason}"
+05506=%c07Flaglist%c14 [[${editor}]] %c07Move from%c14 [[${fromname}]] to [[${toname}]] %c10URL:%c12 ${url}%c14 "${reason}"
 
 05600=%c10Trustlist%c14 [[${editor}]] %c10uploaded%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05601=%c04%bBlocklist%b%c14 [[${editor}]] %c04%buploaded%b%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
@@ -120,7 +120,7 @@
 05603=%c03%bIP%b%c14 [[${editor}]] %c03%buploaded%b%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05604=%c13User%c14 [[${editor}]] %c13uploaded%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05605=%c14Bot%c14 [[${editor}]] %c14uploaded%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
-05606=%c07Greylist%c14 [[${editor}]] %c07uploaded%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
+05606=%c07Flaglist%c14 [[${editor}]] %c07uploaded%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 
 05610=%c10Trustlist%c14 [[${editor}]] %c10uploaded watched item%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05611=%c04%bBlocklist%b%c14 [[${editor}]] %c04%buploaded watched item%b%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
@@ -128,7 +128,7 @@
 05613=%c03%bIP%b%c14 [[${editor}]] %c03%buploaded watched item%b%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05614=%c13User%c14 [[${editor}]] %c13uploaded watched item%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 05615=%c14Bot%c14 [[${editor}]] %c14uploaded watched item%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
-05616=%c07Greylist%c14 [[${editor}]] %c07uploaded watched item%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
+05616=%c07Flaglist%c14 [[${editor}]] %c07uploaded watched item%c14 [[${uploaditem}]] %c10URL:%c12 ${url}%c14 "${reason}"
 
 95620=%c10Trustlist%c14 [[${editor}]] %c10uploaded%c14 [[${uploaditem}]] "${reason}" %c04%bMatches%b "${watchword}" (${lmreason})%c ${url}
 95621=%c04%bBlocklist%b%c14 [[${editor}]] %c04%buploaded%b%c14 [[${uploaditem}]] "${reason}" %c04%bMatches%b "${watchword}" (${lmreason})%c ${url}
@@ -136,7 +136,7 @@
 95623=%c03%bIP%b%c14 [[${editor}]] %c03%buploaded%b%c14 [[${uploaditem}]] "${reason}" %c04%bMatches%b "${watchword}" (${lmreason})%c ${url}
 95624=%c13User%c14 [[${editor}]] %c13uploaded%c14 [[${uploaditem}]] "${reason}" %c04%bMatches%b "${watchword}" (${lmreason})%c ${url}
 95625=%c14Bot%c14 [[${editor}]] %c14uploaded%c14 [[${uploaditem}]] "${reason}" %c04%bMatches%b "${watchword}" (${lmreason})%c ${url}
-95626=%c04Greylist%c14 [[${editor}]] %c04uploaded%c14 [[${uploaditem}]] "${reason}" %c04%bMatches%b "${watchword}" (${lmreason})%c ${url}
+95626=%c04Flaglist%c14 [[${editor}]] %c04uploaded%c14 [[${uploaditem}]] "${reason}" %c04%bMatches%b "${watchword}" (${lmreason})%c ${url}
 
 05700=%c06Unblock Editor%c14 [[${blockname}]] %c06unblocked by admin%c14 [[${editor}]] "${reason}"
 05701=%c06Range Unblocked ${blockname} by admin%c14 [[${editor}]] "${reason}"
@@ -151,7 +151,7 @@
 95043=%c03%bIP%c14%b [[${editor}]] %c03%bused edit summary "${watchword}" in creating%c14%b [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 95044=%c13User%c14 [[${editor}]] %c13used edit summary "${watchword}" in creating%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 95045=%c14Bot%c14 [[${editor}]] %c14used edit summary "${watchword}" in creating%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
-95046=%c07Greylist%c14 [[${editor}]] %c07used edit summary "${watchword}" in creating%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
+95046=%c07Flaglist%c14 [[${editor}]] %c07used edit summary "${watchword}" in creating%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10URL:%c12 ${url}%c14 "${reason}"
 
 95130=%c10Trustlist%c14 [[${editor}]] %c10used edit summary "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 95131=%c04%bBlocklist%b%c14 [[${editor}]] %c04%bused edit summary "${watchword}"%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
@@ -159,7 +159,7 @@
 95133=%c03%bIP%b%c14 [[${editor}]] %c03%bused edit summary "${watchword}"%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 95134=%c13User%c14 [[${editor}]] %c13used edit summary "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 95135=%c14Bot%c14 [[${editor}]] %c14used edit summary "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
-95136=%c07Greylist%c14 [[${editor}]] %c07used edit summary "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
+95136=%c07Flaglist%c14 [[${editor}]] %c07used edit summary "${watchword}"%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}%c14 "${reason}"
 
 96010=%c10Trustlist%c14 [[${editor}]] %c10blanked%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96011=%c04%bBlocklist%c14%b [[${editor}]] %c04%bblanked%b%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
@@ -167,7 +167,7 @@
 96013=%c03%bIP%c14%b [[${editor}]] %c04%bblanked%c14%b [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96014=%c13User%c14 [[${editor}]] %c04blanked%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96015=%c14Bot%c14 [[${editor}]] %c14blanked%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
-96016=%c07Greylist%c14 [[${editor}]] %c07blanked%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
+96016=%c07Flaglist%c14 [[${editor}]] %c07blanked%c14 [[${article}]] ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 
 96020=%c10Trustlist%c14 [[${editor}]] %c10replaced%c14 [[${article}]] with "%c10${profanity}%c14" ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96021=%c04%bBlocklist%c14%b [[${editor}]] %c04%breplaced%b%c14 [[${article}]] with "%c04%b${profanity}%b%c14" ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
@@ -175,7 +175,7 @@
 96023=%c03%bIP%c14%b [[${editor}]] %c03%breplaced%c14%b [[${article}]] with "%c03%b${profanity}%b%c14" ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96024=%c13User%c14 [[${editor}]] %c13replaced%c14 [[${article}]] with "%c13${profanity}%c14" ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96025=%c14Bot%c14 [[${editor}]] %c14replaced%c14 [[${article}]] with "${profanity}" ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
-96026=%c07Greylist%c14 [[${editor}]] %c07replaced%c14 [[${article}]] with "%c07${profanity}%c14" ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
+96026=%c07Flaglist%c14 [[${editor}]] %c07replaced%c14 [[${article}]] with "%c07${profanity}%c14" ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 
 96030=%c10Trustlist%c14 [[${editor}]] %c10replaced%c14 [[${article}]] with new text ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96031=%c04%bBlocklist%c14%b [[${editor}]] %c04%breplaced%b%c14 [[${article}]] with new text ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
@@ -183,7 +183,7 @@
 96033=%c03%bIP%c14%b [[${editor}]] %c03%breplaced%c14%b [[${article}]] with  new text ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96034=%c13User%c14 [[${editor}]] %c13replaced%c14 [[${article}]] with new text ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 96035=%c14Bot%c14 [[${editor}]] %c14replaced%c14 [[${article}]] with new text ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
-96036=%c07Greylist%c14 [[${editor}]] %c07replaced%c14 [[${article}]] with new text ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
+96036=%c07Flaglist%c14 [[${editor}]] %c07replaced%c14 [[${article}]] with new text ${sizeattrib}(${size})${sizereset}%c14 %c10Diff:%c12 ${url}
 
 # Global intel
 16000={0} is {1}
@@ -204,11 +204,11 @@
 16103=%bAdded:%b {0}
 16104=%bUpdated:%b {0}
 16105=Deleted {0} from {1}
-16106={0} is on greylist until {1} ({2})
+16106={0} is on flaglist until {1} ({2})
 16200="{0}" matches item "{1}" on {2} ("{3}")
 16201="{0}" does not match any items on {1}
 
-# Auto-greylist
+# Auto-flaglist
 16300=Create on [[{0}]] matched "{1}"
 16301=Created watched [[{0}]]
 16310=Used edit summary "{0}" on [[{1}]]
@@ -224,7 +224,7 @@
 17001=blocklist
 17002=admin list
 17005=bot list
-17006=greylist
+17006=flaglist
 17010=watchlist
 17011=bad new username list
 17012=bad new article title list

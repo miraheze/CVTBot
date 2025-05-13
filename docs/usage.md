@@ -15,7 +15,7 @@ All global lists are automatically synchronised across the bots in the network (
 * Bad edit summaries (BES)
 * User trustlist (TL)
 * User blocklist (BL)
-* User greylist (GL)
+* User flaglist (FL)
 * Global article watchlist (CVP)
 
 ### Local
@@ -43,7 +43,7 @@ Only voiced users (aka `+`) can use these commands, with the exception of contro
 | Command | Description
 |--|--
 | bl <em>action</em> <em>user</em> <em>[x=duration]</em> <em>[r=reason]</em> | Add (`add`), delete (`del`), or show (`show`) an item on the global blocklist.<br/>`SampleBot bl add 80.10.20.123`<br/>`SampleBot bl del MrVandal`<br/>`SampleBot bl add MrVandal r=Vandal on metawiki`
-| gl del <em>user</em> | Delete an item from the (global) greylist.<br/>`SampleBot gl del MrVandal`
+| gl del <em>user</em> | Delete an item from the (global) flaglist.<br/>`SampleBot gl del MrVandal`
 | tl <em>action</em> <em>user</em> <em>[x=duration]</em> <em>[r=reason]</em> | Add, delete, or show an item on the global trustlist.<br/><em>Same as `bl`</em>
 | al <em>action</em> <em>user</em> <em>p=wikiname</em> <em>[x=duration]</em> <em>[r=reason]</em> | Add, delete, or show an item on the admin list for a particular wiki.<br/>`SampleBot al add MrGood p=metawiki`
 | bots <em>action</em> <em>user</em> <em>p=wikiname</em> <em>[x=duration]</em> <em>[r=reason]</em> | Add, delete, or show an item on the bot list for a particular wiki.<br/><em>Same as `al`</em>
