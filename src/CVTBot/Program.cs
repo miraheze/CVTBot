@@ -446,8 +446,8 @@ namespace CVTBot
                                 case "BL":
                                     _ = listman.AddUserToList(item, "", UserType.blocklisted, adder, reason, len);
                                     break;
-                                case "GL":
-                                    _ = listman.AddUserToList(item, "", UserType.greylisted, adder, reason, len);
+                                case "FL":
+                                    _ = listman.AddUserToList(item, "", UserType.flaglisted, adder, reason, len);
                                     break;
                                 case "BNU":
                                     _ = listman.AddItemToList(item, 11, adder, reason, len);
@@ -473,8 +473,8 @@ namespace CVTBot
                                 case "BL":
                                     _ = listman.DelUserFromList(item, "", UserType.blocklisted);
                                     break;
-                                case "GL":
-                                    _ = listman.DelUserFromList(item, "", UserType.greylisted);
+                                case "FL":
+                                    _ = listman.DelUserFromList(item, "", UserType.flaglisted);
                                     break;
                                 case "BNU":
                                     _ = listman.DelItemFromList(item, 11);
@@ -788,7 +788,7 @@ namespace CVTBot
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(0, e.Data.Nick, extraParams), Priority.High);
                         break;
-                    case "gl":
+                    case "fl":
                         SendMessageF(SendType.Message, e.Data.Channel,
                                      listman.HandleListCommand(6, e.Data.Nick, extraParams), Priority.High);
                         break;
@@ -963,21 +963,21 @@ namespace CVTBot
         }
 
         /// <summary>
-        /// Shorthand greylisting function for use by ReactToRCEvent
+        /// Shorthand flaglisting function for use by ReactToRCEvent
         /// </summary>
         /// <param name="userOffset"></param>
         /// <param name="username"></param>
         /// <param name="reason"></param>
-        private static void AddToGreylist(UserType userOffset, string username, string reason)
+        private static void AddToFlaglist(UserType userOffset, string username, string reason)
         {
-            // Only do greylisting if they are currently blocklisted, reguser, anon, or already greylisted.
-            // In other words, never greylist trusted users (bot, admin, trustlist).
-            if (userOffset == UserType.blocklisted || userOffset == UserType.user || userOffset == UserType.anon || userOffset == UserType.greylisted)
+            // Only do flaglisting if they are currently blocklisted, reguser, anon, or already flaglisted.
+            // In other words, never flaglist trusted users (bot, admin, trustlist).
+            if (userOffset == UserType.blocklisted || userOffset == UserType.user || userOffset == UserType.anon || userOffset == UserType.flaglisted)
             {
-                _ = listman.AddUserToList(username, "", UserType.greylisted, "CVTBot", reason, 1);
-                // Greylist for 900 seconds = 15 mins
+                _ = listman.AddUserToList(username, "", UserType.flaglisted, "CVTBot", reason, 1);
+                // Flaglist for 900 seconds = 15 mins
                 // TODO: Why is the broadcasted expiry different from local expiry (line above)
-                Broadcast("GL", "ADD", username, 900, reason, "CVTBot");
+                Broadcast("FL", "ADD", username, 900, reason, "CVTBot");
             }
         }
 
@@ -1150,7 +1150,7 @@ namespace CVTBot
                         {
                             // Matches watchlist (CVP)
                             message = GetMessage(5030 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16301, (string)attribs["article"]));
+                            AddToFlaglist(userOffset, r.user, Program.GetFormatMessage(16301, (string)attribs["article"]));
                             break;
                         }
 
@@ -1161,7 +1161,7 @@ namespace CVTBot
                             // Matches BNA
                             attribs.Add("watchword", eslm.matchedItem);
                             message = GetMessage(5040 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16300, (string)attribs["article"], eslm.matchedItem));
+                            AddToFlaglist(userOffset, r.user, Program.GetFormatMessage(16300, (string)attribs["article"], eslm.matchedItem));
                             break;
                         }
 
@@ -1172,7 +1172,7 @@ namespace CVTBot
                             // Matches BES
                             attribs.Add("watchword", lm.matchedItem);
                             message = GetMessage(95040 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16300, (string)attribs["article"], lm.matchedItem));
+                            AddToFlaglist(userOffset, r.user, Program.GetFormatMessage(16300, (string)attribs["article"], lm.matchedItem));
                             break;
                         }
 
@@ -1181,11 +1181,11 @@ namespace CVTBot
                         // - the create didn't match any watch patterns
                         // Now, if any of the following is true, we'll must report it.
                         // - Create by blocklisted user
-                        // - Create by greylisted user
+                        // - Create by flaglisted user
                         // - Current usertype is configured to always report
                         //   (By default this is for anonymous users, via feedFilterUsersAnon=1,
                         //   but feedFilterUsersReg or feedFilterUsersBot could also be set to 1)
-                        if (userOffset == UserType.blocklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
+                        if (userOffset == UserType.blocklisted || userOffset == UserType.flaglisted || feedFilterThisUser == 1)
                         {
                             break;
                         }
@@ -1247,7 +1247,7 @@ namespace CVTBot
                             // Matches BES
                             attribs.Add("watchword", elm.matchedItem);
                             message = GetMessage(95130 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16310, r.comment, (string)attribs["article"]));
+                            AddToFlaglist(userOffset, r.user, Program.GetFormatMessage(16310, r.comment, (string)attribs["article"]));
                             break;
                         }
 
@@ -1255,7 +1255,7 @@ namespace CVTBot
                         if (project.rautosummBlank.IsMatch(r.comment))
                         {
                             message = GetMessage(96010 + (int)userOffset, ref attribs);
-                            AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16311, (string)attribs["article"]));
+                            AddToFlaglist(userOffset, r.user, Program.GetFormatMessage(16311, (string)attribs["article"]));
                             break;
                         }
 
@@ -1291,11 +1291,11 @@ namespace CVTBot
                         //
                         // Now, if any of the following is true, we must still report it:
                         // - Edit by blocklisted user
-                        // - Edit by greylisted user
+                        // - Edit by flaglisted user
                         // - Current usertype is configured to always report
                         //   (By default this is for anonymous users, via feedFilterUsersAnon=1,
                         //   but feedFilterUsersReg or feedFilterUsersBot could also be set to 1)
-                        if (userOffset == UserType.blocklisted || userOffset == UserType.greylisted || feedFilterThisUser == 1)
+                        if (userOffset == UserType.blocklisted || userOffset == UserType.flaglisted || feedFilterThisUser == 1)
                         {
                             break;
                         }
@@ -1378,7 +1378,7 @@ namespace CVTBot
                         attribs.Add("watchword", bnuMatch.matchedItem);
                         attribs.Add("wwreason", bnuMatch.matchedReason);
                         message = GetMessage(5201, ref attribs);
-                        AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16320, bnuMatch.matchedItem));
+                        AddToFlaglist(userOffset, r.user, Program.GetFormatMessage(16320, bnuMatch.matchedItem));
                     }
                     // Only show non-special creations if newuser event is 1 ('show')
                     else if (feedFilterThisEvent == 1)
@@ -1401,7 +1401,7 @@ namespace CVTBot
                         attribs.Add("watchword", bnuMatch2.matchedItem);
                         attribs.Add("wwreason", bnuMatch2.matchedReason);
                         message = GetMessage(5211, ref attribs);
-                        AddToGreylist(userOffset, r.user, Program.GetFormatMessage(16320, bnuMatch2.matchedItem));
+                        AddToFlaglist(userOffset, r.user, Program.GetFormatMessage(16320, bnuMatch2.matchedItem));
                     }
                     // Only show non-special creations if newuser event is 1 ('show')
                     else if (feedFilterThisEvent == 1)

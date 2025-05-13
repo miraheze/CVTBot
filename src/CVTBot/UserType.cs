@@ -8,6 +8,6 @@
         anon = 3,
         user = 4,
         bot = 5,
-        greylisted = 6
+        flaglisted = 6
     }
 }
