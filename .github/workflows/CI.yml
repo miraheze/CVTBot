@@ -10,7 +10,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Versions
         run: dotnet --version
       - run: dotnet build src/CVTBot.sln --configuration=Release
@@ -20,7 +20,7 @@ jobs:
     name: macOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Versions
         run: dotnet --version
       - run: dotnet build src/CVTBot.sln --configuration=Release
