@@ -116,7 +116,7 @@ namespace CVTBot
             using HttpClient client = new HttpClient();
 
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                "Mozilla/5.0 (en-US) CVTBot/1.0 More info: https://github.com/miraheze/CVTBot"
+                "Mozilla/5.0 (en-US) CVTBot/1.0 (+https://github.com/miraheze/CVTBot)"
             );
 
             try
