@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.IO;
-using System.Net;
-using System.Text;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -115,28 +113,17 @@ namespace CVTBot
         /// <returns></returns>
         public static string GetRawDocument(string url)
         {
-            string output = string.Empty;
+            using HttpClient client = new HttpClient();
+
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                "Mozilla/5.0 (en-US) CVTBot/1.0 More info: https://github.com/miraheze/CVTBot"
+            );
 
             try
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.UserAgent = "Mozilla/5.0 (en-US) CVTBot/1.0 More info: https://github.com/miraheze/CVTBot";
-
-                using (HttpWebResponse res = (HttpWebResponse)req.GetResponse())
-                {
-
-                    Stream receiveStream = res.GetResponseStream();
-
-                    using (StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8))
-                    {
-                        output = readStream.ReadToEnd();
-                    }
-
-                    res.Close();
-                }
-                return output;
+                return client.GetStringAsync(url).GetAwaiter().GetResult();
             }
-            catch (WebException e)
+            catch (HttpRequestException e)
             {
                 throw new Exception("Unable to retrieve " + url + " from server. Error was: " + e.Message);
             }
