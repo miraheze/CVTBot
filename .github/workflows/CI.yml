@@ -5,20 +5,11 @@ on:
   - pull_request
 
 jobs:
-
-  linux:
-    name: Linux
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Versions
-        run: dotnet --version
-      - run: dotnet build src/CVTBot.sln --configuration=Release
-      - run: dotnet build src/CVTBot.sln --configuration=Debug
-
-  macos:
-    name: macOS
-    runs-on: macos-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
       - name: Versions
