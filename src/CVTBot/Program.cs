@@ -4,6 +4,9 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,7 +18,7 @@ namespace CVTBot
 {
     internal class Program
     {
-        private const string version = "2.2.6";
+        private const string version = "2.3.0";
 
         public static IrcClient irc = new IrcClient();
         public static RCReader rcirc = new RCReader();
@@ -288,6 +291,7 @@ namespace CVTBot
 
             // Set up IRC client
             irc.Encoding = System.Text.Encoding.UTF8;
+            irc.EnableUTF8Recode = true;
             irc.SendDelay = 300;
             irc.AutoReconnect = true;
             irc.AutoRejoin = true;
@@ -302,7 +306,10 @@ namespace CVTBot
 
             try
             {
-                irc.Connect(config.ircServerName, config.ircServerPort);
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                IPAddress host = Dns.GetHostAddresses(config.ircServerName)
+                    .First(a => a.AddressFamily == AddressFamily.InterNetworkV6);
+                irc.Connect(host.ToString(), config.ircServerPort);
             }
             catch (ConnectionException e)
             {
