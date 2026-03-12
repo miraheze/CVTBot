@@ -1,54 +1,51 @@
 [![Build Status](https://github.com/miraheze/CVTBot/actions/workflows/CI.yml/badge.svg)](https://github.com/miraheze/CVTBot/actions/workflows/CI.yml)
 
-CVTBot
-==================================================
+# CVTBot
 
+## Quick start
 
-Quick start
-----------
-
-Clone the repo, `git clone https://github.com/miraheze/CVTBot`
-
-
-Build
-----------
-The software is written in C# and originally created as a Visual Studio Project.
-We use `mono` to run the executable and `msbuild` to build the executable.
-
-Recommended installation methods:
-
-* For Linux, install [`mono-complete`](https://packages.debian.org/search?keywords=mono-complete) from Debian, or [latest from mono-project.com](https://www.mono-project.com/download/stable/#download-lin),
-* For Mac, install [Visual Studio for Mac](https://www.visualstudio.com/vs/visual-studio-mac/) (enable Mono and .NET during installation).
-* For Windows, install [Visual Studio](https://visualstudio.microsoft.com/vs/) (enable Mono and .NET during installation).
-
-For standalone command-line installations on Mac or Windows, see [monodevelop.com](https://www.monodevelop.com/download/).
-
-Currently supported versions of Mono: **6.12**
-
-Once mono is installed, build the project. The below uses Debug, for local development. (See [Installation](./docs/install.md) for how to install it in production):
+Clone the repo:
 
 ```bash
-CVTBot:$ msbuild src/CVTBot.sln /p:Configuration=Debug
+git clone https://github.com/miraheze/CVTBot
 ```
 
-Once built, you can run it:
+---
+
+## Build & Run
+
+The software is written in C# targeting **.NET 8**.
+
+**Prerequisites:**
+
+* Install [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) for your platform.
+
+**Build the project:**
+
 ```bash
-CVTBot/src/CVTBot/bin/Debug:$ mono CVTBot.exe
+dotnet build src/CVTBot/CVTBot.csproj --configuration Release
 ```
 
+**Run the bot:**
 
-Bug tracker
------------
+```bash
+dotnet run --project src/CVTBot/CVTBot.csproj --configuration Release
+```
+
+---
+
+## Bug tracker
 
 Found a bug? Please report it using our [issue tracker](https://github.com/miraheze/CVTBot/issues)!
 
+---
 
-Documentation, support and contact
------------
+## Documentation, support and contact
+
 * [Documentation (wiki)](https://github.com/miraheze/CVTBot/wiki/Documentation)
 
+---
 
-Copyright and license
----------------------
+## Copyright and license
 
-See [LICENSE](https://raw.github.com/miraheze/CVTBot/main/LICENSE.txt).
+See [LICENSE](https://raw.github.com/miraheze/CVTBot/main/LICENSE.txt)
