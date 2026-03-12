@@ -4,7 +4,7 @@
 
 1. Compile the code by running the following command:
 
-   `msbuild src/CVTBot.sln /p:Configuration=Release`
+   `dotnet build src/CVTBot.sln --configuration=Release`
 
    This command creates `CVTBot.exe` and other files in the output directory at `src/CVTBot/bin/Release`.
 1. Create a directory for your bot, and move the contents of `src/CVTBot/bin/Release` to it.
@@ -12,13 +12,13 @@
 1. Set permissions and ownership correctly. This step is after the copying of files because group ownership is usually not preserved when copying files.
    * For personal use, `chmod 644 *`, `chmod 600 CVTBot.ini`, and `chmod 755 CVTBot.exe`.
    * For organisational use, `chmod 664 *`, `chmod 660 CVTBot.ini`, `chmod 755 CVTBot.exe`, and `chgrp cvt.cvtservice *`.
-1. You can now start the start the bot by running `mono CVTBot.exe` from your bot directory.<br/>The bot will join the specified `feedchannel`.
+1. You can now start the start the bot by running `dotnet run` from your bot directory.<br/>The bot will join the specified `feedchannel`.
 
 ## Upgrade
 
 1. Compile the code by running the following command:
 
-   `msbuild src/CVTBot.sln /p:Configuration=Release`
+   `dotnet build src/CVTBot.sln --configuration=Release`
 
    This command creates `CVTBot.exe` and other files in the output directory at `src/CVTBot/bin/Release`.
 1. Enter `src/CVTBot/bin/Release`.
