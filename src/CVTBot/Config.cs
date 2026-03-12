@@ -57,9 +57,9 @@ namespace CVTBot
          */
 
         // Restart command (e.g. "dotnet" or "nice")
-        public string restartCmd = "dotnet run --project";
+        public string restartCmd = "dotnet";
 
-        // Restart command arguments (e.g. "dotnet run --project $1" if restartCmd is "nice")
+        // Restart command arguments (e.g. "dotnet $1" if restartCmd is "nice")
         public string restartArgs = "$1";
 
         /**
