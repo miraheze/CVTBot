@@ -1,6 +1,9 @@
 using log4net;
 using Meebey.SmartIrc4net;
 using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -55,6 +58,7 @@ namespace CVTBot
 
             // Set up RCReader
             rcirc.Encoding = System.Text.Encoding.UTF8;
+            rcirc.EnableUTF8Recode = true;
             rcirc.AutoReconnect = true;
             rcirc.AutoRejoin = true;
 
@@ -65,7 +69,10 @@ namespace CVTBot
 
             try
             {
-                rcirc.Connect(Program.config.ircReaderServerName, Program.config.ircReaderServerPort);
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                IPAddress host = Dns.GetHostAddresses(Program.config.ircReaderServerName)
+                    .First(a => a.AddressFamily == AddressFamily.InterNetworkV6);
+                rcirc.Connect(host.ToString(), Program.config.ircReaderServerPort);
             }
             catch (ConnectionException e)
             {
