@@ -69,7 +69,7 @@ namespace CVTBot
 
             try
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
                 IPAddress host = Dns.GetHostAddresses(Program.config.ircReaderServerName)
                     .First(a => a.AddressFamily == AddressFamily.InterNetworkV6);
                 rcirc.Connect(host.ToString(), Program.config.ircReaderServerPort);

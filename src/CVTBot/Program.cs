@@ -306,7 +306,7 @@ namespace CVTBot
 
             try
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
                 IPAddress host = Dns.GetHostAddresses(config.ircServerName)
                     .First(a => a.AddressFamily == AddressFamily.InterNetworkV6);
                 irc.Connect(host.ToString(), config.ircServerPort);
