@@ -56,10 +56,10 @@ namespace CVTBot
          * Process
          */
 
-        // Restart command (e.g. "mono" or "nice")
-        public string restartCmd = "mono";
+        // Restart command (e.g. "dotnet" or "nice")
+        public string restartCmd = "dotnet";
 
-        // Restart command arguments (e.g. "mono $1" if restartCmd is "nice")
+        // Restart command arguments (e.g. "dotnet $1" if restartCmd is "nice")
         public string restartArgs = "$1";
 
         /**
