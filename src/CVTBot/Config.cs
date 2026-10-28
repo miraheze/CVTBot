@@ -28,6 +28,14 @@ namespace CVTBot
         public bool ircServerUseSsl;
         public bool ircReaderServerUseSsl;
 
+        // Proxy URL for the IRC connection (like socks5://127.0.0.1:1080 or http://host:8080). Empty for none
+        public string ircServerProxy = "";
+        public string ircReaderServerProxy = "";
+
+        // SASL PLAIN, using the nick as the account and botPass as the password instead of PASS
+        public bool ircServerUseSasl;
+        public bool ircReaderServerUseSasl;
+
         // Channel name or "None" — the feed that logs CVT events to
         public string feedChannel = "None";
         // Channel name or "None"
