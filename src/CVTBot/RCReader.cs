@@ -69,9 +69,7 @@ namespace CVTBot
 
             try
             {
-                IPAddress host = Dns.GetHostAddresses(Program.config.ircReaderServerName)
-                    .First(a => a.AddressFamily == AddressFamily.InterNetworkV6);
-                rcirc.Connect(host.ToString(), Program.config.ircReaderServerPort);
+                IrcSupport.Connect(rcirc, Program.config.ircReaderServerName, Program.config.ircReaderServerPort);
             }
             catch (ConnectionException e)
             {
@@ -81,7 +79,7 @@ namespace CVTBot
 
             try
             {
-                rcirc.Login(Program.config.readerBotNick, "CVTBotReader", 4, Program.config.botUser, Program.config.botPass);
+                rcirc.Login(Program.config.readerBotNick, "CVTBotReader", 4, Program.config.botUser, Program.config.ircReaderServerUseSasl ? null : Program.config.botPass);
 
                 logger.InfoFormat("Joining {0}", Program.config.readerFeedChannel);
                 rcirc.RfcJoin(Program.config.readerFeedChannel);
