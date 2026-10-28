@@ -105,6 +105,16 @@ namespace CVTBot
                 config.ircServerUseSsl = bool.Parse(rawConfig["ircusessl"]);
             }
 
+            if (rawConfig.ContainsKey("ircusesasl"))
+            {
+                config.ircServerUseSasl = bool.Parse(rawConfig["ircusesasl"]);
+            }
+
+            if (rawConfig.ContainsKey("ircproxy"))
+            {
+                config.ircServerProxy = rawConfig["ircproxy"];
+            }
+
             if (rawConfig.ContainsKey("ircreaderserver"))
             {
                 config.ircReaderServerName = rawConfig["ircreaderserver"];
@@ -118,6 +128,16 @@ namespace CVTBot
             if (rawConfig.ContainsKey("ircreaderusessl"))
             {
                 config.ircReaderServerUseSsl = bool.Parse(rawConfig["ircreaderusessl"]);
+            }
+
+            if (rawConfig.ContainsKey("ircreaderusesasl"))
+            {
+                config.ircReaderServerUseSasl = bool.Parse(rawConfig["ircreaderusesasl"]);
+            }
+
+            if (rawConfig.ContainsKey("ircreaderproxy"))
+            {
+                config.ircReaderServerProxy = rawConfig["ircreaderproxy"];
             }
 
             if (rawConfig.ContainsKey("feedchannel"))
@@ -304,11 +324,29 @@ namespace CVTBot
 
             irc.UseSsl = config.ircServerUseSsl;
 
+            if ((config.ircServerUseSasl || config.ircReaderServerUseSasl) && string.IsNullOrEmpty(config.botPass))
+            {
+                logger.Fatal("SASL needs botpass to be set");
+                Exit();
+            }
+
+            // A bad proxy URL fails here on the main thread, before any connection is made
+            IrcSupport.ConfigureProxy(irc, config.ircServerProxy);
+            IrcSupport.ConfigureProxy(rcirc.rcirc, config.ircReaderServerProxy);
+
+            if (config.ircServerUseSasl)
+            {
+                IrcSupport.EnableSasl(irc, config.botNick, config.botPass);
+            }
+
+            if (config.ircReaderServerUseSasl)
+            {
+                IrcSupport.EnableSasl(rcirc.rcirc, config.readerBotNick, config.botPass);
+            }
+
             try
             {
-                IPAddress host = Dns.GetHostAddresses(config.ircServerName)
-                    .First(a => a.AddressFamily == AddressFamily.InterNetworkV6);
-                irc.Connect(host.ToString(), config.ircServerPort);
+                IrcSupport.Connect(irc, config.ircServerName, config.ircServerPort);
             }
             catch (ConnectionException e)
             {
@@ -318,7 +356,7 @@ namespace CVTBot
 
             try
             {
-                irc.Login(config.botNick, config.botRealName + " " + version, 4, config.botUser, config.botPass);
+                irc.Login(config.botNick, config.botRealName + " " + version, 4, config.botUser, config.ircServerUseSasl ? null : config.botPass);
 
                 string feedChannel = config.feedChannel;
                 string controlChannel = config.controlChannel;
@@ -1537,6 +1575,7 @@ namespace CVTBot
                     name == "partMsg" ||
                     name == "ircServerName" ||
                     name.EndsWith("Channel") ||
+                    name.EndsWith("Proxy") ||
                     name.EndsWith("File") ||
                     name.StartsWith("restart")
                    )
