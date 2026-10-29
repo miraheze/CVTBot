@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -106,6 +107,50 @@ namespace CVTBot
             return seconds == 0 ? defaultLen : seconds;
         }
 
+        private static WebProxy httpProxy;
+
+        /// <summary>
+        /// Routes HTTP requests through a proxy given as a URL. An empty value keeps them direct.
+        /// </summary>
+        public static void ConfigureHttpProxy(string proxy)
+        {
+            httpProxy = null;
+
+            if (string.IsNullOrWhiteSpace(proxy))
+            {
+                return;
+            }
+
+            // The messages below leave the proxy out on purpose. It can hold credentials.
+            if (!Uri.TryCreate(proxy.Trim(), UriKind.Absolute, out Uri uri) || string.IsNullOrEmpty(uri.Host))
+            {
+                throw new FormatException("Invalid HTTP proxy. Expected a URL like http://127.0.0.1:8080.");
+            }
+
+            if (uri.Scheme is not ("http" or "socks4" or "socks4a" or "socks5"))
+            {
+                throw new FormatException($"Unsupported HTTP proxy scheme '{uri.Scheme}'. Use http, socks4, socks4a or socks5.");
+            }
+
+            if (uri.Port <= 0)
+            {
+                throw new FormatException("The HTTP proxy needs a port.");
+            }
+
+            // The address leaves the credentials out. They go in separately below.
+            WebProxy webProxy = new WebProxy(new Uri(uri.GetComponents(UriComponents.SchemeAndServer, UriFormat.UriEscaped)));
+
+            if (!string.IsNullOrEmpty(uri.UserInfo))
+            {
+                string[] credentials = uri.UserInfo.Split(':', 2);
+                webProxy.Credentials = new NetworkCredential(
+                    Uri.UnescapeDataString(credentials[0]),
+                    credentials.Length > 1 ? Uri.UnescapeDataString(credentials[1]) : string.Empty);
+            }
+
+            httpProxy = webProxy;
+        }
+
         /// <summary>
         /// Gets the raw source code for a URL
         /// </summary>
@@ -113,7 +158,14 @@ namespace CVTBot
         /// <returns></returns>
         public static string GetRawDocument(string url)
         {
-            using HttpClient client = new HttpClient();
+            // Without a configured proxy the handler keeps its default, which reads the environment
+            HttpClientHandler handler = new HttpClientHandler();
+            if (httpProxy != null)
+            {
+                handler.Proxy = httpProxy;
+            }
+
+            using HttpClient client = new HttpClient(handler);
 
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
                 "Mozilla/5.0 (en-US) CVTBot/1.0 (+https://github.com/miraheze/CVTBot)"
