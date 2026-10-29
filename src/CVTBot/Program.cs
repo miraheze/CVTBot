@@ -18,7 +18,7 @@ namespace CVTBot
 {
     internal class Program
     {
-        private const string version = "2.3.0";
+        private const string version = "2.4.0";
 
         public static IrcClient irc = new IrcClient();
         public static RCReader rcirc = new RCReader();
@@ -138,6 +138,11 @@ namespace CVTBot
             if (rawConfig.ContainsKey("ircreaderproxy"))
             {
                 config.ircReaderServerProxy = rawConfig["ircreaderproxy"];
+            }
+
+            if (rawConfig.ContainsKey("httpproxy"))
+            {
+                config.httpProxy = rawConfig["httpproxy"];
             }
 
             if (rawConfig.ContainsKey("feedchannel"))
@@ -286,6 +291,9 @@ namespace CVTBot
             {
                 config.feedFilterEventProtect = int.Parse(rawConfig["feedFilterEventProtect"]);
             }
+
+            // Projects fetch their namespaces over HTTP while loading. Set the proxy before that.
+            CVTBotUtils.ConfigureHttpProxy(config.httpProxy);
 
             // Include bot nick in all logs from any thread.
             // Especially useful when running mulitple CVTBot instances that

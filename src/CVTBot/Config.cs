@@ -36,6 +36,9 @@ namespace CVTBot
         public bool ircServerUseSasl;
         public bool ircReaderServerUseSasl;
 
+        // Proxy URL for HTTP requests to the wikis, in the same formats. Empty for none
+        public string httpProxy = "";
+
         // Channel name or "None" — the feed that logs CVT events to
         public string feedChannel = "None";
         // Channel name or "None"
